@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>路线详情 | scene-journey</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#b91c1c">
+  <link rel="apple-touch-icon" href="../assets/icons/icon-192x192.png">
+  <style>
+    .route-detail-page { padding-bottom: env(safe-area-inset-bottom); }
+    .back-bar { display:flex;align-items:center;gap:var(--spacing-md);padding:var(--spacing-md);border-bottom:1px solid var(--color-border); }
+    .back-btn { width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:1.25rem; }
+    .route-summary { display:flex;gap:var(--spacing-lg);padding:var(--spacing-md);border-bottom:1px solid var(--color-border);font-size:var(--font-size-sm); }
+    .stat { text-align:center; }
+    .stat-value { font-weight:700;font-size:var(--font-size-lg);color:var(--color-primary); }
+    .stat-label { color:var(--color-text-secondary);font-size:var(--font-size-xs); }
+    .loc-item { display:flex;align-items:center;gap:var(--spacing-md);padding:var(--spacing-sm) var(--spacing-md);border-bottom:1px solid var(--color-border); }
+    .loc-num { width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:var(--font-size-xs);font-weight:700;color:#fff;flex-shrink:0; }
+    .bottom-actions { position:sticky;bottom:0;padding:var(--spacing-md);background:var(--color-surface);border-top:1px solid var(--color-border);display:flex;gap:var(--spacing-sm); }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <main class="app-content route-detail-page" id="route-content">
+      <div class="loading" style="padding-top:64px;"><div class="spinner"></div><span>加载路线...</span></div>
+    </main>
+  </div>
+
+  <script src="../js/utils/format.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/data-loader.js"></script>
+  <script src="../js/ui/icons.js"></script>
+  <script>
+    (async function() {
+      const params = new URLSearchParams(location.search);
+      const bookId = params.get('book') || 'dragon-raja';
+        Storage.init(bookId);
+      const routeId = params.get('id');
+      if (!routeId) { document.getElementById('route-content').innerHTML = '<div class="empty-state">未指定路线</div>'; return; }
+
+      try {
+        const locations = await DataLoader.loadLocations(bookId);
+        const routes = await DataLoader.loadRoutes(bookId);
+        const savedRoutes = Storage.getRoutes();
+        let route = routes.find(r => r.id === routeId) || savedRoutes.find(r => r.id === routeId);
+        if (!route) throw new Error('路线不存在');
+
+        const routeLocs = route.location_ids.map(id => locations.find(l => l.id === id)).filter(Boolean);
+        const checkins = Storage.getCheckins();
+        const checkedCount = routeLocs.filter(l => checkins[l.id]).length;
+        const percent = routeLocs.length > 0 ? Math.round((checkedCount / routeLocs.length) * 100) : 0;
+        const diffZH = { easy:'轻松', medium:'适中', hard:'挑战' };
+
+        document.title = `${route.name_zh} · 龙族圣地巡礼`;
+
+        document.getElementById('route-content').innerHTML = `
+          <div class="back-bar">
+            <button class="back-btn" onclick="history.back()">←</button>
+            <div><div class="font-bold">${route.name_zh}</div><div class="text-xs text-secondary">${route.description || ''}</div></div>
+          </div>
+          <div class="route-summary">
+            <div class="stat"><div class="stat-value">${routeLocs.length}</div><div class="stat-label">取景地</div></div>
+            <div class="stat"><div class="stat-value">${route.estimated_duration || '-'}</div><div class="stat-label">预估时间</div></div>
+            <div class="stat"><div class="stat-value">${diffZH[route.difficulty] || route.difficulty}</div><div class="stat-label">难度</div></div>
+            <div class="stat"><div class="stat-value">${percent}%</div><div class="stat-label">完成</div></div>
+          </div>
+          <div class="card" style="margin:16px;background:var(--color-bg);">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span class="text-sm text-secondary">完成进度</span>
+              <span class="text-sm font-bold">${checkedCount}/${routeLocs.length}</span>
+            </div>
+            <div class="progress-bar" style="margin-top:8px;"><div class="progress-fill" style="width:${percent}%;"></div></div>
+          </div>
+          <div>${routeLocs.map((loc, i) => {
+            const isChecked = !!checkins[loc.id];
+            return `<div class="loc-item"><div class="loc-num" style="background:${isChecked ? 'var(--color-success)' : 'var(--color-text-secondary)'};">${isChecked ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : i + 1}</div><div class="loc-name" style="flex:1;font-size:var(--font-size-sm);">${loc.name_zh}</div><span class="text-xs text-secondary">${loc.city}</span></div>`;
+          }).join('')}</div>
+          <div class="bottom-actions">
+            <button class="btn btn-outline btn-block" id="btn-share">分享路线</button>
+            <button class="btn btn-primary btn-block" id="btn-nav">开始导航</button>
+          </div>
+        `;
+
+        document.getElementById('btn-share').addEventListener('click', () => {
+          navigator.clipboard.writeText(location.href).then(() => {
+            const t = document.createElement('div'); t.className='toast'; t.textContent='路线链接已复制'; document.body.appendChild(t); setTimeout(() => t.remove(), 2500);
+          }).catch(() => {});
+        });
+
+        document.getElementById('btn-nav').addEventListener('click', () => {
+          if (routeLocs.length > 0) {
+            window.open(`https://www.google.com/maps/dir/?api=1&destination=${routeLocs[0].coordinates.lat},${routeLocs[0].coordinates.lng}`, '_blank');
+          }
+        });
+      } catch (err) {
+        document.getElementById('route-content').innerHTML = `<div class="empty-state">加载失败: ${err.message}</div>`;
+      }
+    })();
+  </script>
+<script>
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js?v=3'); }
+</script>
+</body>
+</html>

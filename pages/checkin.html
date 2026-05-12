@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>打卡 | scene-journey</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#b91c1c">
+  <link rel="apple-touch-icon" href="../assets/icons/icon-192x192.png">
+  <style>
+    .checkin-page { padding: var(--spacing-md); }
+    .checkin-header { text-align: center; margin: var(--spacing-xl) 0; }
+    .checkin-header .loc-name { font-size: var(--font-size-xl); font-weight: 800; margin-bottom: 4px; }
+    .checkin-actions { margin-top: var(--spacing-xl); }
+    .photo-preview { width: 100%; aspect-ratio: 16/10; border-radius: var(--radius-md); object-fit: cover; margin-top: var(--spacing-md); border: 2px dashed var(--color-border); display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); }
+    .photo-preview.has-photo { border: none; }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <button class="btn-ghost" onclick="history.back()">← 返回</button>
+      <span class="font-bold">打卡记录</span>
+      <span></span>
+    </header>
+    <main class="app-content checkin-page">
+      <div id="checkin-content">
+        <div class="loading" style="padding-top:64px;"><div class="spinner"></div></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/utils/format.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/data-loader.js"></script>
+  <script src="../js/ui/icons.js"></script>
+  <script>
+    (async function() {
+      const params = new URLSearchParams(location.search);
+      const bookId = params.get('book') || 'dragon-raja';
+        Storage.init(bookId);
+      const locId = params.get('id');
+
+      if (!locId) {
+        document.getElementById('checkin-content').innerHTML = '<div class="empty-state">未指定取景地</div>';
+        return;
+      }
+
+      try {
+        const locations = await DataLoader.loadLocations(bookId);
+        const loc = locations.find(l => l.id === locId);
+        if (!loc) throw new Error('Location not found');
+
+        const isChecked = Storage.isCheckedIn(locId);
+        const checkinData = Storage.getCheckins()[locId];
+
+        let photoData = null;
+
+        document.getElementById('checkin-content').innerHTML = `
+          <div class="checkin-header">
+            <div class="loc-name">${loc.name_zh}</div>
+            <div class="text-secondary text-sm">${loc.city}</div>
+          </div>
+
+          ${isChecked && checkinData ? `
+            <div class="card" style="text-align:center;background:rgba(42,157,143,0.08);">
+              <span class="checkin-badge" style="font-size:var(--font-size-base);">${Icons.iconLabel('check','已打卡')}</span>
+              <div class="text-sm text-secondary" style="margin-top:8px;">${Format.relativeTime(checkinData.timestamp)}</div>
+              ${checkinData.photo ? `<img src="${checkinData.photo}" class="checkin-photo" alt="打卡照片">` : ''}
+              ${checkinData.note ? `<p class="text-sm" style="margin-top:8px;">${checkinData.note}</p>` : ''}
+            </div>
+            <div class="checkin-actions">
+              <button class="btn btn-outline btn-block" onclick="history.back()">返回</button>
+            </div>
+          ` : `
+            <div style="text-align:center;">
+              <div class="photo-preview" id="photo-preview">点击下方按钮拍照</div>
+            </div>
+
+            <div class="checkin-actions">
+              <textarea id="checkin-note" placeholder="写点感想...（选填）" style="width:100%;padding:var(--spacing-sm);border:1px solid var(--color-border);border-radius:var(--radius-md);margin-bottom:8px;resize:none;min-height:80px;background:var(--color-bg);"></textarea>
+              <button class="btn btn-outline btn-block" id="btn-photo">${Icons.iconLabel('camera','拍照')}</button>
+              <button class="btn btn-primary btn-block btn-lg" id="btn-checkin" style="margin-top:8px;">${Icons.iconLabel('check','确认打卡')}</button>
+            </div>
+          `}
+        `;
+
+        if (!isChecked) {
+          document.getElementById('btn-photo').addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.capture = 'environment';
+            input.addEventListener('change', (e) => {
+              const file = e.target.files[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                  photoData = reader.result;
+                  const preview = document.getElementById('photo-preview');
+                  preview.innerHTML = `<img src="${photoData}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-md);">`;
+                  preview.classList.add('has-photo');
+                };
+                reader.readAsDataURL(file);
+              }
+            });
+            input.click();
+          });
+
+          document.getElementById('btn-checkin').addEventListener('click', () => {
+            const note = document.getElementById('checkin-note').value;
+            Storage.addCheckin(locId, { photo: photoData, note });
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = '打卡成功！';
+            document.body.appendChild(toast);
+            setTimeout(() => {
+              toast.remove();
+              history.back();
+            }, 1500);
+          });
+        }
+      } catch (err) {
+        document.getElementById('checkin-content').innerHTML = `<div class="empty-state">加载失败: ${err.message}</div>`;
+      }
+    })();
+  </script>
+<script>
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js?v=3'); }
+</script>
+</body>
+</html>

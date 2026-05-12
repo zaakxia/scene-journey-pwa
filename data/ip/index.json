@@ -1,0 +1,58 @@
+[
+  {
+    "ip_id": "dragon-raja",
+    "book_id": "dragon-raja-1",
+    "name_zh": "龙族",
+    "subtitle": "第一部 · 火之晨曦",
+    "book_number": 1,
+    "book_title_zh": "火之晨曦",
+    "cover": "assets/images/ip/dragon-raja-1/cover.jpg",
+    "country": "中国 / 美国",
+    "cities": [
+      "合肥",
+      "湖北宜昌",
+      "芝加哥",
+      "重庆奉节"
+    ],
+    "location_count": 7,
+    "route_count": 2,
+    "description": "一切的起点。废柴少年路明非被卡塞尔学院选中，从中国小城走向世界舞台。故事横跨太平洋两岸，在夔门水下迎来首次屠龙之战。"
+  },
+  {
+    "ip_id": "dragon-raja",
+    "book_id": "dragon-raja-2",
+    "name_zh": "龙族",
+    "subtitle": "第二部 · 悼亡者之瞳",
+    "book_number": 2,
+    "book_title_zh": "悼亡者之瞳",
+    "cover": "assets/images/ip/dragon-raja-2/cover.jpg",
+    "country": "美国 / 中国 / 英国 / 意大利",
+    "cities": [
+      "伦敦",
+      "北京",
+      "四川甘孜",
+      "热那亚",
+      "芝加哥"
+    ],
+    "location_count": 15,
+    "route_count": 2,
+    "description": "楚子航的过去浮出水面，大地与山之王从沉睡中苏醒。从芝加哥拍卖行到北京地铁深处——龙王正在觉醒。"
+  },
+  {
+    "ip_id": "dragon-raja",
+    "book_id": "dragon-raja",
+    "name_zh": "龙族",
+    "subtitle": "第三部 · 黑月之潮",
+    "book_number": 3,
+    "book_title_zh": "黑月之潮（上/中/下）",
+    "cover": "assets/images/ip/dragon-raja/cover.jpg",
+    "country": "日本",
+    "cities": [
+      "东京",
+      "松山"
+    ],
+    "location_count": 18,
+    "route_count": 4,
+    "description": "以日本为舞台，少年路明非与女孩绘梨衣的七日旅行。从东京天空树到梅津寺町的黄昏——「所谓浪漫，就是没有后来。」"
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "id": "dr2-route-chicago",
+    "ip_id": "dragon-raja-2",
+    "name_zh": "芝加哥·龙王拍卖会（1日 8小时）",
+    "description": "从凯悦酒店的河景到市政歌剧院的拍卖厅，再到六旗乐园的中庭之蛇。一日走完楚子航与夏弥在芝加哥的全部交集——以及恺撒和路明非拍下七宗罪的那一天。",
+    "location_ids": [
+      "dr2-chicago-opera",
+      "dr2-chicago-sixflags"
+    ],
+    "estimated_duration": "约8小时",
+    "estimated_distance": "约80km（含往返六旗）",
+    "transportation": "步行 + CTA + 自驾/打车（去六旗）",
+    "difficulty": "medium",
+    "daily_hours": 8,
+    "days": 1,
+    "created_by": "system",
+    "schedule": [
+      "11:00-12:00 芝加哥市政歌剧院（Civic Opera House外观，想象昂热与路明非走进拍卖厅的那一刻）",
+      "12:00-13:00 午餐（Wacker Drive沿线）",
+      "14:00-17:00 六旗大美洲乐园（Gurnee，车程45分钟。找一座你觉得最像「中庭之蛇」的过山车，坐摩天轮——记住夏弥）"
+    ]
+  },
+  {
+    "id": "dr2-route-beijing-nibelungen",
+    "ip_id": "dragon-raja-2",
+    "name_zh": "北京·地下尼伯龙根（1日 8小时）",
+    "description": "深入大地与山之王的帝都巢穴。从琉璃厂凤隆堂的线索开始，沿地铁1号线一路向西——王府井、西单、苹果园、福寿岭。这一天，你将刷完尼伯龙根的所有入口。",
+    "location_ids": [
+      "dr2-beijing-summerpalace",
+      "dr2-beijing-changan",
+      "dr2-beijing-regency",
+      "dr2-beijing-oriental",
+      "dr2-beijing-xidan",
+      "dr2-beijing-liulichang",
+      "dr2-beijing-guangcai",
+      "dr2-beijing-cathedral",
+      "dr2-beijing-subway",
+      "dr2-beijing-fushouling"
+    ],
+    "estimated_duration": "约20小时（建议分2天）",
+    "estimated_distance": "约60km",
+    "transportation": "地铁 + 步行 + 出租车",
+    "difficulty": "medium",
+    "daily_hours": 20,
+    "days": 2,
+    "created_by": "system",
+    "schedule": [
+      "=== 第一天：地上·恺撒的北京 ===",
+      "12:00-13:00 午餐（海淀区）",
+      "17:00-18:00 长安街（从故宫沿长安街向东，恺撒开车找诺诺的路线）",
+      "18:30 北京丽晶酒店/东方广场（王府井，入住或晚餐）",
+      "=== 第二天：地下·尼伯龙根 ===",
+      "09:00-10:00 琉璃厂文化街（凤隆堂，楚子航找到冯·隆的地方）",
+      "10:30-11:00 光彩胡同·王恭厂（明代火药厂，龙族调查的线索）",
+      "11:30-12:30 西单婚庆大楼（恺撒遭遇镰鼬，狄克推多+奥古斯都）",
+      "12:30-13:30 午餐（西单商圈）",
+      "14:00-15:00 天主教南堂（宣武门，赵孟华文末入教处）",
+      "15:30-17:30 地铁1号线（从王府井站出发，向西坐：东四→西单→八宝山→八角→古城→苹果园。远观福寿岭外观，感受尼伯龙根入口）"
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="50%" style="stop-color:#16213e"/>
+      <stop offset="100%" style="stop-color:#e94560"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="400" rx="12" fill="url(#g1)"/>
+  <text x="150" y="160" text-anchor="middle" fill="#e94560" font-size="48" font-weight="bold" font-family="sans-serif">龙族</text>
+  <text x="150" y="210" text-anchor="middle" fill="#fff" font-size="22" font-family="sans-serif" opacity="0.9">第一部</text>
+  <text x="150" y="250" text-anchor="middle" fill="#fff" font-size="28" font-weight="bold" font-family="sans-serif">火之晨曦</text>
+  <line x1="60" y1="280" x2="240" y2="280" stroke="#e94560" stroke-width="1" opacity="0.5"/>
+  <text x="150" y="320" text-anchor="middle" fill="#aaa" font-size="14" font-family="sans-serif">合肥 · 芝加哥 · 奉节</text>
+</svg>

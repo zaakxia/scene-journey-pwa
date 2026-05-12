@@ -1,0 +1,5 @@
+.DS_Store
+Thumbs.db
+assets/tiles/
+__pycache__/
+*.pyc

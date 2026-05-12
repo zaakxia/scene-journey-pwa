@@ -1,0 +1,55 @@
+[
+  {
+    "id": "dr1-route-chicago",
+    "ip_id": "dragon-raja-1",
+    "name_zh": "芝加哥·卡塞尔入学之路（1日 8小时）",
+    "description": "追随路明非的脚步，从降落芝加哥到登上CC1000次列车。一日之内走完卡塞尔学院新生报到的现实原型路线：机场→联合车站→芝大校园→密歇根湖滨→汉考克观景台。",
+    "location_ids": [
+      "dr1-chicago-ohare",
+      "dr1-chicago-union",
+      "dr1-chicago-uchicago"
+    ],
+    "estimated_duration": "约8小时",
+    "estimated_distance": "约50km",
+    "transportation": "CTA蓝线 + 步行 + Metra",
+    "difficulty": "easy",
+    "daily_hours": 8,
+    "days": 1,
+    "created_by": "system",
+    "schedule": [
+      "09:00-10:00 芝加哥奥黑尔机场（T5航站楼感受路明非初到美国的心情，搭乘CTA蓝线离开）",
+      "10:30-12:00 芝加哥联合车站（Great Hall大穹顶，CC1000列车的出发地，找路明非和芬格尔睡过两晚的长椅）",
+      "12:00-13:00 午餐（Loop区芝加哥深盘披萨）",
+      "13:30-15:00 芝加哥大学（洛克菲勒教堂→哈珀图书馆→Main Quadrangles，感受卡塞尔学院建筑原型）"
+    ]
+  },
+  {
+    "id": "dr1-route-threegorges",
+    "ip_id": "dragon-raja-1",
+    "name_zh": "奉节·宜昌·青铜城之旅（2日）",
+    "description": "从白帝城到三峡大坝——追寻青铜与火之王诺顿的遗迹。叶胜和亚纪的水下任务、路明非首次屠龙之战的全部现实取景地。建议在奉节住一晚。",
+    "location_ids": [
+      "dr1-fengjie-baidi",
+      "dr1-fengjie-qutang",
+      "dr1-yichang-dam"
+    ],
+    "estimated_duration": "约16小时（2天）",
+    "estimated_distance": "约200km",
+    "transportation": "高铁 + 巴士 + 游船",
+    "difficulty": "medium",
+    "daily_hours": 16,
+    "days": 2,
+    "created_by": "system",
+    "schedule": [
+      "=== 第一天：白帝城·夔门 ===",
+      "上午 抵达奉节高铁站→景区巴士到白帝城",
+      "10:00-12:00 白帝城（刘备托孤处，诺顿青铜城入口，俯瞰夔门）",
+      "12:00-13:00 午餐（奉节脐橙/长江鱼）",
+      "14:00-16:00 瞿塘峡游船（夔门——白盐山与赤甲山对峙，叶胜下水之处）",
+      "晚上 宿奉节",
+      "=== 第二天：三峡大坝 ===",
+      "上午 奉节→宜昌（高铁约1.5小时）",
+      "11:00-15:00 三峡大坝（坝区参观，回忆龙德施泰特教授指挥摩尼亚赫号的雨夜）"
+    ]
+  }
+]

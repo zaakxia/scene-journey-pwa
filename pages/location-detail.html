@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>取景地详情 | scene-journey</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#b91c1c">
+  <link rel="apple-touch-icon" href="../assets/icons/icon-192x192.png">
+  <style>
+    .detail-page { padding-bottom: env(safe-area-inset-bottom); }
+    .detail-hero { position: relative; }
+    .detail-hero img { width: 100%; aspect-ratio: 16/10; object-fit: cover; }
+    .detail-hero .back-btn {
+      position: absolute; top: var(--spacing-md); left: var(--spacing-md);
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(0,0,0,0.5); color: #fff; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 1.25rem; backdrop-filter: blur(8px);
+    }
+    .detail-body { padding: var(--spacing-md); }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <main class="app-content detail-page">
+      <div class="detail-hero">
+        <img id="hero-img" src="" alt="" onerror="this.src='../assets/images/ui/placeholder-photo.svg'">
+        <button class="back-btn" onclick="history.back()">←</button>
+      </div>
+      <div class="detail-body" id="detail-content">
+        <div class="loading" style="padding-top:64px;"><div class="spinner"></div><span>加载中...</span></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/utils/format.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/data-loader.js"></script>
+  <script src="../js/ui/icons.js"></script>
+  <script>
+    (async function() {
+      const params = new URLSearchParams(location.search);
+      const bookId = params.get('book') || 'dragon-raja';
+        Storage.init(bookId);
+      const locId = params.get('id');
+      if (!locId) { document.getElementById('detail-content').innerHTML = '<div class="empty-state">未指定取景地</div>'; return; }
+
+      try {
+        const locations = await DataLoader.loadLocations(bookId);
+        const loc = locations.find(l => l.id === locId);
+        if (!loc) throw new Error('未找到该取景地');
+
+        document.title = `${loc.name_zh} · 龙族圣地巡礼`;
+        document.getElementById('hero-img').src = loc.real_photo;
+
+        const isFav = Storage.isBookmarked(locId);
+        const isChecked = Storage.isCheckedIn(locId);
+        const checkinData = Storage.getCheckins()[locId];
+
+        const catZH = { landmark:'地标', street:'街景', nature:'自然', interior:'室内', other:'其他' }[loc.category] || loc.category;
+        const accessZH = { public:'可自由访问', limited:'限时开放', private:'私人区域' }[loc.accessibility] || loc.accessibility;
+
+        document.getElementById('detail-content').innerHTML = `
+          <h1 style="font-size:var(--font-size-xl);margin-bottom:4px;">${loc.name_zh}</h1>
+          <p class="text-secondary text-sm">${loc.name_local || ''}</p>
+          <div class="location-meta" style="margin-top:12px;">
+            <span class="tag tag-accent">${Icons.starFill} ×${loc.popularity}</span>
+            <span class="tag">${catZH}</span>
+            <span class="tag">${accessZH}</span>
+            ${loc.city ? `<span class="tag tag-info">${loc.city}</span>` : ''}
+          </div>
+          <p style="margin:16px 0;line-height:1.7;">${loc.description}</p>
+
+          <div class="location-compare">
+            <div>
+              <img src="${loc.scene_screenshot}" alt="作品截图" loading="lazy" onerror="this.onerror=null;this.src='../assets/images/ui/placeholder-scene.svg'">
+              <div class="label">作品截图</div>
+            </div>
+            <div>
+              <img src="${loc.real_photo}" alt="实地照片" loading="lazy" onerror="this.onerror=null;this.src='../assets/images/ui/placeholder-photo.svg'">
+              <div class="label">实地照片</div>
+            </div>
+          </div>
+
+          ${loc.episode_info ? `
+            <div class="card" style="margin:16px 0;background:var(--color-bg);">
+              <div class="font-bold text-sm" style="color:var(--color-primary);">第${loc.episode_info.episode_number}集 · ${loc.episode_info.episode_title || ''}</div>
+              <div class="text-sm text-secondary" style="margin-top:4px;">${loc.episode_info.context || ''}</div>
+            </div>` : ''}
+
+          <div class="card" style="margin:16px 0;background:var(--color-bg);">
+            <div class="font-bold text-sm">交通信息</div>
+            <div class="text-sm text-secondary" style="margin-top:4px;">${loc.address}</div>
+            ${loc.nearest_station ? `<div class="text-sm text-secondary">最近车站: ${loc.nearest_station}</div>` : ''}
+          </div>
+
+          <div class="card" style="margin:16px 0;background:var(--color-bg);text-align:center;">
+            <div class="text-sm text-secondary">坐标: ${loc.coordinates.lat.toFixed(5)}, ${loc.coordinates.lng.toFixed(5)}</div>
+          </div>
+
+          ${isChecked && checkinData ? `
+            <div class="card" style="margin:16px 0;background:rgba(42,157,143,0.08);">
+              <span class="checkin-badge">已打卡</span>
+              <span class="text-xs text-secondary" style="margin-left:8px;">${new Date(checkinData.timestamp).toLocaleString('zh-CN')}</span>
+              ${checkinData.photo ? `<img src="${checkinData.photo}" class="checkin-photo" alt="打卡照片">` : ''}
+              ${checkinData.note ? `<p class="text-sm" style="margin-top:8px;">${checkinData.note}</p>` : ''}
+            </div>` : ''}
+
+          <div style="display:flex;gap:8px;margin-top:16px;">
+            <button class="btn btn-outline btn-block" id="btn-bookmark">${isFav ? Icons.iconLabel('starFill','已收藏') : Icons.iconLabel('star','收藏')}</button>
+            <button class="btn btn-primary btn-block" id="btn-navigate">导航到这里</button>
+          </div>
+        `;
+
+        document.getElementById('btn-bookmark').addEventListener('click', function() {
+          if (Storage.isBookmarked(locId)) { Storage.removeBookmark(locId); this.innerHTML = Icons.iconLabel('star','收藏'); }
+          else { Storage.addBookmark(locId); this.innerHTML = Icons.iconLabel('starFill','已收藏'); }
+        });
+
+        document.getElementById('btn-navigate').addEventListener('click', () => {
+          window.open(`https://www.google.com/maps/dir/?api=1&destination=${loc.coordinates.lat},${loc.coordinates.lng}`, '_blank');
+        });
+      } catch (err) {
+        document.getElementById('detail-content').innerHTML = `<div class="empty-state">加载失败: ${err.message}</div>`;
+      }
+    })();
+  </script>
+<script>
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js?v=3'); }
+</script>
+</body>
+</html>

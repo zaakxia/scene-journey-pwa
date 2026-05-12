@@ -1,0 +1,30 @@
+{
+  "id": "dragon-raja",
+  "subtitle": "龙族 · 第三部 黑月之潮",
+  "book_number": 3,
+  "book_title_zh": "黑月之潮（上/中/下）",
+  "chapters": [
+    "龙族3 上",
+    "龙族3 中",
+    "龙族3 下"
+  ],
+  "name_zh": "龙族",
+  "description": "江南所著奇幻小说系列。第三部《黑月之潮》以日本为舞台，少年路明非与女孩绘梨衣的七日旅行，横跨东京、松山、奈良。「所谓浪漫，就是没有后来。」",
+  "cover_image": "../assets/images/ip/dragon-raja/cover.svg",
+  "type": "novel",
+  "location_summary": {
+    "country": "日本",
+    "cities": [
+      "东京",
+      "松山"
+    ]
+  },
+  "stats": {
+    "total_locations": 18,
+    "total_routes": 4
+  },
+  "cities": [
+    "东京",
+    "松山"
+  ]
+}

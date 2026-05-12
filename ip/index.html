@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#b91c1c">
+  <meta name="description" content="龙族圣地巡礼地图 - 探索《龙族》取景地，规划巡礼路线">
+  <title>龙族 · 圣地巡礼 | scene-journey</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/vendor/leaflet.css">
+  <link rel="manifest" href="../manifest.json">
+  <link rel="apple-touch-icon" href="../assets/icons/icon-192x192.png">
+  <style>
+    /* ── Map-fullscreen layout ── */
+    html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; touch-action: manipulation; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, \"PingFang SC\", \"Microsoft YaHei\", \"Helvetica Neue\", sans-serif;
+      background: #faf8f5;
+      color: #1c1917;
+    }
+
+    .app-container {
+      display: flex; flex-direction: column;
+      height: 100dvh; width: 100%;
+      overflow: hidden; position: relative;
+      touch-action: manipulation;
+    }
+
+    /* Map fills all space above bottom bar */
+    #app-content {
+      flex: 1; min-height: 0; position: relative; overflow: hidden;
+    }
+    #app-content .view {
+      position: absolute; inset: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      background: #faf8f5;
+    }
+    #view-map.view { overflow: hidden; background: transparent; touch-action: none; -ms-touch-action: none; -webkit-overflow-scrolling: auto; }
+
+    #map {
+      position: absolute; inset: 0;
+      overflow: hidden; background: #e8e4df;
+      touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .leaflet-container {
+      touch-action: none;
+      -ms-touch-action: none;
+    }
+
+    /* ── Unified title bar (Google Maps-style, spans top) ── */
+    .map-top-bar {
+      position: absolute;
+      top: 0;
+      left: 0; right: 0;
+      z-index: 800;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: rgba(255,255,255,0.94);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      padding: calc(8px + env(safe-area-inset-top, 0)) 12px 8px;
+      box-shadow: none;
+    }
+    .map-top-bar .back-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      text-decoration: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .map-top-bar .back-btn:active { background: rgba(0,0,0,0.06); }
+    .map-top-bar .back-btn svg { width: 18px; height: 18px; color: rgba(28,25,23,0.55); }
+    .map-top-bar .bar-divider {
+      width: 1px; height: 20px;
+      background: #e0dcd5;
+      flex-shrink: 0;
+      margin: 0 2px;
+    }
+    .map-top-bar .bar-title {
+      flex: 1;
+      text-align: center;
+      padding: 0 8px;
+      font-family: -apple-system, BlinkMacSystemFont, \"PingFang SC\", \"Microsoft YaHei\", \"Helvetica Neue\", sans-serif;
+      font-weight: 500; font-size: 14px;
+      color: rgba(28,25,23,0.55);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      letter-spacing: 0.02em;
+      min-width: 0;
+    }
+
+    /* ── Filter + Layer row (below title bar) ── */
+    .map-ctl-row {
+      position: absolute;
+      top: calc(62px + env(safe-area-inset-top, 0));
+      left: 0; right: 0;
+      z-index: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+    }
+    .map-ctl-row .filter-bar {
+      flex: 1;
+      display: flex; gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .map-ctl-row .filter-bar::-webkit-scrollbar { display: none; }
+
+    .map-filter-toggle {
+      flex-shrink: 0;
+      display: flex; align-items: center; gap: 4px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 13px; font-weight: 500;
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      color: var(--color-text);
+      -webkit-tap-highlight-color: transparent;
+      white-space: nowrap;
+    }
+    .map-filter-toggle:active { background: rgba(0,0,0,0.05); }
+    .map-filter-toggle .arrow {
+      font-size: 10px; transition: transform 0.2s;
+      color: var(--color-text-secondary);
+    }
+    .map-filter-toggle.expanded .arrow { transform: rotate(180deg); }
+
+    .chip-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .filter-chip {
+      flex-shrink: 0;
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: none;
+      font-size: 13px; font-weight: 500;
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      color: var(--color-text);
+      transition: all 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+      white-space: nowrap;
+    }
+    .filter-chip.active {
+      background: var(--color-text);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    /* ── Layer button inline ── */
+    .map-layer-btn {
+      flex-shrink: 0;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex; align-items: center; justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .map-layer-btn:active { background: rgba(0,0,0,0.05); }
+    .map-layer-btn svg { width: 18px; height: 18px; color: #555; }
+
+    /* ── Layer popup menu ── */
+    .layer-menu {
+      position: absolute;
+      bottom: 48px; right: 10px;
+      z-index: 35;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      padding: 6px 0;
+      min-width: 140px;
+      display: none;
+    }
+    .layer-menu.show { display: block; }
+    .layer-menu .layer-opt {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px;
+      font-size: 13px; font-weight: 500;
+      color: var(--color-text);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .layer-menu .layer-opt:active { background: #f0f0f0; }
+    .layer-menu .layer-opt.active {
+      color: var(--color-primary); font-weight: 700;
+    }
+    .layer-menu .layer-opt .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: transparent; flex-shrink: 0;
+    }
+    .layer-menu .layer-opt.active .dot { background: var(--color-primary); }
+
+    /* ── FAB ── */
+    .map-fab {
+      position: absolute;
+      right: 14px;
+      bottom: 20px;
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 20;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .map-fab:active { transform: scale(0.95); }
+    .map-fab .badge {
+      position: absolute; top: -2px; right: -2px;
+      min-width: 20px; height: 20px;
+      border-radius: 10px; background: #fff; color: var(--color-primary);
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid var(--color-primary);
+      padding: 0 5px;
+    }
+
+    /* ── Bottom bar (floating feel) ── */
+    .bottom-bar {
+      display: flex;
+      flex-shrink: 0;
+      padding: 6px 10px calc(6px + env(safe-area-inset-bottom, 0));
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+      z-index: 100;
+      gap: 2px;
+    }
+    .bottom-bar .tab {
+      flex: 1;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px;
+      color: var(--color-text-secondary);
+      transition: all 0.15s ease;
+      font-size: 11px; font-weight: 500;
+      min-height: 44px;
+      border-radius: 10px;
+      padding: 4px 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bottom-bar .tab.active {
+      color: var(--color-primary);
+      background: rgba(185,28,28,0.06);
+    }
+    .bottom-bar .tab svg { width: 22px; height: 22px; }
+    .bottom-bar .tab .badge {
+      position: absolute; top: 2px; right: calc(50% - 22px);
+      min-width: 16px; height: 16px; border-radius: 8px;
+      background: var(--color-primary); color: #fff;
+      font-size: 10px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 4px; line-height: 1;
+    }
+
+    /* ── Non-map views header ── */
+    .view-header {
+      display: flex; align-items: center; justify-content: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-surface);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .view-back {
+      position: absolute; left: 12px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: none; background: none;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-text-secondary);
+      -webkit-tap-highlight-color: transparent;
+      flex-shrink: 0;
+    }
+    .view-back:active { background: rgba(0,0,0,0.06); }
+    .view-back svg { width: 18px; height: 18px; }
+    .view-header .view-title {
+      font-weight: 700; font-size: 16px; color: var(--color-text);
+    }
+
+    /* ── Scheduler ── */
+    .sched-slot { cursor: pointer; transition: background 0.08s ease; }
+    .sched-slot:active { background: rgba(185,28,28,0.05) !important; }
+    .sched-card {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      transition: all 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .sched-card:active { transform: scale(0.96); }
+    .sched-card.selected { border-color: var(--color-primary) !important; box-shadow: 0 0 0 1px var(--color-primary); }
+    .sched-card.used { pointer-events: none; }
+    .sched-block {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .sched-block:active { transform: scale(0.98); box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important; }
+    .sched-day-tab { transition: all 0.15s ease; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .sched-day-tab:active { opacity: 0.8; }
+
+    /* ── Error banner ── */
+    #app-error {
+      position: absolute; top: 0; left: 0; right: 0; z-index: 99;
+      background: #fee2e2; color: #991b1b;
+      padding: 12px 16px; font-size: 14px; text-align: center;
+      border-bottom: 2px solid #ef4444;
+    }
+
+    /* Leaflet checkmark marker — no default icon background */
+    .leaflet-check-marker {
+      background: none !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Custom zoom buttons — works in all browsers including WeChat */
+    .custom-zoom {
+      position: absolute;
+      bottom: 24px; right: 14px;
+      z-index: 1000;
+      display: flex; flex-direction: column;
+      gap: 4px;
+    }
+    .zoom-btn {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      border: none;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      font-size: 26px; font-weight: 400;
+      color: #444;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+    .zoom-btn:active { background: #f0f0f0; transform: scale(0.94); }
+
+    /* Hide Leaflet's built-in zoom — we use custom above */
+    .leaflet-control-zoom { display: none !important; }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <a href="#app-content" id="skip-link">跳过导航，到主内容</a>
+
+  <div id="app-error" class="hidden"></div>
+
+  <!-- Main Content -->
+  <main id="app-content">
+    <!-- Map View -->
+    <div id="view-map" class="view">
+      <div id="map">
+        <!-- Top: unified title bar -->
+        <div class="map-top-bar">
+          <a href="../" class="back-btn" title="返回选书" aria-label="返回">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </a>
+          <div class="bar-divider"></div>
+          <span class="bar-title" id="map-title-text">龙族</span>
+          <button class="guide-btn" onclick="App.showGuide('地图使用指南','点击彩色标记查看取景地详情\n双指缩放或点击右下角+/-缩放地图\n点击取景地可查看照片并打卡\n收藏后可到行程页规划路线')" style="width:28px;height:28px;border-radius:50%;border:none;background:rgba(0,0,0,0.06);font-size:14px;font-weight:700;color:rgba(28,25,23,0.5);cursor:pointer;flex-shrink:0;margin-left:2px;">!</button>
+        </div>
+
+        <!-- Filter row -->
+        <div class="map-ctl-row" id="map-ctl-row">
+          <div class="filter-bar" id="map-filter-bar"></div>
+        </div>
+
+        <!-- Custom zoom controls (WeChat-compatible) -->
+        <div class="custom-zoom" id="custom-zoom">
+          <button class="zoom-btn zoom-in" id="zoom-in-btn" title="放大">+</button>
+          <button class="zoom-btn zoom-out" id="zoom-out-btn" title="缩小">−</button>
+        </div>
+
+        <!-- FAB -->
+        <button class="map-fab hidden" id="fab-plan-route" title="规划路线">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+          <span class="badge">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Plan View -->
+    <div id="view-plan" class="view hidden">
+      <div class="view-header">
+        <button class="view-back" onclick="App.switchTab('map')" aria-label="返回地图">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span class="view-title">游览计划</span>
+        <button class="guide-btn" onclick="App.showGuide('计划使用指南','点击下方取景地卡片选中,再点击时间线放置\n时间线为24小时制,上午/下午双列显示\n交通按钮可切换高德/OSRM计算出行时间\n切换到智能推荐让系统自动规划最优路线\n点击已放置的模块可跳转取景地详情\n× 按钮可移除已放置的模块')" style="position:absolute;right:12px;width:26px;height:26px;border-radius:50%;border:none;background:rgba(0,0,0,0.06);font-size:13px;font-weight:700;color:rgba(28,25,23,0.5);cursor:pointer;">!</button>
+      </div>
+      <div id="view-plan-content"></div>
+    </div>
+
+    <!-- Story View -->
+    <div id="view-story" class="view hidden">
+      <div class="view-header">
+        <button class="view-back" onclick="App.switchTab('map')" aria-label="返回地图">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span class="view-title">按原著章节浏览</span>
+        <button class="guide-btn" onclick="App.showGuide('剧情使用指南','按原著章节顺序浏览取景地\n每个取景地包含原著原文摘录\n点击取景地可查看详情和实景照片\n收藏感兴趣的取景地加入巡礼计划')" style="position:absolute;right:12px;width:26px;height:26px;border-radius:50%;border:none;background:rgba(0,0,0,0.06);font-size:13px;font-weight:700;color:rgba(28,25,23,0.5);cursor:pointer;">!</button>
+      </div>
+      <div id="view-story-content"></div>
+    </div>
+
+    <!-- Journal View -->
+    <div id="view-bookmarks" class="view hidden">
+      <div class="view-header">
+        <button class="view-back" onclick="App.switchTab('map')" aria-label="返回地图">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span class="view-title">我的巡礼</span>
+        <button class="guide-btn" onclick="App.showGuide('巡礼使用指南','点击头像上传照片,点击昵称修改称呼\n在地图取景地详情中打卡后,时间轴自动记录\n打卡记录按日期分组,展示你的巡礼足迹\n底部可导出数据备份,换设备时恢复\n收藏取景地后可在计划页规划路线')" style="position:absolute;right:12px;width:26px;height:26px;border-radius:50%;border:none;background:rgba(0,0,0,0.06);font-size:13px;font-weight:700;color:rgba(28,25,23,0.5);cursor:pointer;">!</button>
+      </div>
+      <div id="view-bookmarks-content"></div>
+    </div>
+  </main>
+
+  <!-- Bottom Tab Bar -->
+  <nav class="bottom-bar">
+    <button class="tab active" data-tab="map">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+      <span>地图</span>
+    </button>
+    <button class="tab" data-tab="plan">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"/></svg>
+      <span>计划</span>
+    </button>
+    <button class="tab" data-tab="story">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <span>剧情</span>
+    </button>
+    <button class="tab" data-tab="bookmarks">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c3.5-2 7-2.5 8-6V5c0-2.5-2.5-3.5-8-2.5v19.5z"/><path d="M12 22c-3.5-2-7-2.5-8-6V5c0-2.5 2.5-3.5 8-2.5v19.5z"/></svg>
+      <span>巡礼</span>
+      <span class="badge hidden">0</span>
+    </button>
+  </nav>
+</div>
+
+<div id="sr-announcer" role="status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+
+<script src="../js/utils/geo.js?v=20"></script>
+<script src="../js/utils/format.js?v=20"></script>
+<script src="../js/storage.js?v=20"></script>
+<script src="../js/data-loader.js?v=20"></script>
+<script src="../js/vendor/leaflet.js"></script>
+<script src="../js/map.js?v=20"></script>
+<script src="../js/route-engine.js?v=20"></script>
+<script src="../js/ui/bottom-sheet.js?v=20"></script>
+<script src="../js/ui/location-card.js?v=20"></script>
+<script src="../js/ui/filter-bar.js?v=20"></script>
+<script src="../js/ui/icons.js?v=20"></script>
+<script src="../js/app.js?v=20"></script>
+<script>
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js?v=3'); }
+</script>
+</body>
+</html>

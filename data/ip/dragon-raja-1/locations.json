@@ -1,0 +1,211 @@
+[
+  {
+    "id": "dr1-hefei-school",
+    "name_zh": "仕兰中学（合肥八中老校区）",
+    "name_local": "合肥市第八中学（老校区）",
+    "city": "合肥",
+    "chapter": "龙族1",
+    "visit_duration": "打卡",
+    "coordinates": {
+      "lat": 31.856402,
+      "lng": 117.270391
+    },
+    "address": "安徽省合肥市桐城北路173号",
+    "nearest_station": "合肥地铁2号线三孝口站步行10分钟",
+    "description": "路明非的母校，龙族故事的起点。江南以母校合肥八中为原型塑造了仕兰中学——那个缩在最后一排靠窗位置的「废柴」男孩，从这里走向了屠龙的世界。",
+    "novel_excerpt": "【龙族1·第一章「卡塞尔之门」】路明非在仕兰中学度过了毫无存在感的高中三年。从这里收到卡塞尔学院的面试通知，人生被彻底改变。\n\n原文：\n他和叔叔婶婶一起住，有一个名叫路鸣泽的堂弟，就读于当地最有名私立高中，学费高昂，师尊严苛，豪车如流水，美女如流云。",
+    "real_photo": "../assets/images/ip/dragon-raja-1/photos/dr1-hefei-school-real.jpg",
+    "category": "landmark",
+    "accessibility": "limited",
+    "popularity": 4,
+    "tags": [
+      "仕兰中学",
+      "合肥八中",
+      "路明非",
+      "起点"
+    ],
+    "verified": true,
+    "is_checkin_only": true
+  },
+  {
+    "id": "dr1-chicago-ohare",
+    "name_zh": "芝加哥奥黑尔国际机场",
+    "name_local": "O'Hare International Airport (ORD)",
+    "city": "芝加哥",
+    "chapter": "龙族1",
+    "visit_duration": "1小时",
+    "coordinates": {
+      "lat": 41.9742,
+      "lng": -87.9073
+    },
+    "address": "10000 W O'Hare Ave, Chicago, IL 60666",
+    "nearest_station": "CTA Blue Line O'Hare站（直达市中心）",
+    "description": "路明非踏上美国的第一站。拖着一只淘宝买的行李箱，一句英语也听不懂——「从这一刻起，他的人生彻底和他无关了。」",
+    "novel_excerpt": "【龙族1·第二章「黄金瞳」】路明非独自飞抵芝加哥，口袋里只剩海关罚款后的二十美元，开启了异国他乡的茫然之旅。\n\n原文：\n天之骄子、留学新人路明非携带全部出国装备，独自搭乘美联航班机，跨越大洋，降落在芝加哥国际机场，按照诺玛给的行程安排，他将在芝加哥火车站乘坐CC1000次快车前往卡塞尔学院。",
+    "real_photo": "../assets/images/ip/dragon-raja-1/photos/dr1-chicago-ohare-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 4,
+    "tags": [
+      "奥黑尔机场",
+      "芝加哥",
+      "抵达",
+      "路明非"
+    ],
+    "verified": true,
+    "open_time": 0,
+    "close_time": 48,
+    "hours_note": "全天开放"
+  },
+  {
+    "id": "dr1-chicago-union",
+    "name_zh": "芝加哥联合车站",
+    "name_local": "Chicago Union Station",
+    "city": "芝加哥",
+    "chapter": "龙族1",
+    "visit_duration": "1小时",
+    "coordinates": {
+      "lat": 41.8788,
+      "lng": -87.6403
+    },
+    "address": "225 S Canal St, Chicago, IL 60606",
+    "nearest_station": "CTA蓝线/红线/棕线可达",
+    "description": "CC1000次快车的出发地。路明非和芬格尔裹着毯子在候车大厅睡了两个晚上——这趟列车存在于所有公开时刻表之外。凌晨两点，穿墨绿色制服的列车员摇响金铃。",
+    "novel_excerpt": "【龙族1·第二章「黄金瞳」】路明非在芝加哥火车站找不到CC1000次快车的任何信息，困守车站两天，偶遇「废柴师兄」芬格尔，花掉所剩无几的美元同喝可乐、啃三明治。深夜经历了与路鸣泽的梦境对话，最终等来了幽灵般进站的黑色列车。\n\n原文：\n天之骄子、留学新人路明非携带全部出国装备，独自搭乘美联航班机，跨越大洋，降落在芝加哥国际机场，按照诺玛给的行程安排，他将在芝加哥火车站乘坐CC1000次快车前往卡塞尔学院。",
+    "real_photo": "../assets/images/ip/dragon-raja-1/photos/dr1-chicago-union-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 5,
+    "tags": [
+      "联合车站",
+      "CC1000",
+      "芝加哥",
+      "卡塞尔"
+    ],
+    "verified": true,
+    "hours_note": "05:00–次日01:00",
+    "open_time": 10,
+    "close_time": 50
+  },
+  {
+    "id": "dr1-chicago-uchicago",
+    "name_zh": "芝加哥大学",
+    "name_local": "University of Chicago",
+    "city": "芝加哥",
+    "chapter": "龙族1",
+    "visit_duration": "2小时",
+    "coordinates": {
+      "lat": 41.7886,
+      "lng": -87.5987
+    },
+    "address": "5801 S Ellis Ave, Chicago, IL 60637",
+    "nearest_station": "Metra Electric Line 55th-56th-57th St站步行10分钟",
+    "description": "卡塞尔学院在现实中的建筑原型。哥特复兴式的洛克菲勒教堂、哈珀纪念图书馆的大理石柱廊、四方院中爬满常春藤的石墙——小说设定中与卡塞尔为联谊学校，每年在密歇根湖联合举办赛艇、马术、热气球比赛。",
+    "novel_excerpt": "【龙族1·第一章「卡塞尔之门」】卡塞尔学院以「联谊学校」身份从芝加哥大学获得路明非资料，向他发出面试邀请。\n\n原文：\n「什么卡塞尔学院？一定是骗钱的！还什么芝加哥大学的联谊学院，去年我们学校排名第一的楚子航考出国，也是去的一个芝加哥大学的联谊学院，楚子航一个堂哥是一个大学的教授，都拿到绿卡了。这种名校的联谊学院都跟常青藤差不多的，美国人都进不去！」路鸣泽难得如此关心哥哥的未来。",
+    "real_photo": "../assets/images/ip/dragon-raja-1/photos/dr1-chicago-uchicago-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 5,
+    "tags": [
+      "芝加哥大学",
+      "卡塞尔学院",
+      "哥特式",
+      "校园"
+    ],
+    "verified": true,
+    "open_time": 0,
+    "close_time": 48,
+    "hours_note": "全天开放"
+  },
+  {
+    "id": "dr1-fengjie-baidi",
+    "name_zh": "白帝城",
+    "name_local": "白帝城",
+    "city": "重庆奉节",
+    "chapter": "龙族1",
+    "visit_duration": "5小时",
+    "coordinates": {
+      "lat": 31.045962,
+      "lng": 109.565285
+    },
+    "address": "重庆市奉节县白帝城景区",
+    "nearest_station": "奉节高铁站转乘景区巴士约40分钟",
+    "description": "青铜与火之王诺顿的尼伯龙根入口。青铜城沉没于白帝城遗址水下——小说开篇序章中，诺顿在烈焰中回忆白帝城陷落。刘备托孤的历史地标，在学院执行部的水下行动中成为龙族遗迹。",
+    "novel_excerpt": "【龙族1·序幕「白帝城」】序幕以一场梦境展开——白衣主人在火中对话。推门而出，白帝城在烈焰中燃烧，孩子被挂在火刑柱上。\n\n原文：\n他推开了门，炽烈的光照在他的白衣上，不是阳光，而是火光。燎天的烈焰中，城市在哭号，焦黑的人形在火中奔跑，成千上万的箭从天空里坠落，巨大的牌匾燃烧着、翻转着坠落，上面是「白帝」两个字，简直是地狱。\n\n城市的正中央，立着一根高杆，孩子被挂在高杆顶上，闭着眼睛，整个城市的火焰，都在灼烧他。\n\n像是一场盛大的献祭。",
+    "real_photo": "../assets/images/ip/dragon-raja-1/photos/dr1-fengjie-baidi-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 5,
+    "tags": [
+      "白帝城",
+      "青铜城",
+      "诺顿",
+      "奉节"
+    ],
+    "verified": true,
+    "open_time": 17,
+    "close_time": 38,
+    "hours_note": "08:30–19:00"
+  },
+  {
+    "id": "dr1-fengjie-qutang",
+    "name_zh": "瞿塘峡·夔门",
+    "name_local": "瞿塘峡（夔门）",
+    "city": "重庆奉节",
+    "chapter": "龙族1",
+    "visit_duration": "2小时",
+    "coordinates": {
+      "lat": 31.045949,
+      "lng": 109.556171
+    },
+    "address": "重庆市奉节县瞿塘峡景区",
+    "nearest_station": "奉节高铁站转乘景区巴士约40分钟",
+    "description": "长江三峡西端入口。白盐山（白）与赤甲山（红）如巨门壁立，宽不足百米。叶胜与酒德亚纪在此下水，叶胜用言灵·蛇扫描白帝城水下遗址——「夔门计划」的执行地点。",
+    "novel_excerpt": "【龙族1·第四章「青铜城」/ 第九章「龙墓」】卡塞尔学院在三峡水库执行「青铜计划」。这里是两千年前龙王诺顿藏身之地。\n\n原文：\n「我们正从'夔门'上方经过，还没有三峡水库的时候，这里两侧的山如同大门的立柱。」校长轻声说，「中国古人说'夔龙'，是指一种单足的古龙，那么'夔门'是否意味着他们曾经看见龙在这里的江水中游过？'夔门'计划什么时候开始？」",
+    "real_photo": "../assets/images/ip/dragon-raja-1/photos/dr1-fengjie-qutang-real.jpg",
+    "category": "nature",
+    "accessibility": "public",
+    "popularity": 5,
+    "tags": [
+      "夔门",
+      "瞿塘峡",
+      "叶胜",
+      "青铜城",
+      "三峡"
+    ],
+    "verified": true,
+    "open_time": 17,
+    "close_time": 38,
+    "hours_note": "08:30–19:00"
+  },
+  {
+    "id": "dr1-yichang-dam",
+    "name_zh": "三峡大坝",
+    "name_local": "三峡大坝",
+    "city": "湖北宜昌",
+    "chapter": "龙族1",
+    "visit_duration": "4小时",
+    "coordinates": {
+      "lat": 30.825888,
+      "lng": 110.998385
+    },
+    "address": "湖北省宜昌市夷陵区三峡坝区",
+    "nearest_station": "宜昌东站转乘坝区专线巴士约1小时",
+    "description": "世界最大的水利工程。龙德施泰特教授指挥「摩尼亚赫号」拖船在三峡水域执行夔门计划——狂暴的雷雨夜，巨型拖船在峡谷激流中稳如磐石，水下是正在探索青铜城的叶胜与亚纪。",
+    "novel_excerpt": "【龙族1·第五章「龙影」】摩尼亚赫号被龙侍追击至绝境，冲向三峡大坝船闸。曼斯教授引爆龙侍吞下的炸弹，以惨重代价击杀龙侍。\n\n原文：\n黑暗中他们只顾着驾船奔逃，声呐扫描的方向始终对着背后的追踪者，却没有意识到前方连山一样的黑影。\n\n三峡大坝。\n\n他们距离这座耗资数百亿的巨型人工建筑只剩下几公里的距离，巍峨的堤坝矗立在漆黑的水上，像是一个巨人躺下沉睡。\n\n无路可逃了。",
+    "real_photo": "../assets/images/ip/dragon-raja-1/photos/dr1-yichang-dam-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 5,
+    "tags": [
+      "三峡大坝",
+      "摩尼亚赫号",
+      "龙德施泰特",
+      "宜昌"
+    ],
+    "verified": true,
+    "open_time": 16,
+    "close_time": 34,
+    "hours_note": "08:00–17:00"
+  }
+]

@@ -1,0 +1,446 @@
+[
+  {
+    "id": "dr2-chicago-sixflags",
+    "name_zh": "六旗大美洲乐园",
+    "name_local": "Six Flags Great America",
+    "city": "芝加哥",
+    "chapter": "龙族2",
+    "visit_duration": "半天",
+    "coordinates": {
+      "lat": 42.3695,
+      "lng": -87.9346
+    },
+    "address": "1 Great America Pkwy, Gurnee, IL 60031",
+    "nearest_station": "需自驾或打车，距芝加哥市区约45分钟车程",
+    "description": "昂热校长组织的「团建」。「中庭之蛇」过山车上，楚子航被迫爆血。夏弥坐在他旁边的摩天轮上——中庭之蛇，Midgard Serpent，耶梦加得。过山车的名字就是全书最大的剧透。",
+    "novel_excerpt": "【龙族2·第九幕「中庭坠落」】昂热带路明非、楚子航、夏弥去六旗游乐园。过山车轨道被龙王之力摧毁，楚子航三度「爆血」熔化钢骨，夏弥用「风王之瞳」配合救场，四人死里逃生。\n\n原文：\n「说起来我第一次跟人来游乐园诶！」夏弥望着远处。尖叫声中，巨龙般的过山车轰隆隆地盘旋而上，仿佛要摆脱地心引力。\n楚子航一愣。",
+    "real_photo": "../assets/images/ip/dragon-raja-2/photos/dr2-chicago-sixflags-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 5,
+    "tags": [
+      "六旗乐园",
+      "中庭之蛇",
+      "耶梦加得",
+      "夏弥"
+    ],
+    "verified": true,
+    "open_time": 21,
+    "close_time": 40,
+    "hours_note": "10:30–20:00"
+  },
+  {
+    "id": "dr2-chicago-opera",
+    "name_zh": "芝加哥市政歌剧院",
+    "name_local": "Civic Opera House / Lyric Opera of Chicago",
+    "city": "芝加哥",
+    "chapter": "龙族2",
+    "visit_duration": "1小时",
+    "coordinates": {
+      "lat": 41.8827,
+      "lng": -87.6373
+    },
+    "address": "20 N Wacker Dr, Chicago, IL 60606",
+    "nearest_station": "CTA蓝线/红线/棕线 Clark/Lake站步行8分钟",
+    "description": "索斯比定向拍卖会的举办地。环绕的通天立柱、穹顶上的诸神黄昏壁画、猩红色座椅——昂热带着路明非走进这金碧辉煌的歌剧院，路鸣泽在幕后操纵，酒德麻衣举牌，最后路明非以亿元拍下七宗罪。",
+    "novel_excerpt": "【龙族2·第七幕「群龙的盛宴」】昂热带路明非参加混血种秘密拍卖会。路明非在路鸣泽暗中助力下豪掷一亿美元，成功拍下炼金武器「七宗罪」，并在会场首遇酒德麻衣。\n\n原文：\n这一天的市政歌剧院门前，时光好像倒流了60年。\n黑色林肯轿车缓缓停在歌剧院门前，它的老派和气势吸引了侍者的目光，他疾步跑下台阶。车窗缓缓降下，一只年轻、修长、筋节分明的手递出一张暗红色的请柬。\n「Ricardo M. Lu先生！」侍者高声念起这个陌生的名字，好像是迎接一位众所周知的伯爵。",
+    "real_photo": "../assets/images/ip/dragon-raja-2/photos/dr2-chicago-opera-real.jpg",
+    "category": "interior",
+    "accessibility": "limited",
+    "popularity": 5,
+    "tags": [
+      "歌剧院",
+      "苏富比",
+      "七宗罪",
+      "昂热",
+      "拍卖"
+    ],
+    "verified": true,
+    "open_time": 20,
+    "close_time": 34,
+    "hours_note": "10:00–17:00"
+  },
+  {
+    "id": "dr2-beijing-subway",
+    "name_zh": "北京地铁1号线·王府井站",
+    "name_local": "北京地下鉄1号線·王府井駅",
+    "city": "北京",
+    "chapter": "龙族2",
+    "visit_duration": "打卡",
+    "coordinates": {
+      "lat": 39.911897,
+      "lng": 116.404658
+    },
+    "address": "北京市东城区东长安街王府井地铁站",
+    "nearest_station": "地铁1号线王府井站",
+    "description": "尼伯龙根的入口设定在王府井站负一层与负二层之间的夹层。从这里一路向西——沿着1990年代建成的北京地铁最老线路，进入大地与山之王的地下王国。",
+    "novel_excerpt": "【龙族2·第十八幕「迷宫」】地铁一号线是进入大地与山之王尼伯龙根的关键通道。赵孟华追着两名卡塞尔学院专员误入一个与现实重叠的时空，登上一辆早已报废的上世纪1号线列车，被永远困在龙族领域「尼伯龙根」中。楚子航从王府井站潜入一号线深处，进入龙巢与龙王对决。\n\n原文：\n北京地铁一号线是从苹果园到四惠东，很多年前四惠站曾经叫过八王坟站，那时候复兴门到八王坟也叫「复八线」，但很快就改名了，而且那时它也到不了最西面那个隐藏车站「黑石头」。\n车门打开了，里面漆黑一片。\n好在路明非根本不是靠知识混的人，只要有点智慧的人都知道这鬼车不能上啊！\n这车非常死性，好像就是来接路明非的，路明非不上车它就死赖着不走。\n但路明非更死性，打死都不上，等到最后他干脆靠着柱子坐下来，跟它硬耗。",
+    "real_photo": "../assets/images/ip/dragon-raja-2/photos/dr2-beijing-subway-real.jpg",
+    "category": "interior",
+    "accessibility": "public",
+    "popularity": 5,
+    "tags": [
+      "北京地铁",
+      "尼伯龙根",
+      "王府井",
+      "1号线"
+    ],
+    "verified": true,
+    "is_checkin_only": true
+  },
+  {
+    "id": "dr2-beijing-fushouling",
+    "name_zh": "福寿岭站·苹果园站",
+    "name_local": "福寿嶺駅（102号站）",
+    "city": "北京",
+    "chapter": "龙族2",
+    "visit_duration": "打卡",
+    "coordinates": {
+      "lat": 39.914577,
+      "lng": 116.1579
+    },
+    "address": "北京地铁1号线西端，石景山区",
+    "nearest_station": "地铁1号线苹果园站（福寿岭站不可进入，仅远观）",
+    "description": "北京地铁1号线尽头的废弃幽灵站。编号102，1969年建，从未正式运营——四个出口三个被水泥封死。被普遍认为是尼伯龙根的现实原型。2025年北京地铁官方曾在此与《龙族》举办联动活动。",
+    "novel_excerpt": "【龙族2·第十八幕「迷宫」】路明非随赵孟华等人到达尼伯龙根深处的102号隐藏车站福寿岭站，在月台上见到由镰鼬女皇化身的「荷官」，用自己积攒的孤独换取筹码，参与以生命为赌注的德州扑克赌局。\n\n原文：\n月台极其古老，水泥地面，边角贴着绿色的瓷砖，白灰刷的墙壁剥落得很厉害，上面用红色漆着触目惊心的几个大字，「福寿岭站」，旁边还有日期，1977年。月台上只有一盏白炽灯照亮，上面结满蛛网。赵孟华、高幂和万博倩三个人扛着路明非下了车。",
+    "real_photo": "../assets/images/ip/dragon-raja-2/photos/dr2-beijing-fushouling-real.jpg",
+    "category": "interior",
+    "accessibility": "limited",
+    "popularity": 5,
+    "tags": [
+      "福寿岭",
+      "苹果园",
+      "幽灵站",
+      "尼伯龙根"
+    ],
+    "verified": true,
+    "is_checkin_only": true
+  },
+  {
+    "id": "dr2-beijing-liulichang",
+    "name_zh": "琉璃厂文化街",
+    "name_local": "琉璃厂文化街",
+    "city": "北京",
+    "chapter": "龙族2",
+    "visit_duration": "1小时",
+    "coordinates": {
+      "lat": 39.894214,
+      "lng": 116.367377
+    },
+    "address": "北京市西城区南新华街",
+    "nearest_station": "地铁7号线虎坊桥站步行10分钟",
+    "description": "楚子航在这里推开「凤隆堂」的门。店主林凤隆——本名弗里德里希·冯·隆，秘党元老，梅涅克·卡塞尔和昂热早年的战友，化名潜伏在北京琉璃厂数十年的德国考古学家。",
+    "novel_excerpt": "【龙族2·第十六幕「It's a Beautiful Day」】恺撒独自逛琉璃厂古玩街，深入小巷中的「凤隆堂」，找到化身为古玩店老板的前德国混血种林凤隆。他以二十万美元买到记载王恭厂大爆炸的珍贵古籍，获得了追踪「大地与山之王」的关键线索。\n\n原文：\n早晨的阳光照在琉璃厂大街的石板路上，一辆人力三轮跑得欢，两侧都是复古的青砖小楼，每一户门前都挂着「宝翠堂」、「崇文府」这类黑底金字招牌。",
+    "real_photo": "../assets/images/ip/dragon-raja-2/photos/dr2-beijing-liulichang-real.jpg",
+    "category": "street",
+    "accessibility": "public",
+    "popularity": 4,
+    "tags": [
+      "琉璃厂",
+      "凤隆堂",
+      "楚子航",
+      "冯·隆"
+    ],
+    "verified": true,
+    "hours_note": "全天开放",
+    "open_time": 0,
+    "close_time": 48
+  },
+  {
+    "id": "dr2-beijing-summerpalace",
+    "name_zh": "颐和园",
+    "name_local": "頤和園",
+    "city": "北京",
+    "chapter": "龙族2",
+    "visit_duration": "4小时",
+    "coordinates": {
+      "lat": 39.997768,
+      "lng": 116.26945
+    },
+    "address": "北京市海淀区新建宫门路19号",
+    "nearest_station": "地铁4号线西苑站/北宫门站步行15分钟",
+    "description": "恺撒向诺诺求婚的地方。昆明湖、十七孔桥、万寿山佛香阁——诺诺酒后跳入昆明湖游泳，被一路追踪她手机信号的恺撒救起。两人相拥着漂浮在夜色湖水中，恺撒再次求婚，诺诺终于答应。",
+    "novel_excerpt": "【龙族2·第十六幕「It's a Beautiful Day」】诺诺独自在颐和园散心，酒后跳入昆明湖游泳体力不支，被一路追踪她手机信号找来的恺撒救起。两人相拥着漂浮在湖水中，面对夜色里的十七孔桥和万寿山，恺撒再次求婚，诺诺终于答应。\n\n原文：\n该死！瞎玩总会玩出问题啊！她想，可是四肢都不受控制了。\n不会就这样死了吧？作为卡塞尔学院的「A」级，游泳健将，却死于一次游泳溺水。恺撒没准还在北京城里四处找她吧？其实恺撒也真是死脑筋，她只是关机了一会儿就重新开机了，只要恺撒给她打个电话，她就会告诉他自己在颐和园发呆。\n北京城太大了……恺撒怎么找得到自己？",
+    "real_photo": "../assets/images/ip/dragon-raja-2/photos/dr2-beijing-summerpalace-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 5,
+    "tags": [
+      "颐和园",
+      "昆明湖",
+      "恺撒",
+      "诺诺",
+      "求婚"
+    ],
+    "verified": true,
+    "open_time": 16,
+    "close_time": 36,
+    "hours_note": "08:00–18:00"
+  },
+  {
+    "id": "dr2-beijing-xidan",
+    "name_zh": "西单婚庆大楼",
+    "name_local": "西単婚慶大楼",
+    "city": "北京",
+    "chapter": "龙族2",
+    "visit_duration": "打卡",
+    "coordinates": {
+      "lat": 39.908619,
+      "lng": 116.362782
+    },
+    "address": "北京市西城区西单北大街",
+    "nearest_station": "地铁1号线/4号线西单站",
+    "description": "恺撒遭遇镰鼬围攻的地方。他咆哮着命令Mint俱乐部在15分钟内买下整栋大楼，清空所有人员。帕西赶到，狄克推多与奥古斯都——两把双子猎刀碰撞出炼金领域，斩杀镰鼬女皇。",
+    "novel_excerpt": "【龙族2·第十九幕「耶梦加得」/ 第二十幕「凡王之血必以剑终」】恺撒开着敞篷小车载着身穿红色喜服的诺诺穿行在西单北大街，后座堆满玫瑰花束。两人前往婚庆大厦订制中式凤冠霞帔。龙王苏醒后，镰鼬群涌入现实，大厦成为战场——恺撒、帕西与皇帝组并肩作战，封锁大厦抵御镰鼬。\n\n原文：\n恺撒开着敞篷小车在车流如织的西单北大街上钻来钻去，就像是在野牛肚子下面奔跑的野兔。来来往往的大车都被他出其不意地截断，但没人冲他按喇叭。\n因为被他超车的人心情都不错。\n\n皇帝组接管了婚庆大厦。混血种在中国的机构表现出了极高的效率，建筑工人迅速赶到，每个出口都用高强度钢板封死焊牢。",
+    "real_photo": "../assets/images/ip/dragon-raja-2/photos/dr2-beijing-xidan-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 5,
+    "tags": [
+      "西单",
+      "婚庆大楼",
+      "恺撒",
+      "镰鼬",
+      "帕西"
+    ],
+    "verified": true,
+    "is_checkin_only": true
+  },
+  {
+    "id": "dr2-beijing-regency",
+    "name_zh": "北京丽晶酒店",
+    "name_local": "Regent Beijing",
+    "city": "北京",
+    "chapter": "龙族2",
+    "visit_duration": "打卡",
+    "coordinates": {
+      "lat": 39.915597,
+      "lng": 116.405258
+    },
+    "address": "北京市东城区金宝街99号",
+    "nearest_station": "地铁5号线灯市口站步行5分钟",
+    "description": "三人组在北京的落脚点。路明非、楚子航和芬格尔在此策划进入地铁尼伯龙根的行动——约800元一晚，窗外是长安街的灯火。",
+    "novel_excerpt": "【龙族2·第五幕「蒲公英」】丽晶酒店是路明非、楚子航和芬格尔在北京执行屠龙任务期间的临时住所。楚子航在此日夜不停地做地动数据建模来追踪龙王位置，芬格尔负责后勤，路明非则长期泡在网吧打游戏逃避现实。\n\n原文：\n他们住在丽晶酒店，距离这里其实只有地铁一站路。\n他一直跑到地铁隧道里才停下了，因为他看不清前面的路了，青色的雾气正潮水般向他涌来，往前往后都看不见人。\n他缓慢而用力地打了个寒噤，好像被魔鬼的手掐住了喉咙。",
+    "real_photo": "../assets/images/ip/dragon-raja-2/photos/dr2-beijing-regency-real.jpg",
+    "category": "interior",
+    "accessibility": "public",
+    "popularity": 3,
+    "tags": [
+      "丽晶酒店",
+      "北京",
+      "三人组"
+    ],
+    "verified": true,
+    "is_checkin_only": true
+  },
+  {
+    "id": "dr2-beijing-oriental",
+    "name_zh": "北京东方广场",
+    "name_local": "東方広場",
+    "city": "北京",
+    "chapter": "龙族2",
+    "visit_duration": "1小时",
+    "coordinates": {
+      "lat": 39.912598,
+      "lng": 116.406759
+    },
+    "address": "北京市东城区东长安街1号",
+    "nearest_station": "地铁1号线王府井站步行5分钟",
+    "description": "王府井地铁站上方的商业综合体。三人组北京行动期间的日常活动区域——在东长安街沿线的核心位置，距尼伯龙根入口仅一步之遥。",
+    "novel_excerpt": "【龙族2·第十八幕「迷宫」】楚子航根据地动数据追踪到东方广场地下，深夜独自潜入空无一人的商场，这里是通向地铁王府井站——尼伯龙根入口的必经之路。\n\n原文：\n此刻外面狂风暴雨，一泼泼的雨水打在玻璃上，北京难得有那么大的雨。\n深夜零点四十五分，楚子航无声地潜行在东方广场地下一层商场里。这栋巨大的地标式建筑毗邻长安街，云集着豪奢品牌和一家君悦酒店，地下直通地铁王府井站。\n远处有脚步声缓缓逼近。",
+    "real_photo": "../assets/images/ip/dragon-raja-2/photos/dr2-beijing-oriental-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 3,
+    "tags": [
+      "东方广场",
+      "王府井",
+      "长安街"
+    ],
+    "verified": true,
+    "open_time": 20,
+    "close_time": 45,
+    "hours_note": "10:00–22:30"
+  },
+  {
+    "id": "dr2-beijing-cathedral",
+    "name_zh": "天主教南堂",
+    "name_local": "宣武門天主堂（南堂）",
+    "city": "北京",
+    "chapter": "龙族2",
+    "visit_duration": "半小时",
+    "coordinates": {
+      "lat": 39.897622,
+      "lng": 116.360786
+    },
+    "address": "北京市西城区前门西大街141号",
+    "nearest_station": "地铁2号线/4号线宣武门站步行3分钟",
+    "description": "北京最古老的天主教堂。赵孟华在故事结尾处来到南堂受洗入教——龙族2全书的收尾场景。经历了北京地铁尼伯龙根事件后，这位曾经不可一世的学生会长选择了受洗。",
+    "novel_excerpt": "【龙族2·尾声「每个人的心里都有个死小孩」】决战之后，路明非和芬格尔在圣诞夜来到北京天主教南堂，偶遇参加教会活动的赵孟华和陈雯雯。被学院心理干预后的赵孟华已成为虔诚教徒，在教堂发言分享「被主拯救」的见证，并与陈雯雯复合。路明非远远地祝福了他们。\n\n原文：\n前门西大街141号，北京天主教南堂。这座砖灰色的建筑号称「中国历史最悠久的天主堂」，是明朝万历年间那个鼎鼎有名的传教士利玛窦建立的，又称「圣母无染原罪堂」。\n拼花彩色玻璃窗下，白裙的唱诗班女孩们站在夕照里，在管风琴伴奏下歌唱主的慈爱。",
+    "real_photo": "../assets/images/ip/dragon-raja-2/photos/dr2-beijing-cathedral-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 3,
+    "tags": [
+      "南堂",
+      "天主教",
+      "赵孟华",
+      "入教"
+    ],
+    "verified": true,
+    "open_time": 16,
+    "close_time": 34,
+    "hours_note": "上午8-11/下午14-17"
+  },
+  {
+    "id": "dr2-beijing-guangcai",
+    "name_zh": "光彩胡同·王恭厂",
+    "name_local": "光彩胡同（王恭廠旧址）",
+    "city": "北京",
+    "chapter": "龙族2",
+    "visit_duration": "半小时",
+    "coordinates": {
+      "lat": 39.90163,
+      "lng": 116.354796
+    },
+    "address": "北京市西城区光彩胡同",
+    "nearest_station": "地铁2号线长椿街站步行8分钟",
+    "description": "明代火药厂王恭厂旧址。楚子航在北京调查过程中发现的线索——历史上天启大爆炸的发生地，小说中作为龙族相关事件的线索出现在北京调查路线中。",
+    "novel_excerpt": "【龙族2·第十六幕「It's a Beautiful Day」】林凤隆在凤隆堂内向恺撒透露，民族宫附近的光彩胡同在明朝时叫「王恭厂」——1626年发生神秘大爆炸的地方，威力堪比核爆，被推测是某位龙王苏醒所致。\n\n原文：\n老板慢悠悠地品茶：「距离这里不远，民族宫那边，有一条光彩胡同。明朝的时候，它是制造火器炸药的地方，那时候它有另外一个名字……」他忽然停下了，抬眼看着恺撒，眼睛里微光一闪，「王恭厂。」",
+    "real_photo": "../assets/images/ip/dragon-raja-2/photos/dr2-beijing-guangcai-real.jpg",
+    "category": "street",
+    "accessibility": "public",
+    "popularity": 2,
+    "tags": [
+      "光彩胡同",
+      "王恭厂",
+      "天启大爆炸",
+      "楚子航"
+    ],
+    "verified": true,
+    "open_time": 0,
+    "close_time": 48,
+    "hours_note": "全天开放"
+  },
+  {
+    "id": "dr2-beijing-changan",
+    "name_zh": "长安街",
+    "name_local": "長安街",
+    "city": "北京",
+    "chapter": "龙族2",
+    "visit_duration": "2小时",
+    "coordinates": {
+      "lat": 39.907297,
+      "lng": 116.391256
+    },
+    "address": "北京市东城区/西城区长安街沿线",
+    "nearest_station": "地铁1号线沿线各站",
+    "description": "北京的中轴主干道。恺撒开着Mini Cooper穿过秋日长安街的落叶寻找诺诺——「在这个漂亮的秋天开车跑在路上，让人觉得只要去找，最后总能找到。」",
+    "novel_excerpt": "【龙族2·第十六幕「It's a Beautiful Day」】恺撒开着Mini Cooper穿越长安街，透过一张明朝老地图想象着北京城几百年前的模样。他决定在这个秋高气爽的日子里找到诺诺。\n\n原文：\n恺撒的中二病症状非常严重，因此他相信诺诺必然穿着婚纱和他踏上红毯，礼服中要包括一套中式嫁衣，他干脆直接买下了。\n他打开那张牛皮纸的明北京地图，发现自己正穿越长安街去往西便门。",
+    "real_photo": "../assets/images/ip/dragon-raja-2/photos/dr2-beijing-changan-real.jpg",
+    "category": "street",
+    "accessibility": "public",
+    "popularity": 3,
+    "tags": [
+      "长安街",
+      "北京",
+      "恺撒",
+      "诺诺"
+    ],
+    "verified": true,
+    "hours_note": "全天开放",
+    "open_time": 0,
+    "close_time": 48
+  },
+  {
+    "id": "dr2-hailuogou",
+    "name_zh": "海螺沟冰川温泉",
+    "name_local": "海螺溝冰川温泉",
+    "city": "四川甘孜",
+    "chapter": "龙族2",
+    "visit_duration": "4小时",
+    "coordinates": {
+      "lat": 29.569604,
+      "lng": 101.948524
+    },
+    "address": "四川省甘孜藏族自治州泸定县磨西镇海螺沟景区",
+    "nearest_station": "成都新南门车站乘大巴至磨西镇约5小时",
+    "description": "诺诺和苏茜泡温泉的冰川度假村。夜空深蓝，冰川莹亮，诺诺挥舞刮毛刀模仿玛丽莲·梦露——然后收到了恺撒的求婚短信。「哇噻，求婚短信唉！我的脸要烧起来了！」苏茜捂着脸。最后下雪了。",
+    "novel_excerpt": "【龙族2·第五幕「蒲公英」】诺诺与闺蜜苏茜在四川海螺沟冰川温泉度假，泡温泉时收到恺撒从意大利发来的长篇求婚短信。苏茜在一旁围观起哄，两人在温泉中笑闹。但诺诺在呛水入梦的瞬间，脑海中闪过的却是三峡水底路明非的脸。\n\n原文：\n夜空是深邃的蓝，而它下面的冰川是黑色的。快到午夜了，月亮刚从冰川上升起，把几万年积下的坚冰照成莹蓝色。狼嚎声不知来自哪个方向，沉睡的鸟群被惊动了，「扑棱棱」地从漆黑的树林里飞起。海螺沟的温泉度假村就在冰川下的山坳里。\n\n诺诺和苏茜泡在方方正正的温泉池中，灯光下这里的温泉水是柔软的婴儿蓝，一丝丝白汽从水面上升起。",
+    "real_photo": "../assets/images/ip/dragon-raja-2/photos/dr2-hailuogou-real.jpg",
+    "category": "nature",
+    "accessibility": "public",
+    "popularity": 5,
+    "tags": [
+      "海螺沟",
+      "温泉",
+      "诺诺",
+      "苏茜",
+      "求婚短信"
+    ],
+    "verified": true,
+    "open_time": 16,
+    "close_time": 29,
+    "hours_note": "08:00–14:30"
+  },
+  {
+    "id": "dr2-london-westminster",
+    "name_zh": "威斯敏斯特教堂",
+    "name_local": "Westminster Abbey",
+    "city": "伦敦",
+    "chapter": "龙族2",
+    "visit_duration": "1小时",
+    "coordinates": {
+      "lat": 51.4994,
+      "lng": -0.1273
+    },
+    "address": "20 Deans Yd, London SW1P 3PA, UK",
+    "nearest_station": "Westminster站步行2分钟",
+    "description": "恺撒母亲古尔薇格的葬礼在此举行，由教皇亲自主持。但对加图索家族而言，这只是虚伪的补偿——母亲死时已看不见也听不见，和她唯一的联系只是恺撒手心里传过去的温度。",
+    "novel_excerpt": "【龙族2·第四幕「炎魔刀舞」】弗罗斯特劝说恺撒接受「尼伯龙根计划」，提及家族为古尔薇格在威斯敏斯特大教堂举行了教皇主持的葬礼。恺撒嗤之以鼻——加图索家族不信教，所谓哀荣只是虚伪的表演。\n\n原文：\n「恺撒，相信家族。你母亲的死和家族无关，她的葬礼安排在威斯敏斯特大教堂，教皇亲自主持，整个家族都出席了，她的灵魂已经安息了。」\n「别逗了，我们是世系龙血的家族，我们不信教，教皇主持的葬礼能算作补偿？」",
+    "real_photo": "../assets/images/ui/placeholder-photo.svg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 4,
+    "tags": [
+      "威斯敏斯特",
+      "葬礼",
+      "恺撒",
+      "伦敦"
+    ],
+    "verified": true,
+    "hours_note": "09:30–14:00",
+    "open_time": 19,
+    "close_time": 28
+  },
+  {
+    "id": "dr2-portofino",
+    "name_zh": "波托菲诺",
+    "name_local": "Portofino",
+    "city": "热那亚",
+    "chapter": "龙族2",
+    "visit_duration": "半天",
+    "coordinates": {
+      "lat": 44.3037,
+      "lng": 9.2099
+    },
+    "address": "Portofino, Genova, Italia",
+    "nearest_station": "Santa Margherita Ligure站转乘巴士15分钟",
+    "description": "意大利热那亚湾的度假小镇。恺撒在Splendid山顶酒店的暑假——阳光大海、海鸥云集，与S级衰人路明非的生活截然两样。校董会年度会议在此召开，弗罗斯特提出「尼伯龙根计划」。",
+    "novel_excerpt": "【龙族2·第四幕「炎魔刀舞」】恺撒在意大利波托菲诺小镇度假，校董会年度会议在山顶酒店召开。弗罗斯特提出「尼伯龙根计划」欲将恺撒捧上王座，恺撒因母亲之死和家族的虚伪断然拒绝。\n\n原文：\n隔了七个时区，意大利，小镇波托菲诺。\n早晨7:00整，群山围绕的热那亚湾，海面上洒满阳光，海鸥云集低翔……这就是他的暑假生活，和「S」级衰人路明非的生活截然两样：在波托菲诺过最热的几周，住在Splendid山顶酒店常年租的套房里。",
+    "real_photo": "../assets/images/ui/placeholder-photo.svg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 4,
+    "tags": [
+      "波托菲诺",
+      "意大利",
+      "恺撒",
+      "度假"
+    ],
+    "verified": true,
+    "hours_note": "全天开放",
+    "open_time": 0,
+    "close_time": 48
+  }
+]

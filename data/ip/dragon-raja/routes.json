@@ -1,0 +1,126 @@
+[
+  {
+    "id": "dr-route-tokyo-romance",
+    "ip_id": "dragon-raja",
+    "name_zh": "东京爱情故事一日（10小时）",
+    "description": "追寻绘梨衣日记的脚步。从天际线到晚餐桌，这是路明非给绘梨衣的七天，浓缩在一日之内。建议按顺序走，惠比寿晚餐需提前预约。",
+    "location_ids": [
+      "dr-tokyo-skytree",
+      "dr-tokyo-sensoji",
+      "dr-tokyo-akihabara",
+      "dr-tokyo-meiji",
+      "dr-tokyo-robuchon"
+    ],
+    "estimated_duration": "约10小时",
+    "estimated_distance": "约35km",
+    "transportation": "地铁 + 步行",
+    "difficulty": "easy",
+    "daily_hours": 10,
+    "days": 1,
+    "created_by": "system",
+    "schedule": [
+      "09:00-11:00 东京天空树（绘梨衣日记04.24，建议早上登塔人少）",
+      "11:30-13:00 浅草寺（雷门、仲见世通、收集明信片）",
+      "13:30-15:30 秋叶原（楚子航买相机的地方，顺便午饭）",
+      "16:00-17:30 明治神宫（绘梨衣日记04.26，运气好能看到婚礼）",
+      "19:00-21:00 惠比寿Joel Robuchon（需提前预约，米其林三星晚餐）"
+    ]
+  },
+  {
+    "id": "dr-route-tokyo-dark",
+    "ip_id": "dragon-raja",
+    "name_zh": "东京·王与龙二日（2×10小时）",
+    "description": "覆盖龙族III东京所有战斗场景。第一天都市暗战，第二天工业史诗。首都圈外郭放水路需提前预约。海萤人工岛建议自驾。",
+    "location_ids": [
+      "dr-tokyo-kabukicho",
+      "dr-tokyo-tower",
+      "dr-tokyo-drainage",
+      "dr-tokyo-umihotaru"
+    ],
+    "estimated_duration": "约20小时（2天）",
+    "estimated_distance": "约120km",
+    "transportation": "地铁 + 自驾（第二天）",
+    "difficulty": "medium",
+    "daily_hours": 20,
+    "days": 2,
+    "created_by": "system",
+    "schedule": [
+      "=== 第一天：都市暗战 ===",
+      "15:00-17:00 自由时间/移动",
+      "18:00-20:00 东京塔（「无天无地之所」夜景，芝公园拍摄点）",
+      "=== 第二天：工业史诗 ===",
+      "09:00-12:00 首都圈外郭放水路（埼玉，含往返和参观时间，需预约）",
+      "14:00-17:00 海萤人工岛（东京湾跨海公路，上杉越终战地，建议黄昏到达看夕阳入海）"
+    ]
+  },
+  {
+    "id": "dr-route-matsuyama",
+    "ip_id": "dragon-raja",
+    "name_zh": "松山·别离之旅（3天2晚）",
+    "description": "《龙族III》最核心的情感终点。从东京飞松山约1.5小时。建议在梅津寺町停留到黄昏——那是路明非和绘梨衣看过的最美日落。松山住宿推荐道后温泉附近。",
+    "location_ids": [
+      "dr-matsuyama-beach",
+      "dr-matsuyama-umezushi"
+    ],
+    "estimated_duration": "约18小时（3天）",
+    "estimated_distance": "约10km（松山市内）",
+    "transportation": "东京→松山飞机 + 伊予铁道 + 步行",
+    "difficulty": "easy",
+    "daily_hours": 18,
+    "days": 3,
+    "created_by": "system",
+    "schedule": [
+      "=== 第一天：抵达松山 ===",
+      "上午 东京羽田→松山机场（飞行约1.5小时）",
+      "下午 松山市内移动，入住",
+      "=== 第二天：梅津寺町 ===",
+      "上午 自由时间（可逛松山城）",
+      "14:00-15:30 梅津寺海边（建议下午到达，碎石滩逗小虾小蟹）",
+      "15:30-17:30 梅津寺火车站（重点：黄昏时分，夕阳入海。站在月台上感受「迎着阳光盛大逃亡」的最后时刻。《东爱》站牌系手帕）",
+      "晚上 梅津寺町散步，返回松山市区",
+      "=== 第三天：返程 ===",
+      "上午 松山→东京（飞行约1.5小时）"
+    ]
+  },
+  {
+    "id": "dr-route-tokyo-extended",
+    "ip_id": "dragon-raja",
+    "name_zh": "东京·全场景七日（7天）",
+    "description": "覆盖龙族III东京全部取景地——从成田机场降落到新宿的夜色、银座的试衣间、涩谷的十字路口，再到东大的银杏道。这是路明非、恺撒、楚子航和绘梨衣在东京留下的所有足迹。",
+    "location_ids": [
+      "dr-tokyo-narita",
+      "dr-tokyo-ginza",
+      "dr-tokyo-shibuya",
+      "dr-tokyo-utokyo",
+      "dr-tokyo-skytree",
+      "dr-tokyo-sensoji",
+      "dr-tokyo-akihabara",
+      "dr-tokyo-meiji",
+      "dr-tokyo-robuchon",
+      "dr-tokyo-disney",
+      "dr-tokyo-tower",
+      "dr-tokyo-kabukicho",
+      "dr-tokyo-drainage",
+      "dr-tokyo-umihotaru",
+      "dr-tokyo-port"
+    ],
+    "estimated_duration": "约56小时（7天）",
+    "estimated_distance": "约200km",
+    "transportation": "地铁 + 步行 + 自驾（海萤）",
+    "difficulty": "medium",
+    "daily_hours": 56,
+    "days": 7,
+    "created_by": "system",
+    "schedule": [
+      "=== Day 2：绘梨衣日记·天空树+浅草 ===",
+      "东京天空树（04.24，世界上最暖和的地方）→ 浅草寺（雷门+仲见世通+明信片）→ 秋叶原（楚子航买相机）",
+      "=== Day 3：绘梨衣日记·明治神宫+代代木 ===",
+      "=== Day 4：绘梨衣日记·迪士尼+涩谷 ===",
+      "东京迪士尼（04.25，鬼屋很可怕但有Sakura在）→ 涩谷（晚上十字路口）",
+      "=== Day 5：惠比寿+东京塔 ===",
+      "东京大学→ 惠比寿Joel Robuchon（晚餐，需预约）→ 东京塔（夜，「无天无地之所」）",
+      "=== Day 6：地下+海上 ===",
+      "=== Day 7：东京港+返程 ==="
+    ]
+  }
+]

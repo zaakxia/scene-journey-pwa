@@ -1,0 +1,541 @@
+[
+  {
+    "id": "dr-tokyo-skytree",
+    "name_zh": "东京天空树",
+    "name_local": "東京スカイツリー",
+    "city": "东京",
+    "chapter": "龙族3 下",
+    "visit_duration": "2小时",
+    "coordinates": {
+      "lat": 35.7101,
+      "lng": 139.8107
+    },
+    "address": "东京都墨田区押上1-1-2",
+    "nearest_station": "东京天空树站 / 押上站",
+    "description": "634米的电波塔。绘梨衣在日记本上歪歪扭扭写下那句话——这是她有限生命中，为数不多被当作「普通人」对待的日子。",
+    "novel_excerpt": "【龙族3 下·第二章「东京爱情故事」】暴风雨之夜天空树骤然亮起，路明非决定带绘梨衣出门游览东京。\n\n原文：\n东京天空树亮了起来，就像被那道闪电点燃了。平日夜里东京天空树会亮起各色灯光，但在暴风雨之夜为了减少雷击的风险它通常都是关灯的。今夜这么大的暴风雨，东京天空树本来是漆黑的，可此刻这座电波塔自上而下亮起了粉紫色的灯光。头顶是黑云压城城欲摧，地下是灯火通明的巨大城市，灯火通明的大厦像是一个个巨大的灯笼摆放在大地上。在无数灯笼中间，粉紫色的塔拔地而起，插入漆黑的云间。",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-tokyo-skytree-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 5,
+    "tags": [
+      "天空树",
+      "绘梨衣",
+      "04.24",
+      "七日旅行"
+    ],
+    "verified": true,
+    "open_time": 20,
+    "close_time": 42,
+    "hours_note": "10:00–21:00"
+  },
+  {
+    "id": "dr-tokyo-disney",
+    "name_zh": "东京迪士尼乐园",
+    "name_local": "東京ディズニーランド",
+    "city": "东京",
+    "chapter": "龙族3 下",
+    "visit_duration": "1天",
+    "coordinates": {
+      "lat": 35.6329,
+      "lng": 139.8804
+    },
+    "address": "千叶县浦安市舞滨1-1",
+    "nearest_station": "舞滨站步行5分钟",
+    "description": "绘梨衣第一次去游乐园。一个被囚禁在深宅中长大的女孩，在米老鼠和过山车之间，短暂地做回了孩子。",
+    "novel_excerpt": "【龙族3 下·第三章「古事记」】酒德麻衣与苏恩曦派出幕后团队，为路明非与绘梨衣策划「东京爱情故事」真人秀，将迪士尼设为三号目标。\n\n原文：\n「Roger，把迪士尼乐园定为三号目标，以折扣券的方式引导他们前往迪士尼乐园，通知迪士尼乐园的导播车，我们需要迪士尼乐园开启贵宾通道。」",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-tokyo-disney-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 5,
+    "tags": [
+      "迪士尼",
+      "绘梨衣",
+      "04.25",
+      "七日旅行"
+    ],
+    "verified": true,
+    "open_time": 18,
+    "close_time": 42,
+    "hours_note": "09:00–21:00"
+  },
+  {
+    "id": "dr-tokyo-meiji",
+    "name_zh": "明治神宫",
+    "name_local": "明治神宮",
+    "city": "东京",
+    "chapter": "龙族3 下",
+    "visit_duration": "2小时",
+    "coordinates": {
+      "lat": 35.6764,
+      "lng": 139.6993
+    },
+    "address": "东京都涩谷区代代木神园町1-1",
+    "nearest_station": "原宿站步行1分钟",
+    "description": "绘梨衣穿上了巫女服——不是作为上杉家主，而是作为一个看别人结婚会眼睛发亮的普通女孩。",
+    "novel_excerpt": "【龙族3 下·第二章「东京爱情故事」】酒德麻衣与苏恩曦计划在第七天为路明非和绘梨衣在明治神宫举办盛大婚礼。\n\n原文：\n「包下整座明治神宫，宫内厅那边没问题吧？」酒德麻衣问。\n「本事务所和宫内厅的关系一直融洽。我保证那是一场世纪婚礼，全世界的新人都会羡慕他们！」\n「很好！还有什么问题么？在节目启动之前，诸位还有最后的提问时间。」\n「请问这档节目播出时的名字。」漂亮的女模特三间唯说。\n「Tokyo Love Story，东京爱情故事，」酒德麻衣缓缓地说，「这个世界上最完美的，东京爱情故事！」",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-tokyo-meiji-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 5,
+    "tags": [
+      "明治神宫",
+      "婚礼",
+      "04.26",
+      "七日旅行"
+    ],
+    "verified": true,
+    "open_time": 12,
+    "close_time": 36,
+    "hours_note": "06:00–18:00"
+  },
+  {
+    "id": "dr-tokyo-sensoji",
+    "name_zh": "浅草寺",
+    "name_local": "浅草寺",
+    "city": "东京",
+    "chapter": "龙族3 下",
+    "visit_duration": "1小时",
+    "coordinates": {
+      "lat": 35.7148,
+      "lng": 139.7967
+    },
+    "address": "东京都台东区浅草2-3-1",
+    "nearest_station": "浅草站步行3分钟",
+    "description": "绘梨衣在这里收集明信片，穿过雷门的大灯笼，在仲见世通的人潮中吃着人形烧——「像个普通人一样逛街」的奢侈。",
+    "novel_excerpt": "【龙族3 下·第八章「家庭晚宴」】路明非发现带绘梨衣同游东京期间总有人暗中撮合他们——连浅草寺的街头画家都是安排好的。\n\n原文：\n他带绘梨衣去逛浅草寺，经过路边画摊的时候画家虎跳过来把他们俩拦住，目光灼灼地说我能为你们俩画张画么？你们俩走在一起简直是道风景！我有幸遇到两位就像梵高有幸遇到那朵令他名垂千古的向日葵，我很想为两位画张画，你们能答应我这小小的请求么？路明非心说你这套把戏老子他妈的见得多了，我们中国的街头艺术家也这么揽生意的，不过看在这兄弟满脸诚恳的份上，加上他兜里又有钱，他也不介意帮衬一下对方的生意。",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-tokyo-sensoji-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 5,
+    "tags": [
+      "浅草寺",
+      "明信片",
+      "雷门",
+      "七日旅行"
+    ],
+    "verified": true,
+    "open_time": 12,
+    "close_time": 34,
+    "hours_note": "06:00–17:00"
+  },
+  {
+    "id": "dr-tokyo-robuchon",
+    "name_zh": "惠比寿 Chateau Joel Robuchon",
+    "name_local": "シャトー ジョエル・ロブション",
+    "city": "东京",
+    "chapter": "龙族3 下",
+    "visit_duration": "3小时",
+    "coordinates": {
+      "lat": 35.644,
+      "lng": 139.714
+    },
+    "address": "东京都目黑区三田1-13-1 惠比寿Garden Place",
+    "nearest_station": "惠比寿站步行5分钟",
+    "description": "路明非把在卡塞尔学院攒的钱全砸在了这顿饭上。这不是约会——是一个男孩对一个女孩最笨拙也最真诚的补偿。",
+    "novel_excerpt": "【龙族3 下·第八章「家庭晚宴」】路明非带绘梨衣在惠比寿用餐，行踪暴露后被黑帮围堵，酒德麻衣监控全局调度撤离。\n\n原文：\n酒德麻衣居高临下，餐馆附近的路口都在她的监控之中。Chateau Joel Robuchon位于惠比寿花园的南侧，这是一个人流密集的商业区，以惠比寿花园为中心，交通警察在四方的路口设置了路障，将来往的车流强行切断。",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-tokyo-robuchon-real.jpg",
+    "category": "interior",
+    "accessibility": "limited",
+    "popularity": 5,
+    "tags": [
+      "惠比寿",
+      "米其林",
+      "晚餐",
+      "七日旅行"
+    ],
+    "verified": true,
+    "open_time": 23,
+    "close_time": 44,
+    "hours_note": "午餐11:30-15:00/晚餐17:30-22:00"
+  },
+  {
+    "id": "dr-tokyo-tower",
+    "name_zh": "东京塔",
+    "name_local": "東京タワー",
+    "city": "东京",
+    "chapter": "龙族3 下",
+    "visit_duration": "2小时",
+    "coordinates": {
+      "lat": 35.6586,
+      "lng": 139.7454
+    },
+    "address": "东京都港区芝公园4-2-8",
+    "nearest_station": "赤羽桥站步行5分钟",
+    "description": "「无天无地之所，刺杀王驾之夜」——雨夜的东京塔下，源稚生与死侍的血战。这是王的陨落，也是樱花坠落的夜晚。",
+    "novel_excerpt": "【龙族3 下·第十四章「樱之坠」】矢吹樱割开手腕以皇血将死侍引向塔顶，最终力竭坠塔，以生命兑现了对源稚生的守护。\n\n原文：\n樱忽然笑了，就像是她发现芬格尔的时候露出的那种笑容，她转向路明非的方向，双手按着膝盖深鞠躬，用唇形说：「ありがとうございます。」\n\n这是她在这个世界上的最后一句话，用敬语说的谢谢。\n\n她飞身一跃。皇血的气味早已刺激得死侍们要发疯，此刻看着这个活生生的血食从面前坠落，好些死侍竟然不由自主地跃出塔顶，在空中张大了嘴要去咬她。一条条黑色的蛇影追逐着长发飞舞的女孩，从330米高的巨塔上坠落，像是群蛇被花的美丽吸引了，不惜追着她去地狱。以东京塔的高度，八九秒钟才能落地，死侍多半也没法幸存。",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-tokyo-tower-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 5,
+    "tags": [
+      "东京塔",
+      "源稚生",
+      "樱之坠",
+      "决战"
+    ],
+    "verified": true,
+    "open_time": 18,
+    "close_time": 46,
+    "hours_note": "09:00–23:00"
+  },
+  {
+    "id": "dr-tokyo-umihotaru",
+    "name_zh": "海萤人工岛",
+    "name_local": "海ほたる",
+    "city": "东京",
+    "chapter": "龙族3 下",
+    "visit_duration": "1小时",
+    "coordinates": {
+      "lat": 35.4635,
+      "lng": 139.87564
+    },
+    "address": "千叶县木更津市中岛地先 东京湾跨海公路",
+    "nearest_station": "需驾车经东京湾跨海公路（Aqua-Line）",
+    "description": "上杉越燃尽生命的地方。江南坐飞机降落时看到海面上发光的人工岛，产生了「在故事里炸掉它」的冲动。",
+    "novel_excerpt": "【龙族3 下·第十九章「达摩克利斯之剑」】昂热以自身血液为诱饵将尸守潮引向海萤人工岛，这是东京湾的最后据点。\n\n原文：\n海萤人工岛是一座人造浮岛，用于连接东京湾跨海高速公路，它的东面是跨海大桥，西面是十公里长的海底隧道。这是东京湾的最后据点，一旦尸守潮越过人工岛，前方再也没有能阻挡它们的东西。",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-tokyo-umihotaru-real.jpg",
+    "category": "landmark",
+    "accessibility": "limited",
+    "popularity": 5,
+    "tags": [
+      "海萤",
+      "上杉越",
+      "决战",
+      "东京湾"
+    ],
+    "verified": true,
+    "open_time": 0,
+    "close_time": 48,
+    "hours_note": "全天开放"
+  },
+  {
+    "id": "dr-tokyo-drainage",
+    "name_zh": "首都圈外郭放水路",
+    "name_local": "首都圏外郭放水路",
+    "city": "东京",
+    "chapter": "龙族3 中",
+    "visit_duration": "1小时",
+    "coordinates": {
+      "lat": 35.9973,
+      "lng": 139.8117
+    },
+    "address": "埼玉县春日部市上金崎720",
+    "nearest_station": "南樱井站转乘公交15分钟",
+    "description": "「铁穹神殿」与「藏骸之井」的原型。59根混凝土巨柱撑起地下神殿般的空间，恺撒三人组在此穿行。",
+    "novel_excerpt": "【龙族3 中·第八章「进击的老鼠队」】三人组从高天原地下潜入铁穹神殿，再摸进源氏重工。宫本志雄解释地下排水系统。\n\n原文：\n「这是东京地下的排水系统。」宫本志雄解释，「东京经常被飓风袭击，飓风中降雨量极大，而且周围山地的雨水也会往这里汇集。因此东京都政府在地下修建了大型的排水系统，包括这样的管道和巨型的地下储水池和巨型的涡轮机，在暴雨中这套系统能把一个湖泊的积水储存在地下，再通过涡轮机和管道排向大海。因为整个地下空间都是用防腐蚀的特种钢材建造的，我们称它为'铁穹神殿'。」",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-tokyo-drainage-real.jpg",
+    "category": "interior",
+    "accessibility": "limited",
+    "popularity": 4,
+    "tags": [
+      "地下神殿",
+      "铁穹神殿",
+      "藏骸之井",
+      "预约制"
+    ],
+    "verified": true,
+    "open_time": 21,
+    "close_time": 32,
+    "hours_note": "10:30–16:00"
+  },
+  {
+    "id": "dr-tokyo-kabukicho",
+    "name_zh": "新宿歌舞伎町",
+    "name_local": "歌舞伎町",
+    "city": "东京",
+    "chapter": "龙族3 中",
+    "visit_duration": "2小时",
+    "coordinates": {
+      "lat": 35.6938,
+      "lng": 139.7036
+    },
+    "address": "东京都新宿区歌舞伎町",
+    "nearest_station": "新宿站东口步行5分钟",
+    "description": "恺撒、楚子航、路明非流落于此，在牛郎俱乐部「高天原」开始了荒诞的潜伏生涯。三人加起来能毁掉一座城市，却在牛郎店里被女客人调戏。",
+    "novel_excerpt": "【龙族3 中·第六章「男人的花道」】为躲避黑道追杀，恺撒三人组藏身高天原夜总会化名当起了牛郎。\n\n原文：\n这时座头鲸倒羞涩起来：「倒不是自夸当年勇，二十年前在歌舞伎町里我可是最红的，想见我的女人要提前一个月排队预约呢。」",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-tokyo-kabukicho-real.jpg",
+    "category": "street",
+    "accessibility": "public",
+    "popularity": 4,
+    "tags": [
+      "歌舞伎町",
+      "高天原",
+      "新宿",
+      "牛郎"
+    ],
+    "verified": true,
+    "open_time": 0,
+    "close_time": 48,
+    "hours_note": "全天开放"
+  },
+  {
+    "id": "dr-tokyo-akihabara",
+    "name_zh": "秋叶原",
+    "name_local": "秋葉原",
+    "city": "东京",
+    "chapter": "龙族3 上",
+    "visit_duration": "4小时",
+    "coordinates": {
+      "lat": 35.7023,
+      "lng": 139.7745
+    },
+    "address": "东京都千代田区外神田",
+    "nearest_station": "秋叶原站电气街口",
+    "description": "楚子航在此购买拍摄龙族壁画的相机。面无表情的杀胚在Yodobashi相机柜台前认真比较参数——最「楚子航」的购物场景。",
+    "novel_excerpt": "【龙族3 上·第六章「王牌组合」】恺撒小组乘专机抵达东京上空，路明非望着窗外憧憬秋叶原。\n\n原文：\n「我还想去秋叶原。」路明非说。\n「你刚才吓得脸色都变了，还有心思去秋叶原？」楚子航问。\n「平生不到秋叶原，纵称宅男也枉然啊。眼看就要九死一生了还不抓紧时间去？如果可以我都想把我的墓碑扎在秋叶原的大街上，让来来往往的妹子扶着我的墓碑拍照。」",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-tokyo-akihabara-real.jpg",
+    "category": "street",
+    "accessibility": "public",
+    "popularity": 4,
+    "tags": [
+      "秋叶原",
+      "楚子航",
+      "电器街"
+    ],
+    "verified": true,
+    "open_time": 0,
+    "close_time": 48,
+    "hours_note": "全天开放"
+  },
+  {
+    "id": "dr-matsuyama-umezushi",
+    "name_zh": "梅津寺火车站",
+    "name_local": "梅津寺駅",
+    "city": "松山",
+    "chapter": "龙族3 下",
+    "visit_duration": "半小时",
+    "coordinates": {
+      "lat": 33.875,
+      "lng": 132.7075
+    },
+    "address": "爱媛县松山市梅津寺町",
+    "nearest_station": "梅津寺站（伊予铁道高滨线）",
+    "description": "「所谓浪漫，就是没有后来。」路明非起身，将瓷娃娃放在绘梨衣身边，转身下车。车门轰然关闭。列车驶入濑户内海的夕阳。她写在车窗上的字他没看到——「我以后去哪里找你？」",
+    "novel_excerpt": "【龙族3 下·第十章「迎着阳光盛大逃亡」】路明非带绘梨衣抵达梅津寺火车站——这里是《东京爱情故事》结局的取景地，也是他心中最向往的「秘密景点」。\n\n原文：\n临海的轨道上，黄色的慢速列车轰隆隆地驶过无人的小站，白色的栏杆把小站围了起来，上面挂着「梅津寺駅」和「[东京ラブストーリー] ロケ地」的标志。这说明《东京爱情故事》的结局就是在这个小站拍摄的，那里一度是日本男女朝觐爱情的圣地，那列黄色火车从东京带来数不清的游客，梅津寺町小镇迅速跃升为著名的旅游胜地。",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-matsuyama-umezushi-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 5,
+    "tags": [
+      "梅津寺",
+      "离别",
+      "绘梨衣",
+      "车站"
+    ],
+    "verified": true,
+    "open_time": 15,
+    "close_time": 40,
+    "hours_note": "07:30–20:00"
+  },
+  {
+    "id": "dr-matsuyama-beach",
+    "name_zh": "梅津寺町海边",
+    "name_local": "梅津寺海岸",
+    "city": "松山",
+    "chapter": "龙族3 下",
+    "visit_duration": "1小时",
+    "coordinates": {
+      "lat": 33.875,
+      "lng": 132.707
+    },
+    "address": "爱媛县松山市梅津寺町海岸",
+    "nearest_station": "梅津寺站步行3分钟",
+    "description": "绘梨衣脱了高跟鞋，穿着路明非过大的运动鞋在碎石滩上逗小虾小蟹。她抬起头看向路明非，眼睛里映着夕阳的颜色——那是「夕紫」，是濑户内海最温柔的晚霞。",
+    "novel_excerpt": "【龙族3 下·第十章「迎着阳光盛大逃亡」】在梅津寺町的黄昏里，绘梨衣望着濑户内海的落日，在小本子上写下了那句让人心碎的话。\n\n原文：\n她的眼神呆滞又瑰丽，路明非能从她的眼睛里看落日，时间一分一秒地过去，两个人都不说话，天色越来越昏暗，绘梨衣的眼睛也越来越暗淡。\n\n「我很喜欢这样的世界……」在太阳快要消失之前，绘梨衣写给路明非看。\n路明非心里微微松了口气，看起来绘梨衣确实喜欢梅津寺町的落日景色。\n「但世界不喜欢我。」绘梨衣接着写。\n\n她抱着巨大的轻松熊，低垂眼帘，像是一只做错了事的猫。",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-matsuyama-beach-real.jpg",
+    "category": "nature",
+    "accessibility": "public",
+    "popularity": 5,
+    "tags": [
+      "海边",
+      "夕阳",
+      "拥抱",
+      "告白"
+    ],
+    "verified": true,
+    "open_time": 0,
+    "close_time": 48,
+    "hours_note": "全天开放"
+  },
+  {
+    "id": "dr-tokyo-ginza",
+    "name_zh": "银座",
+    "name_local": "銀座",
+    "city": "东京",
+    "chapter": "龙族3 下",
+    "visit_duration": "2小时",
+    "coordinates": {
+      "lat": 35.6722,
+      "lng": 139.7665
+    },
+    "address": "东京都中央区银座",
+    "nearest_station": "银座站/银座一丁目站",
+    "description": "东京最高档的购物区。麻衣带绘梨衣在银座百货公司试衣服——她穿着不合身的碎花连衣裙站在试衣镜前，露出了一点点微笑。",
+    "novel_excerpt": "【龙族3 下·第三章「古事记」】风间琉璃在银座歌舞伎座举办《新编古事记》演出，与恺撒、楚子航首次正面接触。\n\n原文：\n银座，歌舞伎座。\n这座歌舞伎剧场有一百多年的历史，堪称歌舞伎剧场中的王座。它曾经数次被焚毁，又数次被重建，如今的建筑有着明显的桃山时代风格，门前悬挂着紫色布缦。",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-tokyo-ginza-real.jpg",
+    "category": "street",
+    "accessibility": "public",
+    "popularity": 4,
+    "tags": [
+      "银座",
+      "购物",
+      "绘梨衣",
+      "麻衣"
+    ],
+    "verified": true,
+    "hours_note": "全天开放",
+    "open_time": 0,
+    "close_time": 48
+  },
+  {
+    "id": "dr-tokyo-narita",
+    "name_zh": "成田国际机场",
+    "name_local": "成田国際空港",
+    "city": "东京",
+    "chapter": "龙族3 上 / 龙族3 下",
+    "visit_duration": "1小时",
+    "coordinates": {
+      "lat": 35.7719,
+      "lng": 140.3929
+    },
+    "address": "千叶县成田市古込1-1",
+    "nearest_station": "成田空港站（JR/京成线）",
+    "description": "三人组抵达日本的机场。恺撒的金发、楚子航的面瘫、路明非的紧张——三个人走出成田机场的那一刻，日本篇的帷幕正式拉开。",
+    "novel_excerpt": "【龙族3 上·第六章「王牌组合」/ 龙族3 下·第二十章「漆黑之日」】三人组抵达日本；末日后成田机场成为逃离东京的唯一通道。\n\n原文：\n东京都，成田机场，车流从高速公路出口一直堵到候机大厅。\n\n港口在海啸来袭的第一时间就不堪使用了，出入城的高速公路也已经被车流堵死，逃离东京的唯一通道就是空港。",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-tokyo-narita-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 3,
+    "tags": [
+      "成田机场",
+      "抵达",
+      "三人组",
+      "日本"
+    ],
+    "verified": true,
+    "open_time": 0,
+    "close_time": 48,
+    "hours_note": "全天开放"
+  },
+  {
+    "id": "dr-tokyo-port",
+    "name_zh": "东京港七号码头",
+    "name_local": "東京港七号埠頭",
+    "city": "东京",
+    "chapter": "龙族3 下",
+    "visit_duration": "1小时",
+    "coordinates": {
+      "lat": 35.62,
+      "lng": 139.795
+    },
+    "address": "东京都港区海岸 东京港",
+    "nearest_station": "百合鸥线 东京国际邮轮码头站",
+    "description": "东京湾沿岸的货运码头区。小说中与海上行动相关的场景——东京港是故事中多个水上行动的参照坐标。远处彩虹大桥亮着白色灯光，台场摩天轮在夜空中缓缓旋转。",
+    "novel_excerpt": "【龙族3 下·第九章「我们都是小怪兽」】恺撒安排了一条前往福建的人蛇船，计划在凌晨将路明非与绘梨衣送出日本。\n\n原文：\n「明天凌晨有一艘集装箱货船离开东京港，我已经付钱给船主了，他会带你和上杉家主离开日本，七天之后你们会达到福建，带她去找中国分部的人。」恺撒把一张卡片递给路明非，「在东京港七号码头接头，地址写在上面了。」",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-tokyo-port-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 2,
+    "tags": [
+      "东京港",
+      "码头",
+      "东京湾"
+    ],
+    "verified": true,
+    "open_time": 20,
+    "close_time": 36,
+    "hours_note": "10:00–18:00"
+  },
+  {
+    "id": "dr-tokyo-shibuya",
+    "name_zh": "涩谷",
+    "name_local": "渋谷",
+    "city": "东京",
+    "chapter": "龙族3 中",
+    "visit_duration": "3小时",
+    "coordinates": {
+      "lat": 35.6595,
+      "lng": 139.7004
+    },
+    "address": "东京都涩谷区",
+    "nearest_station": "涩谷站",
+    "description": "东京年轻人的潮流中心。著名的全向十字路口——每分钟上千人穿行。绘梨衣站在路口中央，第一次看到那么多人同时过马路。她抬头望着巨幅广告屏和霓虹灯，像一只被车灯照到的鹿。",
+    "novel_excerpt": "【龙族3 中·第五章「荆棘丛中的男孩」】御前八家迎接昂热的地点设于涩谷。原著中涩谷作为场景出现，但无独立描写段落。涩谷的全向十字路口作为东京地标出现在故事背景中——成千上万的人在此穿行，绘梨衣从这里第一次看到了「普通人的世界」。",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-tokyo-shibuya-real.jpg",
+    "category": "street",
+    "accessibility": "public",
+    "popularity": 4,
+    "tags": [
+      "涩谷",
+      "十字路口",
+      "绘梨衣",
+      "人群"
+    ],
+    "verified": true,
+    "open_time": 0,
+    "close_time": 48,
+    "hours_note": "全天开放"
+  },
+  {
+    "id": "dr-tokyo-utokyo",
+    "name_zh": "东京大学",
+    "name_local": "東京大学",
+    "city": "东京",
+    "chapter": "龙族3 中",
+    "visit_duration": "2小时",
+    "coordinates": {
+      "lat": 35.7127,
+      "lng": 139.7618
+    },
+    "address": "东京都文京区本乡7-3-1",
+    "nearest_station": "本乡三丁目站/东大前站",
+    "description": "日本最高学府。源稚生曾在此旁听课程——赤门、银杏并木、安田讲堂。他以一个普通年轻人的身份坐在教室后排，没有人知道这个安静的男生手里掌握着整个日本混血种的调度权。",
+    "novel_excerpt": "【龙族3 中·第十一章「末代皇帝&最后一个克格勃」】昂热在东京大学后街找到了隐姓埋名卖拉面的前代影皇上杉越。\n\n原文：\n此时此刻，东京大学后街，昂热在屋台车边坐下，把伞和沉重的手提箱放在一边：「酱油拉面，外加两个卤蛋。」\n\n「你怎么又来了？我以为我们说好从此以后不见面的！你每晚准时来吃宵夜这算怎么一回事？」上杉越愤愤然，「从今晚开始拉面开始收钱了！盛惠800块一碗，加卤蛋另加100块！」",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-tokyo-utokyo-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 3,
+    "tags": [
+      "东京大学",
+      "源稚生",
+      "银杏",
+      "校园"
+    ],
+    "verified": true,
+    "open_time": 14,
+    "close_time": 36,
+    "hours_note": "07:00–18:00"
+  },
+  {
+    "id": "dr-ehime-prefecture",
+    "name_zh": "爱媛县",
+    "name_local": "愛媛県",
+    "city": "松山",
+    "chapter": "龙族3 下",
+    "visit_duration": "2天",
+    "coordinates": {
+      "lat": 33.8392,
+      "lng": 132.7656
+    },
+    "address": "爱媛县松山市（县厅所在地）",
+    "nearest_station": "松山站/JR予赞线",
+    "description": "龙族3情感终点的所在地。梅津寺町、松山城均在此县。恺撒在这里吃了鲷鱼饭和青花鱼——「这个县挺不错的。」「迎着阳光盛大逃亡」的最后一站。",
+    "novel_excerpt": "【龙族3 下·第十章「迎着阳光盛大逃亡」】绘梨衣问路明非为什么知道这么漂亮的地方——因为她不知道，这是他看了无数遍的《东京爱情故事》的结局。\n\n原文：\n「Sakura不是日本人吧？怎么会知道这么漂亮的地方？」绘梨衣在小本子上写。\n「我看过一部日本拍的电视剧，这是那部电视剧里很有名的场景，很久以前我看过那部电视剧。」\n「那部电视剧叫什么名字？」\n「东京爱情故事。」路明非一笔一划地写。\n\n四国最西南的县是爱媛县，《东京爱情故事》的结局就是在这里拍的，路明非太喜欢那部日剧了，所以上网各种搜爱媛县的信息，最后得知结尾那场戏是在爱媛县的梅津寺町拍的。",
+    "real_photo": "../assets/images/ip/dragon-raja/photos/dr-ehime-prefecture-real.jpg",
+    "category": "landmark",
+    "accessibility": "public",
+    "popularity": 4,
+    "tags": [
+      "爱媛县",
+      "松山",
+      "四国",
+      "终点",
+      "绘梨衣"
+    ],
+    "verified": true,
+    "open_time": 0,
+    "close_time": 48,
+    "hours_note": "爱媛县建议2天"
+  }
+]

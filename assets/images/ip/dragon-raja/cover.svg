@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="50%" style="stop-color:#16213e"/>
+      <stop offset="100%" style="stop-color:#0f3460"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="400" fill="url(#bg)"/>
+  <text x="400" y="180" text-anchor="middle" fill="#e63946" font-size="64" font-weight="bold" font-family="sans-serif">龍 族</text>
+  <text x="400" y="230" text-anchor="middle" fill="#6b7280" font-size="24" font-family="sans-serif">DRAGON RAJA</text>
+  <text x="400" y="290" text-anchor="middle" fill="#9ca3af" font-size="16" font-family="sans-serif">圣地巡礼地图 · 探索龙族世界的真实取景地</text>
+</svg>

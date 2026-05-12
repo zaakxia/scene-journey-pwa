@@ -1,0 +1,34 @@
+{
+  "id": "dragon-raja-1",
+  "name_zh": "龙族",
+  "subtitle": "第一部 · 火之晨曦",
+  "book_number": 1,
+  "book_title_zh": "火之晨曦",
+  "description": "江南所著奇幻小说系列第一部。废柴少年路明非被来自美国的屠龙学院选中，从中国小城走向世界舞台。横跨合肥、芝加哥、重庆奉节、湖北宜昌——在夔门水下迎来了他的首次屠龙之战。",
+  "cover_image": "../assets/images/ip/dragon-raja-1/cover.svg",
+  "type": "novel",
+  "chapters": [
+    "龙族1 上",
+    "龙族1 中",
+    "龙族1 下"
+  ],
+  "location_summary": {
+    "country": "中国/美国",
+    "cities": [
+      "合肥",
+      "湖北宜昌",
+      "芝加哥",
+      "重庆奉节"
+    ]
+  },
+  "stats": {
+    "total_locations": 7,
+    "total_routes": 2
+  },
+  "cities": [
+    "合肥",
+    "湖北宜昌",
+    "芝加哥",
+    "重庆奉节"
+  ]
+}

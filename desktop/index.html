@@ -292,7 +292,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     // Local dev: use shared tiles; deployed: load from PWA (avoid 20K file limit)
     var tileUrl = location.hostname === 'localhost'
       ? '../assets/tiles/{z}/{x}/{y}.png'
-      : 'https://scene-journey-pwa.pages.dev/assets/tiles/{z}/{x}/{y}.png';
+      : 'https://zaakxia.github.io/scene-journey-pwa/assets/tiles/{z}/{x}/{y}.png';
     tileLayer = L.tileLayer(tileUrl, {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> | <a href="https://carto.com/">CARTO</a>',
       maxNativeZoom: 15, maxZoom: 18, minZoom: 0

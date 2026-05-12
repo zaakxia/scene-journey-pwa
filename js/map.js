@@ -32,7 +32,7 @@ const SceneMap = (() => {
     // Local dev vs deployed: GitHub Pages hosts tiles (no 20K file limit)
     var tileUrl = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
       ? '../assets/tiles/{z}/{x}/{y}.png'
-      : 'https://zaak985.github.io/scene-journey-pwa/assets/tiles/{z}/{x}/{y}.png';
+      : 'https://zaakxia.github.io/scene-journey-pwa/assets/tiles/{z}/{x}/{y}.png';
     _tileLayer = L.tileLayer(tileUrl, {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> | <a href="https://carto.com/">CARTO</a>',
       maxNativeZoom: 15,

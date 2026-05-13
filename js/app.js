@@ -198,21 +198,42 @@ window.App = { showToast: null };
       function doSearch() {
         var query = input.value.trim();
         if (!query) return;
+        var region = document.getElementById('map-search-region');
+        var isChina = region && region.value === 'china';
         results.style.display = 'block';
         results.innerHTML = '<div style="padding:16px;text-align:center;color:#999;">搜索中...</div>';
 
-        var url = 'https://geocode.search.hereapi.com/v1/geocode?q=' + encodeURIComponent(query) + '&apiKey=' + HERE_KEY + '&limit=5';
+        var url;
+        if (isChina) {
+          // Amap input tips for China
+          url = 'https://restapi.amap.com/v3/assistant/inputtips?keywords=' + encodeURIComponent(query) + '&key=' + AMAP_KEY + '&citylimit=false';
+        } else {
+          // HERE geocoding for global
+          url = 'https://geocode.search.hereapi.com/v1/geocode?q=' + encodeURIComponent(query) + '&apiKey=' + HERE_KEY + '&limit=5';
+        }
         fetch(url).then(function(r) { return r.json(); }).then(function(data) {
-          var items = data.items || [];
+          var items = [];
+          if (data.tips) {
+            // Amap format
+            data.tips.forEach(function(tip) {
+              if (tip.location) {
+                var parts = tip.location.split(',');
+                items.push({ lat: parseFloat(parts[1]), lng: parseFloat(parts[0]), title: tip.name, addr: tip.address || tip.district || '' });
+              }
+            });
+          } else if (data.items) {
+            // HERE format
+            data.items.forEach(function(item) {
+              items.push({ lat: item.position.lat, lng: item.position.lng, title: item.title, addr: item.address ? item.address.label : '' });
+            });
+          }
           if (items.length === 0) {
             results.innerHTML = '<div style="padding:16px;text-align:center;color:#999;">未找到结果</div>';
             return;
           }
           var h = '';
           items.forEach(function(item, i) {
-            var lat = item.position.lat, lng = item.position.lng;
-            var addr = item.address ? (item.address.label || '') : '';
-            var title = item.title || '';
+            var lat = item.lat, lng = item.lng, title = item.title, addr = item.addr;
             h += '<div class="search-result-item" data-lat="'+lat+'" data-lng="'+lng+'" data-title="'+title.replace(/"/g,'&quot;')+'" data-addr="'+addr.replace(/"/g,'&quot;')+'" style="padding:12px 14px;border-bottom:1px solid #f0ede6;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">';
             h += '<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#1c1917;">'+title+'</div>';
             h += '<div style="font-size:11px;color:#8b7e6b;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+addr+'</div></div>';

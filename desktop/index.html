@@ -992,54 +992,57 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
 
     // Mode toggle
     panel.querySelectorAll('.plan-mode-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
+      btn.onclick = function() {
         planState.planMode = btn.dataset.mode;
         planState.selectedLocId = null;
         planState.optRouteResult = null;
         panel.querySelector('.panel-body').innerHTML = renderPlanContent();
         bindPlanEvents(planLocs);
-      });
+      };
     });
 
     // Auto mode — separate event chain
     if (planState.planMode === 'auto') { bindAutoEvents(planLocs); return; }
 
+    var rebind = function() { bindPlanEvents(planLocs); };
+
     // Day tabs
     panel.querySelectorAll('.sched-day-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
+      btn.onclick = function() {
         planState.currentDayIdx = parseInt(btn.dataset.di);
         planState.selectedLocId = null;
         panel.querySelector('.panel-body').innerHTML = renderPlanContent();
-        bindPlanEvents(planLocs);
-      });
+        rebind();
+      };
     });
 
     // Add day
     var addBtn = panel.querySelector('#plan-add-day');
-    if (addBtn) addBtn.addEventListener('click', function() {
+    if (addBtn) addBtn.onclick = function() {
       if (schedule.days.length >= 7) return;
       var used = {};
       schedule.days.forEach(function(d){used[d.day]=true;});
       var nd = 1; while (used[nd]) nd++;
       schedule.days.push({ day: nd, label: '第'+nd+'天', blocks: [] });
-      planState.currentDayIdx = schedule.days.length - 1;
+      schedule.days.sort(function(a,b){return a.day-b.day;});
+      planState.currentDayIdx = schedule.days.findIndex(function(d){return d.day===nd;});
       Storage.set('schedule', schedule);
       panel.querySelector('.panel-body').innerHTML = renderPlanContent();
-      bindPlanEvents(planLocs);
-    });
+      rebind();
+    };
 
     // Location card click
     panel.querySelectorAll('.plan-loc-card').forEach(function(card) {
-      card.addEventListener('click', function() {
+      card.onclick = function() {
         planState.selectedLocId = card.dataset.lid;
         panel.querySelector('.panel-body').innerHTML = renderPlanContent();
-        bindPlanEvents(planLocs);
-      });
+        rebind();
+      };
     });
 
     // Slot click to place
     panel.querySelectorAll('.plan-slot').forEach(function(slot) {
-      slot.addEventListener('click', function() {
+      slot.onclick = function() {
         if (!planState.selectedLocId) return;
         var clickedSlot = parseInt(slot.dataset.slot);
         var loc = planLocs.find(function(l){return l.id===planState.selectedLocId;});
@@ -1047,7 +1050,6 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
         var dur = parseDuration(loc.visit_duration);
         var oh = getOpenHours(loc);
         if (clickedSlot < oh.open || clickedSlot + dur > oh.close) return;
-        // Check overlap
         var overlap = day.blocks.some(function(b){return clickedSlot < b.startSlot+b.slots && clickedSlot+dur > b.startSlot;});
         if (overlap) return;
         if (clickedSlot + dur > 48) return;
@@ -1056,33 +1058,33 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
         Storage.set('schedule', schedule);
         planState.selectedLocId = null;
         panel.querySelector('.panel-body').innerHTML = renderPlanContent();
-        bindPlanEvents(planLocs);
-      });
+        rebind();
+      };
     });
 
     // Remove block
     panel.querySelectorAll('.plan-remove-block').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
+      btn.onclick = function(e) {
         e.stopPropagation();
         day.blocks = day.blocks.filter(function(b){return b.locId !== btn.dataset.lid;});
         Storage.set('schedule', schedule);
         panel.querySelector('.panel-body').innerHTML = renderPlanContent();
-        bindPlanEvents(planLocs);
-      });
+        rebind();
+      };
     });
 
     // Clear day
     var clearBtn = panel.querySelector('#plan-clear-day');
-    if (clearBtn) clearBtn.addEventListener('click', function() {
+    if (clearBtn) clearBtn.onclick = function() {
       day.blocks = [];
       Storage.set('schedule', schedule);
       panel.querySelector('.panel-body').innerHTML = renderPlanContent();
-      bindPlanEvents(planLocs);
-    });
+      rebind();
+    };
 
     // Export
     var expBtn = panel.querySelector('#plan-export');
-    if (expBtn) expBtn.addEventListener('click', function() {
+    if (expBtn) expBtn.onclick = function() {
       var text = '';
       schedule.days.forEach(function(d) {
         text += d.label + '\n';
@@ -1093,46 +1095,47 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
         text += '\n';
       });
       if (navigator.clipboard) { navigator.clipboard.writeText(text).then(function(){ alert('日程已复制到剪贴板'); }); }
-    });
+    };
   }
 
   function bindAutoEvents(planLocs) {
     var panel = document.getElementById('overlay-panel'), ps = planState;
+    var rebind = function() { bindPlanEvents(planLocs); };
 
     // Day +/-
     panel.querySelectorAll('.opt-day-btn').forEach(function(btn){
-      btn.addEventListener('click',function(){
+      btn.onclick = function(){
         ps.optDays=Math.max(1,Math.min(7,ps.optDays+parseInt(btn.dataset.adj)));
-        panel.querySelector('.panel-body').innerHTML=renderPlanContent(); bindPlanEvents(planLocs);
-      });
+        panel.querySelector('.panel-body').innerHTML=renderPlanContent(); rebind();
+      };
     });
     // Time selects
     var s=panel.querySelector('#opt-start'), e=panel.querySelector('#opt-end');
-    if(s) s.addEventListener('change',function(){ps.optDayStart=parseInt(s.value);if(ps.optDayStart>=ps.optDayEnd)ps.optDayEnd=Math.min(48,ps.optDayStart+2);panel.querySelector('.panel-body').innerHTML=renderPlanContent(); bindPlanEvents(planLocs);});
-    if(e) e.addEventListener('change',function(){ps.optDayEnd=parseInt(e.value);if(ps.optDayEnd<=ps.optDayStart)ps.optDayStart=Math.max(0,ps.optDayEnd-2);panel.querySelector('.panel-body').innerHTML=renderPlanContent(); bindPlanEvents(planLocs);});
+    if(s) s.onchange=function(){ps.optDayStart=parseInt(s.value);if(ps.optDayStart>=ps.optDayEnd)ps.optDayEnd=Math.min(48,ps.optDayStart+2);panel.querySelector('.panel-body').innerHTML=renderPlanContent(); rebind();};
+    if(e) e.onchange=function(){ps.optDayEnd=parseInt(e.value);if(ps.optDayEnd<=ps.optDayStart)ps.optDayStart=Math.max(0,ps.optDayEnd-2);panel.querySelector('.panel-body').innerHTML=renderPlanContent(); rebind();};
 
     // Location chips
     panel.querySelectorAll('.opt-chip').forEach(function(chip){
-      chip.addEventListener('click',function(){
+      chip.onclick = function(){
         var lid=chip.dataset.lid, idx=ps.optRouteLocs.indexOf(lid);
         if(idx>=0) ps.optRouteLocs.splice(idx,1); else ps.optRouteLocs.push(lid);
         ps.optRouteResult=null;
-        panel.querySelector('.panel-body').innerHTML=renderPlanContent(); bindPlanEvents(planLocs);
-      });
+        panel.querySelector('.panel-body').innerHTML=renderPlanContent(); rebind();
+      };
     });
     // Select all / clear
     var sa=panel.querySelector('#opt-sel-all'), ca=panel.querySelector('#opt-clr-all');
-    if(sa) sa.addEventListener('click',function(){ps.optRouteLocs=planLocs.map(function(l){return l.id});ps.optRouteResult=null;panel.querySelector('.panel-body').innerHTML=renderPlanContent(); bindPlanEvents(planLocs);});
-    if(ca) ca.addEventListener('click',function(){ps.optRouteLocs=[];ps.optRouteResult=null;panel.querySelector('.panel-body').innerHTML=renderPlanContent(); bindPlanEvents(planLocs);});
+    if(sa) sa.onclick=function(){ps.optRouteLocs=planLocs.map(function(l){return l.id});ps.optRouteResult=null;panel.querySelector('.panel-body').innerHTML=renderPlanContent(); rebind();};
+    if(ca) ca.onclick=function(){ps.optRouteLocs=[];ps.optRouteResult=null;panel.querySelector('.panel-body').innerHTML=renderPlanContent(); rebind();};
 
     // Engine toggle
     panel.querySelectorAll('.opt-eng-btn').forEach(function(btn){
-      btn.addEventListener('click',function(){ps.optRouteEngine=btn.dataset.eng;ps.optRouteResult=null;panel.querySelector('.panel-body').innerHTML=renderPlanContent(); bindPlanEvents(planLocs);});
+      btn.onclick=function(){ps.optRouteEngine=btn.dataset.eng;ps.optRouteResult=null;panel.querySelector('.panel-body').innerHTML=renderPlanContent(); rebind();};
     });
 
     // Generate
     var gb=panel.querySelector('#opt-generate');
-    if(gb) gb.addEventListener('click',function(){
+    if(gb) gb.onclick=function(){
       if(ps.optRouteLocs.length<2){alert('请至少选择2个取景地');return;}
       var locs=ps.optRouteLocs.map(function(id){return planLocs.find(function(l){return l.id===id})}).filter(Boolean);
       if(locs.length<2)return;
@@ -1169,17 +1172,17 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
         setTimeout(nextBatch,400);
       }
       nextBatch();
-    });
+    };
 
     // Apply
     var ab=panel.querySelector('#opt-apply');
-    if(ab) ab.addEventListener('click',function(){
+    if(ab) ab.onclick=function(){
       if(!ps.optRouteResult||!ps.optRouteResult.days)return;
       ps.schedule.days=ps.optRouteResult.days; ps.currentDayIdx=0;
       Storage.set('schedule',ps.schedule);
       ps.optRouteResult=null; ps.optRouteLocs=[];
-      panel.querySelector('.panel-body').innerHTML=renderPlanContent(); bindPlanEvents(planLocs);
-    });
+      panel.querySelector('.panel-body').innerHTML=renderPlanContent(); rebind();
+    };
   }
 
   // ── Profile ──

@@ -1767,7 +1767,7 @@ window.App = { showToast: null };
 
       var bookmarks = Storage.getBookmarks();
       var checkins = Storage.getCheckins();
-      var profile = Storage.get('profile') || { nickname: '用户登录', avatar: '' };
+      var profile = Storage.get('profile') || { nickname: '用户昵称', avatar: '' };
       var locs = locations.filter(function(l) { return bookmarks.indexOf(l.id) >= 0; });
       var checkedLocs = locs.filter(function(l) { return checkins[l.id]; });
       // Path map needs ALL check-ins, not just bookmarked ones
@@ -1884,7 +1884,7 @@ window.App = { showToast: null };
       h += '<div style="text-align:center;padding:16px 0 20px;border-top:1px solid var(--color-border);margin-top:16px;">';
       h += '<div style="font-size:11px;color:var(--color-text-secondary);line-height:1.8;">';
       h += '<p style="margin:0 0 8px;">📧 联系邮箱：2062527951@qq.com</p>';
-      h += '<div style="background:#fafaf8;border-radius:8px;padding:10px;margin:8px 0;text-align:left;font-size:10px;line-height:1.6;">';
+      h += '<div style="background:#fafaf8;border-radius:8px;padding:10px;margin:8px 0;text-align:center;font-size:10px;line-height:1.6;">';
       h += '<p style="font-weight:700;margin:0 0 4px;color:#1c1917;">📢 公告</p>';
       h += '<p style="margin:0;color:var(--color-text-secondary);">欢迎使用圣地巡礼！在地图上探索取景地，收藏感兴趣的景点，使用计划功能规划你的巡礼路线。';
       h += '点击取景地可查看详情、实景照片和原著原文摘录，打卡记录会在个人页形成时间轴。';

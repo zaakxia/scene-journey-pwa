@@ -211,6 +211,10 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       <span class="badge hidden" id="ltab-badge">0</span>
     </button>
     <div class="bar-spacer"></div>
+    <a href="?" class="ltab" title="返回首页" style="text-decoration:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M9 21V12h6v9"/></svg>
+      首页
+    </a>
   </nav>
 
   <!-- ═══ MAP ZONE ═══ -->
@@ -412,33 +416,15 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       + '</div>'
       // Actions
       + '<div class="loc-actions">'
-      + '<button class="btn-action'+(isFav?' primary':'')+'" id="btn-fav">'+(isFav?'★ 已收藏':'☆ 收藏')+'</button>'
-      + '<button class="btn-action'+(isChecked?' primary':'')+'" id="btn-check">'+(isChecked?'✓ 已打卡':'○ 打卡')+'</button>'
+      + '<button class="btn-action'+(isFav?' primary':'')+'" onclick="event.stopPropagation();var favs=Storage.getBookmarks();var idx=favs.indexOf(\''+loc.id+'\');if(idx>=0)favs.splice(idx,1);else favs.push(\''+loc.id+'\');Storage.set(\'sj_bookmarks\',favs);openDetail(window._currentLoc);updateBadge();showLocations(locations);">'+(isFav?'★ 已收藏':'☆ 收藏')+'</button>'
+      + '<button class="btn-action'+(isChecked?' primary':'')+'" onclick="event.stopPropagation();var chk=Storage.getCheckins();if(chk[\''+loc.id+'\'])delete chk[\''+loc.id+'\'];else chk[\''+loc.id+'\']={timestamp:Date.now()};Storage.set(\'sj_checkins_\'+(document.documentElement.dataset.book||\'dragon-raja\'),chk);openDetail(window._currentLoc);updateBadge();showLocations(locations);">'+(isChecked?'✓ 已打卡':'○ 打卡')+'</button>'
+      + '<button class="btn-action" onclick="event.stopPropagation();window.open(\'https://www.google.com/maps/dir/?api=1&destination=\'+window._currentLoc.coordinates.lat+\',\'+window._currentLoc.coordinates.lng,\'_blank\');">🧭 导航</button>'
       + '</div></div>';
 
+    window._currentLoc = loc;
     document.getElementById('panel-title').textContent = loc.name_zh;
     document.getElementById('panel-body').innerHTML = html;
     document.getElementById('overlay-panel').classList.add('open');
-
-    bindDetailActions(loc);
-  }
-
-  function bindDetailActions(loc) {
-    var btnFav = document.getElementById('btn-fav');
-    var btnCheck = document.getElementById('btn-check');
-    if (btnFav) btnFav.addEventListener('click', function() {
-      var favs = Storage.getBookmarks(), idx = favs.indexOf(loc.id);
-      if (idx >= 0) favs.splice(idx,1); else favs.push(loc.id);
-      Storage.set('sj_bookmarks', favs);
-      openDetail(loc); updateBadge(); showLocations(locations);
-    });
-    if (btnCheck) btnCheck.addEventListener('click', function() {
-      var chk = Storage.getCheckins();
-      if (chk[loc.id]) delete chk[loc.id];
-      else chk[loc.id] = { timestamp: Date.now() };
-      Storage.set('sj_checkins_'+(document.documentElement.dataset.book||'dragon-raja'), chk);
-      openDetail(loc); updateBadge(); showLocations(locations);
-    });
   }
 
   // ── Story ──
@@ -1160,7 +1146,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
         html += '<div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;">';
         books.forEach(function(book) {
           html += '<a href="?book='+book.book_id+'" style="display:block;width:240px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;" onmouseover="this.style.transform=\'translateY(-4px)\';this.style.boxShadow=\'0 8px 32px rgba(0,0,0,0.12)\'" onmouseout="this.style.transform=\'\';this.style.boxShadow=\'\'">';
-          html += '<img src="'+book.cover+'" alt="'+book.subtitle+'" style="width:100%;height:180px;object-fit:cover;" onerror="this.src=\'assets/images/ui/placeholder-scene.svg\'">';
+          html += '<img src="'+book.cover+'" alt="'+book.subtitle+'" style="width:100%;height:280px;object-fit:contain;background:#faf8f5;" onerror="this.src=\'assets/images/ui/placeholder-scene.svg\'">';
           html += '<div style="padding:16px;">';
           html += '<div style="font-size:16px;font-weight:700;color:#1c1917;">'+book.subtitle+'</div>';
           html += '<div style="font-size:12px;color:#8b7e6b;margin-top:4px;">'+book.book_title_zh+'</div>';

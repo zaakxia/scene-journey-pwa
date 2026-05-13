@@ -67,6 +67,7 @@ const SceneMap = (() => {
     var bookmarks = Storage.getBookmarks();
     var colors = ['#e63946', '#457b9d', '#2a9d8f', '#f4a261', '#9b5de5'];
 
+    var sharedRenderer = L.canvas({ padding: 0.5 });
     var minLat = 90, maxLat = -90, minLng = 180, maxLng = -180;
 
     locations.forEach(function(loc) {
@@ -87,7 +88,7 @@ const SceneMap = (() => {
         color: '#fff',
         weight: 2.5,
         fillOpacity: 1,
-        renderer: L.canvas()
+        renderer: sharedRenderer
       });
 
       if (isFav) {
@@ -97,7 +98,7 @@ const SceneMap = (() => {
           color: color,
           weight: 3,
           fillOpacity: 0,
-          renderer: L.canvas()
+          renderer: sharedRenderer
         });
         ring._locData = loc;
         ring._isRing = true;

@@ -79,7 +79,7 @@ const SceneMap = (() => {
       var isChecked = !!checkins[loc.id];
       var isFav = bookmarks.includes(loc.id);
       var color = colors[Math.abs(hashCode(loc.city || '')) % colors.length];
-      var radius = isChecked ? 9 : 7;
+      var radius = isChecked ? 16 : 14; // min 28px diameter for touch targets
 
       var marker = L.circleMarker([lat, lng], {
         radius: radius,

@@ -321,7 +321,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       var isChecked = !!checkins[loc.id], isFav = bookmarks.includes(loc.id);
       var color = cityColor[loc.city] || colors[Object.keys(cityColor).length % colors.length];
       cityColor[loc.city] = color;
-      var radius = isChecked ? 9 : 7;
+      var radius = isChecked ? 16 : 14;
 
       var marker = L.circleMarker([lat, lng], {
         radius: radius, fillColor: isChecked ? '#2a9d8f' : color,

@@ -173,14 +173,116 @@ window.App = { showToast: null };
         buildFilterHTML();
       }
 
-      SceneMap.showLocations(locations, function(loc) {
+      var customLocs = Storage.get('custom_locations') || [];
+      var allLocs = locations.concat(customLocs);
+      SceneMap.showLocations(allLocs, function(loc) {
         openSheet(loc);
       });
       updateBadges();
 
       // Wire up layer menu
       wireLayerMenu();
+
+      // Wire up map search
+      wireMapSearch();
     }
+
+    function wireMapSearch() {
+      var input = document.getElementById('map-search-input');
+      var btn = document.getElementById('map-search-btn');
+      var results = document.getElementById('map-search-results');
+      if (!input || !btn || !results) return;
+
+      var customLocs = Storage.get('custom_locations') || [];
+
+      function doSearch() {
+        var query = input.value.trim();
+        if (!query) return;
+        results.style.display = 'block';
+        results.innerHTML = '<div style="padding:16px;text-align:center;color:#999;">搜索中...</div>';
+
+        var url = 'https://geocode.search.hereapi.com/v1/geocode?q=' + encodeURIComponent(query) + '&apiKey=' + HERE_KEY + '&limit=5';
+        fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+          var items = data.items || [];
+          if (items.length === 0) {
+            results.innerHTML = '<div style="padding:16px;text-align:center;color:#999;">未找到结果</div>';
+            return;
+          }
+          var h = '';
+          items.forEach(function(item, i) {
+            var lat = item.position.lat, lng = item.position.lng;
+            var addr = item.address ? (item.address.label || '') : '';
+            var title = item.title || '';
+            h += '<div class="search-result-item" data-lat="'+lat+'" data-lng="'+lng+'" data-title="'+title.replace(/"/g,'&quot;')+'" data-addr="'+addr.replace(/"/g,'&quot;')+'" style="padding:12px 14px;border-bottom:1px solid #f0ede6;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">';
+            h += '<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#1c1917;">'+title+'</div>';
+            h += '<div style="font-size:11px;color:#8b7e6b;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+addr+'</div></div>';
+            h += '<button class="search-set-btn" data-lat="'+lat+'" data-lng="'+lng+'" data-title="'+title.replace(/"/g,'&quot;')+'" style="flex-shrink:0;margin-left:8px;padding:5px 10px;border-radius:999px;border:none;background:#b91c1c;color:#fff;font-size:10px;font-weight:600;cursor:pointer;">设为取景地</button>';
+            h += '</div>';
+          });
+          results.innerHTML = h;
+
+          // Fly to on click
+          results.querySelectorAll('.search-result-item').forEach(function(el) {
+            el.onclick = function() {
+              SceneMap.flyTo(parseFloat(el.dataset.lat), parseFloat(el.dataset.lng), 14);
+              results.style.display = 'none';
+              input.value = '';
+            };
+          });
+
+          // Set as pilgrimage site
+          results.querySelectorAll('.search-set-btn').forEach(function(btn) {
+            btn.onclick = function(e) {
+              e.stopPropagation();
+              var lat = parseFloat(btn.dataset.lat);
+              var lng = parseFloat(btn.dataset.lng);
+              var title = btn.dataset.title;
+              var customLocs = Storage.get('custom_locations') || [];
+              // Check duplicate
+              if (customLocs.some(function(l) { return l.name_zh === title; })) {
+                App.showToast('已存在该取景地');
+                return;
+              }
+              var newLoc = {
+                id: 'custom_' + Date.now(),
+                name_zh: title,
+                name_local: '',
+                city: title.split(',')[0] || title,
+                category: 'attraction',
+                accessibility: 'open',
+                popularity: 1,
+                coordinates: { lat: lat, lng: lng },
+                address: btn.dataset.addr || '',
+                visit_duration: '2h',
+                is_custom: true,
+                real_photo: ''
+              };
+              customLocs.push(newLoc);
+              Storage.set('custom_locations', customLocs);
+              App.showToast('已设为取景地: ' + title);
+              results.style.display = 'none';
+              input.value = '';
+              // Reload to show new location
+              setTimeout(function() { renderMap(); }, 300);
+            };
+          });
+        }).catch(function() {
+          results.innerHTML = '<div style="padding:16px;text-align:center;color:#e63946;">搜索失败</div>';
+        });
+      }
+
+      btn.onclick = doSearch;
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') doSearch();
+      });
+      // Hide results when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!results.contains(e.target) && e.target !== input && e.target !== btn) {
+          results.style.display = 'none';
+        }
+      });
+
+    } // end wireMapSearch
 
     function wireLayerMenu() {
       var menu = document.getElementById('layer-menu');
@@ -230,7 +332,8 @@ window.App = { showToast: null };
       if (!container) return;
 
       var bookmarks = Storage.getBookmarks();
-      var planLocs = locations.filter(function(l) { return bookmarks.indexOf(l.id) >= 0; });
+      var customLocs = Storage.get('custom_locations') || [];
+      var planLocs = locations.filter(function(l) { return bookmarks.indexOf(l.id) >= 0; }).concat(customLocs);
       var checkins = Storage.getCheckins();
 
       if (planLocs.length === 0) {

@@ -227,11 +227,13 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       <button class="zoom-btn" id="zoom-in-btn" title="放大">+</button>
       <button class="zoom-btn" id="zoom-out-btn" title="缩小">&minus;</button>
     </div>
+    <button class="guide-btn-map" id="guide-btn-map" title="使用指南" style="position:absolute;top:12px;right:14px;z-index:9999;width:26px;height:26px;border-radius:50%;border:none;background:rgba(0,0,0,0.06);font-size:13px;font-weight:700;color:rgba(28,25,23,0.5);cursor:pointer;">!</button>
 
     <!-- ═══ OVERLAY PANEL (PWA-size, floats right) ═══ -->
     <div class="overlay-panel" id="overlay-panel">
       <div class="panel-head">
         <span class="panel-title" id="panel-title">详情</span>
+        <button class="guide-btn-d" id="guide-btn-d" title="使用指南" style="width:24px;height:24px;border-radius:50%;border:none;background:rgba(0,0,0,0.06);font-size:12px;font-weight:700;color:rgba(28,25,23,0.5);cursor:pointer;flex-shrink:0;margin-right:6px;position:relative;z-index:9999;">!</button>
         <button class="panel-close" id="panel-close">&times;</button>
       </div>
       <div class="panel-body" id="panel-body"></div>
@@ -263,18 +265,45 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       panel.classList.remove('open');
       if (map) map.invalidateSize();
     } else if (tab === 'story') {
-      openPanel('剧情章节', renderStoryContent());
+      openPanel('剧情章节', renderStoryContent(), 'story');
     } else if (tab === 'plan') {
-      openPanel('我的计划', renderPlanContent());
+      openPanel('我的计划', renderPlanContent(), 'plan');
     } else if (tab === 'bookmarks') {
-      openPanel('个人', renderProfileContent());
+      openPanel('个人', renderProfileContent(), 'bookmarks');
     }
   }
 
-  function openPanel(title, html) {
+  function showGuide(title, content) {
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99999;display:flex;align-items:center;justify-content:center;';
+    overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
+    var box = document.createElement('div');
+    box.style.cssText = 'background:#fff;border-radius:16px;padding:24px;max-width:360px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,0.2);';
+    box.innerHTML = '<div style="font-weight:700;font-size:18px;margin-bottom:16px;color:#1c1917;">'+title+'</div>'
+      + '<div style="font-size:13px;line-height:2;color:#555;white-space:pre-line;">'+content+'</div>'
+      + '<button style="margin-top:20px;width:100%;padding:12px;border-radius:10px;border:none;background:#b91c1c;color:#fff;font-size:14px;font-weight:600;cursor:pointer;">知道了</button>';
+    box.querySelector('button').onclick = function() { document.body.removeChild(overlay); };
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+  }
+
+  var guideContents = {
+    map: '点击彩色标记查看取景地详情\n双指缩放或点击右下角+/-缩放地图\n点击取景地可查看照片并打卡\n收藏后可到行程页规划路线',
+    plan: '点击下方取景地卡片选中,再点击时间线放置\n时间线为24小时制,上午/下午双列显示\n交通按钮可切换高德/HERE计算出行时间\n切换到智能推荐让系统自动规划最优路线\n点击已放置的模块可跳转取景地详情\n× 按钮可移除已放置的模块',
+    story: '按原著章节顺序浏览取景地\n每个取景地包含原著原文摘录\n点击取景地可查看详情和实景照片\n收藏感兴趣的取景地加入个人计划',
+    bookmarks: '点击头像上传照片,点击昵称修改称呼\n在地图取景地详情中打卡后,时间轴自动记录\n打卡记录按日期分组,展示你的巡礼足迹\n底部可导出数据备份,换设备时恢复\n收藏取景地后可在计划页规划路线'
+  };
+
+  function openPanel(title, html, tabName) {
     document.getElementById('panel-title').textContent = title;
     document.getElementById('panel-body').innerHTML = html;
     document.getElementById('overlay-panel').classList.add('open');
+    // Wire guide button
+    var gb = document.getElementById('guide-btn-d');
+    if (gb && tabName) {
+      gb.style.display = '';
+      gb.onclick = function(e) { e.stopPropagation(); showGuide(title+'使用指南', guideContents[tabName]||guideContents.map); };
+    }
     bindPanelEvents();
   }
 
@@ -1276,6 +1305,9 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       tab.addEventListener('click', function() { switchTab(this.dataset.tab); });
     });
     document.getElementById('panel-close').addEventListener('click', function(e) { e.stopPropagation(); closePanel(); });
+    // Map guide button
+    var mgb = document.getElementById('guide-btn-map');
+    if (mgb) mgb.addEventListener('click', function(e) { e.stopPropagation(); showGuide('地图使用指南', guideContents.map); });
     // ESC key to close panel
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') closePanel();

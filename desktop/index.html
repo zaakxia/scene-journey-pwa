@@ -261,14 +261,19 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       el.classList.toggle('active', el.dataset.tab === tab);
     });
     var panel = document.getElementById('overlay-panel');
+    var guideMap = document.getElementById('guide-btn-map');
     if (tab === 'map') {
       panel.classList.remove('open');
+      if (guideMap) guideMap.style.display = '';
       if (map) map.invalidateSize();
     } else if (tab === 'story') {
+      if (guideMap) guideMap.style.display = 'none';
       openPanel('剧情章节', renderStoryContent(), 'story');
     } else if (tab === 'plan') {
+      if (guideMap) guideMap.style.display = 'none';
       openPanel('我的计划', renderPlanContent(), 'plan');
     } else if (tab === 'bookmarks') {
+      if (guideMap) guideMap.style.display = 'none';
       openPanel('个人', renderProfileContent(), 'bookmarks');
     }
   }
@@ -309,6 +314,8 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
 
   function closePanel() {
     document.getElementById('overlay-panel').classList.remove('open');
+    var guideMap = document.getElementById('guide-btn-map');
+    if (guideMap) guideMap.style.display = '';
     switchTab('map');
   }
 
@@ -774,16 +781,24 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     h += '</div>';
 
     if (planState.planMode === 'manual') {
-      // Day tabs
+      // Day tabs (PWA-style: pill with label + × delete)
       h += '<div style="display:flex;align-items:center;gap:4px;padding:8px 10px;overflow-x:auto;border-bottom:1px solid #eee;">';
       h += '<span style="font-size:11px;font-weight:600;color:#999;margin-right:2px;white-space:nowrap;">日程</span>';
       schedule.days.forEach(function(d, di) {
         var active = di === planState.currentDayIdx;
         var cnt = d.blocks.length;
-        h += '<button class="sched-day-btn" data-di="'+di+'" style="padding:4px 10px;border-radius:999px;border:none;font-size:10px;font-weight:'+(active?'600':'400')+';background:'+(active?'#1c1917':'rgba(0,0,0,0.06)')+';color:'+(active?'#fff':'#666')+';cursor:pointer;white-space:nowrap;flex-shrink:0;">'+d.label+(cnt>0?' ·'+cnt:'')+'</button>';
+        var bg = active ? '#1c1917' : 'rgba(0,0,0,0.06)';
+        var fg = active ? '#fff' : '#666';
+        h += '<div style="display:flex;align-items:center;flex-shrink:0;border-radius:999px;background:'+bg+';overflow:hidden;">';
+        h += '<button class="sched-day-btn" data-di="'+di+'" style="padding:4px 7px;border:none;font-size:10px;font-weight:'+(active?'600':'500')+';background:transparent;color:'+fg+';cursor:pointer;white-space:nowrap;">'+d.label+(cnt>0?' ·'+cnt:'')+'</button>';
+        if (schedule.days.length > 1) {
+          h += '<span style="color:'+fg+';opacity:0.2;font-size:10px;">|</span>';
+          h += '<button class="sched-del-day" data-di="'+di+'" style="padding:4px 5px;border:none;background:transparent;color:'+fg+';cursor:pointer;font-size:10px;line-height:1;opacity:0.5;">×</button>';
+        }
+        h += '</div>';
       });
       if (schedule.days.length < 7) {
-        h += '<button id="plan-add-day" style="width:26px;height:26px;border-radius:50%;border:1.5px dashed #ddd;background:none;color:#999;font-size:16px;cursor:pointer;flex-shrink:0;">+</button>';
+        h += '<button id="plan-add-day" style="flex-shrink:0;width:26px;height:26px;border-radius:50%;border:1.5px dashed #ddd;background:none;color:#999;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>';
       }
       h += '</div>';
 
@@ -1011,6 +1026,20 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       btn.onclick = function() {
         planState.currentDayIdx = parseInt(btn.dataset.di);
         planState.selectedLocId = null;
+        panel.querySelector('.panel-body').innerHTML = renderPlanContent();
+        rebind();
+      };
+    });
+
+    // Delete day
+    panel.querySelectorAll('.sched-del-day').forEach(function(btn) {
+      btn.onclick = function(e) {
+        e.stopPropagation();
+        var di = parseInt(btn.dataset.di);
+        if (schedule.days.length <= 1) return;
+        schedule.days.splice(di, 1);
+        if (planState.currentDayIdx >= schedule.days.length) planState.currentDayIdx = schedule.days.length - 1;
+        Storage.set('schedule', schedule);
         panel.querySelector('.panel-body').innerHTML = renderPlanContent();
         rebind();
       };

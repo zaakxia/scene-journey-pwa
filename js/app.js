@@ -1767,7 +1767,7 @@ window.App = { showToast: null };
 
       var bookmarks = Storage.getBookmarks();
       var checkins = Storage.getCheckins();
-      var profile = Storage.get('profile') || { nickname: '用户', avatar: '' };
+      var profile = Storage.get('profile') || { nickname: '用户登录', avatar: '' };
       var locs = locations.filter(function(l) { return bookmarks.indexOf(l.id) >= 0; });
       var checkedLocs = locs.filter(function(l) { return checkins[l.id]; });
       // Path map needs ALL check-ins, not just bookmarked ones
@@ -1789,25 +1789,23 @@ window.App = { showToast: null };
       });
       timeline.sort(function(a, b) { return b.ts - a.ts; });
 
-      var h = '<div style="padding:12px 12px 100px;">';
+      var h = '<div style="padding:12px 12px 100px;text-align:center;">';
 
-      // ── Profile row (compact, like Google Maps) ──
-      h += '<div style="display:flex;align-items:center;gap:12px;padding:8px 4px 14px;border-bottom:1px solid var(--color-border);margin-bottom:14px;">';
-      h += '<div id="profile-avatar" style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;overflow:hidden;">';
+      // ── Profile row (centered) ──
+      h += '<div style="display:flex;flex-direction:column;align-items:center;padding:8px 4px 14px;border-bottom:1px solid var(--color-border);margin-bottom:14px;">';
+      h += '<div id="profile-avatar" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;margin-bottom:8px;">';
       if (profile.avatar) {
         h += '<img src="' + profile.avatar + '" style="width:100%;height:100%;object-fit:cover;">';
       } else {
-        h += '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+        h += '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
       }
       h += '</div>';
-      h += '<div style="flex:1;min-width:0;">';
       h += '<div id="profile-nickname" style="font-weight:600;font-size:16px;color:#1c1917;cursor:pointer;">' + profile.nickname + '</div>';
-      h += '<div style="font-size:12px;color:var(--color-text-secondary);margin-top:1px;">' + checked + '次打卡 · ' + cityCount + '座城市</div>';
-      h += '</div>';
+      h += '<div style="font-size:12px;color:var(--color-text-secondary);margin-top:2px;">' + checked + '次打卡 · ' + cityCount + '座城市 · ' + bookmarks.length + '个收藏</div>';
       h += '</div>';
 
-      // ── Saved chips (horizontal scroll, Google Maps style) ──
-      h += '<div style="display:flex;gap:8px;overflow-x:auto;padding:0 0 14px;scrollbar-width:none;">';
+      // ── Stats chips (centered) ──
+      h += '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:0 0 14px;">';
       h += '<div style="flex-shrink:0;min-width:100px;padding:12px 14px;border-radius:12px;background:#f2f7fb;border:1px solid rgba(0,0,0,0.04);">';
       h += '<div style="display:flex;align-items:center;gap:6px;">';
       h += '<span>' + Icons.star + '</span>';
@@ -1882,7 +1880,19 @@ window.App = { showToast: null };
       if (locs.length >= 2) {
         h += '<button class="btn btn-outline btn-block btn-sm" id="btn-go-plan" style="width:100%;margin-bottom:24px;">' + Icons.iconLabel('map', '我的行程') + '</button>';
       }
-      h += '<div style="text-align:center;padding:8px 0 20px;border-top:1px solid var(--color-border);">';
+      // ── Footer ──
+      h += '<div style="text-align:center;padding:16px 0 20px;border-top:1px solid var(--color-border);margin-top:16px;">';
+      h += '<div style="font-size:11px;color:var(--color-text-secondary);line-height:1.8;">';
+      h += '<p style="margin:0 0 8px;">📧 联系邮箱：2062527951@qq.com</p>';
+      h += '<div style="background:#fafaf8;border-radius:8px;padding:10px;margin:8px 0;text-align:left;font-size:10px;line-height:1.6;">';
+      h += '<p style="font-weight:700;margin:0 0 4px;color:#1c1917;">📢 公告</p>';
+      h += '<p style="margin:0;color:var(--color-text-secondary);">欢迎使用圣地巡礼！在地图上探索取景地，收藏感兴趣的景点，使用计划功能规划你的巡礼路线。';
+      h += '点击取景地可查看详情、实景照片和原著原文摘录，打卡记录会在个人页形成时间轴。';
+      h += '建议优先使用HERE引擎查询海外路线，高德引擎仅限中国大陆。如有问题或建议，欢迎邮件反馈。</p>';
+      h += '</div>';
+      h += '<p style="margin:0;font-size:10px;color:var(--color-faint);">更新日期：2026-05-13</p>';
+      h += '</div>';
+      h += '<div style="text-align:center;padding:4px 0 20px;">';
       h += '<span style="font-size:10px;color:var(--color-text-secondary);">数据</span>';
       h += '<span id="btn-export" style="font-size:10px;color:var(--color-primary);cursor:pointer;margin:0 10px;">导出备份</span>';
       h += '<span style="font-size:10px;color:var(--color-border);">|</span>';

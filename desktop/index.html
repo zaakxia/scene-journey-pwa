@@ -193,6 +193,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
   <nav class="leftbar" id="leftbar">
     <a href="?" class="ltab" title="返回首页" style="text-decoration:none;margin-bottom:8px;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12l9-9 9 9"/><path d="M9 21V12h6v9"/></svg>
+      <span style="font-size:10px;">首页</span>
     </a>
     <div class="book-title-vertical" id="book-title-v">龙族·圣地巡礼</div>
     <div class="bar-divider"></div>
@@ -415,8 +416,8 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       + '</div>'
       // Actions
       + '<div class="loc-actions">'
-      + '<button class="btn-action'+(isFav?' primary':'')+'" onclick="event.stopPropagation();if(Storage.isBookmarked(\''+loc.id+'\')){Storage.removeBookmark(\''+loc.id+'\');}else{Storage.addBookmark(\''+loc.id+'\');}openDetail(window._currentLoc);updateBadge();showLocations(locations);">'+(isFav?'★ 已收藏':'☆ 收藏')+'</button>'
-      + '<button class="btn-action'+(isChecked?' primary':'')+'" onclick="event.stopPropagation();var c=Storage.getCheckins();if(c[\''+loc.id+'\']){delete c[\''+loc.id+'\'];Storage.set(\'checkins\',c);}else{c[\''+loc.id+'\']={timestamp:Date.now()};Storage.set(\'checkins\',c);}openDetail(window._currentLoc);updateBadge();showLocations(locations);">'+(isChecked?'✓ 已打卡':'○ 打卡')+'</button>'
+      + '<button class="btn-action'+(isFav?' primary':'')+'" onclick="event.stopPropagation();var b=this;if(Storage.isBookmarked(\''+loc.id+'\')){Storage.removeBookmark(\''+loc.id+'\');b.className=\'btn-action\';b.textContent=\'☆ 收藏\';}else{Storage.addBookmark(\''+loc.id+'\');b.className=\'btn-action primary\';b.textContent=\'★ 已收藏\';}updateBadge();showLocations(locations);">'+(isFav?'★ 已收藏':'☆ 收藏')+'</button>'
+      + '<button class="btn-action'+(isChecked?' primary':'')+'" onclick="event.stopPropagation();var b=this;var c=Storage.getCheckins();if(c[\''+loc.id+'\']){delete c[\''+loc.id+'\'];Storage.set(\'checkins\',c);b.className=\'btn-action\';b.textContent=\'○ 打卡\';}else{c[\''+loc.id+'\']={timestamp:Date.now()};Storage.set(\'checkins\',c);b.className=\'btn-action primary\';b.textContent=\'✓ 已打卡\';}updateBadge();showLocations(locations);">'+(isChecked?'✓ 已打卡':'○ 打卡')+'</button>'
       + '<button class="btn-action" onclick="event.stopPropagation();window.open(\'https://www.google.com/maps/dir/?api=1&destination=\'+window._currentLoc.coordinates.lat+\',\'+window._currentLoc.coordinates.lng,\'_blank\');">🧭 导航</button>'
       + '</div></div>';
 
@@ -1107,7 +1108,84 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
   function renderProfileContent() {
     var checkins = Storage.getCheckins(), bookmarks = Storage.getBookmarks();
     var checked = Object.keys(checkins).length;
-    return '<div class="profile-content"><div style="font-weight:600;font-size:15px;margin-bottom:6px;">用户</div><div style="font-size:13px;color:var(--color-muted);">已打卡 '+checked+' 次 &middot; 收藏 '+bookmarks.length+' 个</div></div>';
+    var profile = Storage.get('profile') || { nickname: '用户登录', avatar: '' };
+    var checkedLocs = locations.filter(function(l) { return checkins[l.id]; });
+    var cities = {};
+    checkedLocs.forEach(function(l) { cities[l.city] = true; });
+    var cityCount = Object.keys(cities).length;
+
+    // Build timeline
+    var timeline = [];
+    Object.keys(checkins).forEach(function(lid) {
+      var loc = locations.find(function(l) { return l.id === lid; });
+      if (loc) timeline.push({ loc: loc, ts: checkins[lid].timestamp });
+    });
+    timeline.sort(function(a, b) { return b.ts - a.ts; });
+
+    var h = '<div class="profile-content" style="text-align:center;padding:16px;">';
+
+    // Avatar
+    h += '<div id="profile-avatar-d" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#b91c1c,#991b1b);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;margin-bottom:8px;" onclick="var i=document.createElement(\'input\');i.type=\'file\';i.accept=\'image/*\';i.onchange=function(e){var f=e.target.files[0];if(f){var r=new FileReader();r.onload=function(){var p=Storage.get(\'profile\')||{};p.avatar=r.result;Storage.set(\'profile\',p);renderProfileContent();openPanel(\'个人\',renderProfileContent());};r.readAsDataURL(f);}};i.click();">';
+    if (profile.avatar) {
+      h += '<img src="'+profile.avatar+'" style="width:100%;height:100%;object-fit:cover;">';
+    } else {
+      h += '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+    }
+    h += '</div>';
+
+    // Nickname
+    h += '<div id="profile-nickname-d" style="font-weight:600;font-size:16px;color:#1c1917;cursor:pointer;margin-bottom:4px;" onclick="var n=prompt(\'输入昵称\',this.textContent);if(n){var p=Storage.get(\'profile\')||{};p.nickname=n;Storage.set(\'profile\',p);renderProfileContent();openPanel(\'个人\',renderProfileContent());}">'+profile.nickname+'</div>';
+    h += '<div style="font-size:12px;color:#8b7e6b;margin-bottom:16px;">'+checked+'次打卡 · '+cityCount+'座城市 · '+bookmarks.length+'个收藏</div>';
+
+    // Stats cards
+    h += '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">';
+    h += '<div style="min-width:90px;padding:10px 12px;border-radius:10px;background:#f2f7fb;">';
+    h += '<div style="font-size:10px;color:#8b7e6b;">☆ 想去</div>';
+    h += '<div style="font-size:20px;font-weight:700;color:#1c1917;">'+bookmarks.length+'</div></div>';
+    h += '<div style="min-width:90px;padding:10px 12px;border-radius:10px;background:#f0faf3;">';
+    h += '<div style="font-size:10px;color:#8b7e6b;">✓ 已打卡</div>';
+    h += '<div style="font-size:20px;font-weight:700;color:#1c1917;">'+checked+'<span style="font-size:13px;font-weight:400;color:#8b7e6b;">/'+locations.length+'</span></div></div>';
+    h += '</div>';
+
+    // Timeline
+    h += '<div style="text-align:left;margin-bottom:12px;">';
+    h += '<div style="font-weight:700;font-size:13px;color:#1c1917;margin-bottom:8px;">时间轴</div>';
+    if (timeline.length === 0) {
+      h += '<div style="font-size:11px;color:#8b7e6b;padding:12px;text-align:center;">还没有打卡记录</div>';
+    } else {
+      var lastDate = '';
+      timeline.forEach(function(entry) {
+        var d = new Date(entry.ts);
+        var dateStr = d.toISOString().slice(0, 10);
+        var today = new Date().toISOString().slice(0, 10);
+        var yesterday = new Date(Date.now()-86400000).toISOString().slice(0, 10);
+        var label = dateStr===today ? '今天' : dateStr===yesterday ? '昨天' : (d.getMonth()+1)+'月'+d.getDate()+'日';
+        if (dateStr !== lastDate) {
+          h += '<div style="font-size:11px;font-weight:700;color:#1c1917;padding:6px 0 4px;">'+label+'</div>';
+          lastDate = dateStr;
+        }
+        var timeStr = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+        var loc = entry.loc;
+        h += '<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;margin-bottom:2px;background:#fafaf8;border-radius:6px;">';
+        h += '<div style="width:24px;height:24px;border-radius:50%;background:#b91c1c;display:flex;align-items:center;justify-content:center;flex-shrink:0;">';
+        h += '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>';
+        h += '<div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:12px;">'+loc.name_zh+'</div>';
+        h += '<div style="font-size:10px;color:#8b7e6b;">'+loc.city+'</div></div>';
+        h += '<div style="font-size:10px;color:#8b7e6b;">'+timeStr+'</div></div>';
+      });
+    }
+    h += '</div>';
+
+    // Footer
+    h += '<div style="font-size:11px;color:#8b7e6b;text-align:center;padding-top:12px;border-top:1px solid #e8e4df;margin-top:8px;">';
+    h += '<p style="margin:0 0 4px;">📧 2062527951@qq.com</p>';
+    h += '<div style="background:#fafaf8;border-radius:6px;padding:8px;margin:8px 0;text-align:left;font-size:10px;line-height:1.6;color:#8b7e6b;">';
+    h += '<p style="font-weight:700;margin:0 0 4px;color:#1c1917;">📢 公告</p>';
+    h += '<p style="margin:0;">欢迎使用圣地巡礼！在地图上探索取景地，使用计划功能规划巡礼路线。打卡记录会在此形成时间轴。HERE引擎查询海外路线，高德引擎仅限中国大陆。</p></div>';
+    h += '<p style="margin:0;font-size:10px;">更新日期：2026-05-13</p>';
+    h += '</div>';
+    h += '</div>';
+    return h;
   }
 
   function updateBadge() {

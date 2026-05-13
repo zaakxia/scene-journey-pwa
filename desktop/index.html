@@ -19,7 +19,7 @@
   --color-faint: #c4bdb0;
   --color-red: #b91c1c;
   --color-border: #e8e4df;
-  --leftbar-w: 52px;
+  --leftbar-w: 72px;
   --panel-w: 430px;
 }
 
@@ -54,7 +54,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
   font-size: 10px; color: rgba(28,25,23,0.45);
   padding: 6px 4px; transition: all 0.15s; margin-bottom: 2px;
 }
-.leftbar .ltab svg { width: 18px; height: 18px; color: rgba(28,25,23,0.45); }
+.leftbar .ltab svg { width: 26px; height: 26px; color: rgba(28,25,23,0.45); }
 .leftbar .ltab:hover { background: rgba(0,0,0,0.04); color: rgba(28,25,23,0.7); }
 .leftbar .ltab:hover svg { color: rgba(28,25,23,0.7); }
 .leftbar .ltab.active { color: rgba(28,25,23,0.9); background: rgba(0,0,0,0.06); }
@@ -191,6 +191,9 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
 <div class="app-shell">
   <!-- ═══ LEFT BAR ═══ -->
   <nav class="leftbar" id="leftbar">
+    <a href="?" class="ltab" title="返回首页" style="text-decoration:none;margin-bottom:8px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12l9-9 9 9"/><path d="M9 21V12h6v9"/></svg>
+    </a>
     <div class="book-title-vertical" id="book-title-v">龙族·圣地巡礼</div>
     <div class="bar-divider"></div>
     <button class="ltab active" data-tab="map" title="地图">
@@ -205,16 +208,12 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
       剧情
     </button>
-    <button class="ltab" data-tab="bookmarks" title="巡礼">
+    <button class="ltab" data-tab="bookmarks" title="个人">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      巡礼
+      个人
       <span class="badge hidden" id="ltab-badge">0</span>
     </button>
     <div class="bar-spacer"></div>
-    <a href="?" class="ltab" title="返回首页" style="text-decoration:none;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M9 21V12h6v9"/></svg>
-      首页
-    </a>
   </nav>
 
   <!-- ═══ MAP ZONE ═══ -->
@@ -267,7 +266,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     } else if (tab === 'plan') {
       openPanel('我的计划', renderPlanContent());
     } else if (tab === 'bookmarks') {
-      openPanel('巡礼', renderProfileContent());
+      openPanel('个人', renderProfileContent());
     }
   }
 
@@ -416,8 +415,8 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       + '</div>'
       // Actions
       + '<div class="loc-actions">'
-      + '<button class="btn-action'+(isFav?' primary':'')+'" onclick="event.stopPropagation();var favs=Storage.getBookmarks();var idx=favs.indexOf(\''+loc.id+'\');if(idx>=0)favs.splice(idx,1);else favs.push(\''+loc.id+'\');Storage.set(\'sj_bookmarks\',favs);openDetail(window._currentLoc);updateBadge();showLocations(locations);">'+(isFav?'★ 已收藏':'☆ 收藏')+'</button>'
-      + '<button class="btn-action'+(isChecked?' primary':'')+'" onclick="event.stopPropagation();var chk=Storage.getCheckins();if(chk[\''+loc.id+'\'])delete chk[\''+loc.id+'\'];else chk[\''+loc.id+'\']={timestamp:Date.now()};Storage.set(\'sj_checkins_\'+(document.documentElement.dataset.book||\'dragon-raja\'),chk);openDetail(window._currentLoc);updateBadge();showLocations(locations);">'+(isChecked?'✓ 已打卡':'○ 打卡')+'</button>'
+      + '<button class="btn-action'+(isFav?' primary':'')+'" onclick="event.stopPropagation();if(Storage.isBookmarked(\''+loc.id+'\')){Storage.removeBookmark(\''+loc.id+'\');}else{Storage.addBookmark(\''+loc.id+'\');}openDetail(window._currentLoc);updateBadge();showLocations(locations);">'+(isFav?'★ 已收藏':'☆ 收藏')+'</button>'
+      + '<button class="btn-action'+(isChecked?' primary':'')+'" onclick="event.stopPropagation();var c=Storage.getCheckins();if(c[\''+loc.id+'\']){delete c[\''+loc.id+'\'];Storage.set(\'checkins\',c);}else{c[\''+loc.id+'\']={timestamp:Date.now()};Storage.set(\'checkins\',c);}openDetail(window._currentLoc);updateBadge();showLocations(locations);">'+(isChecked?'✓ 已打卡':'○ 打卡')+'</button>'
       + '<button class="btn-action" onclick="event.stopPropagation();window.open(\'https://www.google.com/maps/dir/?api=1&destination=\'+window._currentLoc.coordinates.lat+\',\'+window._currentLoc.coordinates.lng,\'_blank\');">🧭 导航</button>'
       + '</div></div>';
 
@@ -1108,7 +1107,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
   function renderProfileContent() {
     var checkins = Storage.getCheckins(), bookmarks = Storage.getBookmarks();
     var checked = Object.keys(checkins).length;
-    return '<div class="profile-content"><div style="font-weight:600;font-size:15px;margin-bottom:6px;">巡礼者</div><div style="font-size:13px;color:var(--color-muted);">已打卡 '+checked+' 次 &middot; 收藏 '+bookmarks.length+' 个</div></div>';
+    return '<div class="profile-content"><div style="font-weight:600;font-size:15px;margin-bottom:6px;">用户</div><div style="font-size:13px;color:var(--color-muted);">已打卡 '+checked+' 次 &middot; 收藏 '+bookmarks.length+' 个</div></div>';
   }
 
   function updateBadge() {

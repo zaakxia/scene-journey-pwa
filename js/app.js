@@ -1767,7 +1767,7 @@ window.App = { showToast: null };
 
       var bookmarks = Storage.getBookmarks();
       var checkins = Storage.getCheckins();
-      var profile = Storage.get('profile') || { nickname: '巡礼者', avatar: '' };
+      var profile = Storage.get('profile') || { nickname: '用户', avatar: '' };
       var locs = locations.filter(function(l) { return bookmarks.indexOf(l.id) >= 0; });
       var checkedLocs = locs.filter(function(l) { return checkins[l.id]; });
       // Path map needs ALL check-ins, not just bookmarked ones

@@ -381,15 +381,36 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     var checkins = Storage.getCheckins(), bookmarks = Storage.getBookmarks();
     var isChecked = !!checkins[loc.id], isFav = bookmarks.includes(loc.id);
     var book = document.documentElement.dataset.book || 'dragon-raja';
-    var photoUrl = loc.photos && loc.photos.length > 0
-      ? '../assets/images/ip/' + book + '/photos/' + loc.photos[0].filename
-      : '../assets/images/ui/placeholder-photo.svg';
+    var photoUrl = loc.real_photo || '../assets/images/ui/placeholder-photo.svg';
+    var categoryZH = typeof Format !== 'undefined' && Format.category ? Format.category(loc.category) : loc.category || '';
+    var accessZH = typeof Format !== 'undefined' && Format.accessibility ? Format.accessibility(loc.accessibility) : '';
+    var toTime = function(s) { var h=Math.floor(s/2); var m=(s%2)*30; return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'); };
 
     var html = '<div class="detail-content">'
-      + '<img class="loc-image" src="'+photoUrl+'" alt="'+loc.name_zh+'" onerror="this.src=\'../assets/images/ui/placeholder-photo.svg\'">'
+      // Hero photo
+      + '<div style="margin-bottom:12px;">'
+      + '<img class="loc-image" src="'+photoUrl+'" alt="'+loc.name_zh+'" onerror="this.onerror=null;this.src=\'../assets/images/ui/placeholder-photo.svg\'">'
+      + '<div class="card-photo-label">实地照片 · '+loc.name_zh+'</div>'
+      + (loc.visit_duration ? '<div class="card-photo-duration">建议游玩: '+loc.visit_duration+'</div>' : '')
+      + '</div>'
+      // Header
       + '<div class="loc-name">'+loc.name_zh+'</div>'
-      + '<div class="loc-city">'+loc.city+(loc.name_en?' &middot; '+loc.name_en:'')+'</div>'
-      + (loc.description ? '<div class="loc-desc">'+loc.description+'</div>' : '')
+      + '<div class="loc-city">'+loc.city+(loc.name_local?' · '+loc.name_local:'')+'</div>'
+      // Novel excerpt
+      + (loc.novel_excerpt ? '<div style="margin:12px 0;padding:10px;background:rgba(0,0,0,0.03);border-radius:8px;font-size:12px;line-height:1.8;">'+loc.novel_excerpt.replace(/\n/g,'<br>')+'</div>' : '')
+      // Tags
+      + '<div class="location-meta" style="margin-top:8px;">'
+      + (loc.popularity ? '<span class="tag tag-accent">★ ×'+loc.popularity+'</span>' : '')
+      + (categoryZH ? '<span class="tag">'+categoryZH+'</span>' : '')
+      + (accessZH ? '<span class="tag">'+accessZH+'</span>' : '')
+      + (loc.city ? '<span class="tag tag-info">'+loc.city+'</span>' : '')
+      + (loc.visit_duration ? '<span class="tag">⏱ '+loc.visit_duration+'</span>' : '')
+      + '</div>'
+      // Address info
+      + '<div style="margin:8px 0;font-size:11px;color:var(--color-text-secondary);">'
+      + '📍 '+ (loc.address || '') + (loc.nearest_station ? ' · 最近站: '+loc.nearest_station : '')
+      + '</div>'
+      // Actions
       + '<div class="loc-actions">'
       + '<button class="btn-action'+(isFav?' primary':'')+'" id="btn-fav">'+(isFav?'★ 已收藏':'☆ 收藏')+'</button>'
       + '<button class="btn-action'+(isChecked?' primary':'')+'" id="btn-check">'+(isChecked?'✓ 已打卡':'○ 打卡')+'</button>'
@@ -1127,7 +1148,30 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     });
 
     var params = new URLSearchParams(location.search);
-    var bookId = params.get('book') || 'dragon-raja';
+    var bookId = params.get('book');
+    if (!bookId) {
+      // Show book selection page
+      DataLoader.loadIPIndex().then(function(books) {
+        books.sort(function(a,b){ return a.book_number - b.book_number; });
+        var html = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#faf8f5 0%,#f0ede6 100%);">';
+        html += '<div style="text-align:center;max-width:900px;padding:40px;">';
+        html += '<h1 style="font-family:KaiTi,STKaiti,Songti SC,serif;font-size:36px;color:#1c1917;margin-bottom:8px;">圣地巡礼</h1>';
+        html += '<p style="color:#8b7e6b;font-size:14px;margin-bottom:40px;">探索文学与动漫世界的真实取景地</p>';
+        html += '<div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;">';
+        books.forEach(function(book) {
+          html += '<a href="?book='+book.book_id+'" style="display:block;width:240px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;" onmouseover="this.style.transform=\'translateY(-4px)\';this.style.boxShadow=\'0 8px 32px rgba(0,0,0,0.12)\'" onmouseout="this.style.transform=\'\';this.style.boxShadow=\'\'">';
+          html += '<img src="'+book.cover+'" alt="'+book.subtitle+'" style="width:100%;height:180px;object-fit:cover;" onerror="this.src=\'assets/images/ui/placeholder-scene.svg\'">';
+          html += '<div style="padding:16px;">';
+          html += '<div style="font-size:16px;font-weight:700;color:#1c1917;">'+book.subtitle+'</div>';
+          html += '<div style="font-size:12px;color:#8b7e6b;margin-top:4px;">'+book.book_title_zh+'</div>';
+          html += '<div style="font-size:11px;color:#c4bdb0;margin-top:4px;">'+book.location_count+'个取景地 · '+book.country+'</div>';
+          html += '</div></a>';
+        });
+        html += '</div></div></div>';
+        document.body.innerHTML = html;
+      });
+      return; // Stop — book selection page, no map
+    }
     document.documentElement.dataset.book = bookId;
     Storage.init(bookId);
 

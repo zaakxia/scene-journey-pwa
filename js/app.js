@@ -707,8 +707,8 @@ window.App = { showToast: null };
         // Transit toggle
         h += '<span style="margin-left:auto;display:flex;align-items:center;gap:4px;flex-shrink:0;">';
         h += '<span style="font-size:11px;font-weight:600;color:var(--color-text-secondary);">交通</span>';
-        h += '<button id="sched-toggle-transit" style="padding:3px 8px;border-radius:999px;border:1px solid var(--color-border);font-size:11px;font-weight:600;background:' + (useAmap ? 'var(--color-primary)' : 'var(--color-border)') + ';color:' + (useAmap ? '#fff' : 'var(--color-text-secondary)') + ';cursor:pointer;">' + (useAmap ? '高德' : 'OSRM') + '</button>';
-        h += '<button id="sched-alt-engine" style="padding:3px 6px;border-radius:999px;border:1px solid var(--color-border);font-size:10px;font-weight:500;background:#fff;color:var(--color-text-secondary);cursor:pointer;">' + (useAmap ? 'OSRM' : '高德') + '</button>';
+        h += '<button id="sched-toggle-transit" style="padding:3px 8px;border-radius:999px;border:1px solid var(--color-border);font-size:11px;font-weight:600;background:' + (useAmap ? 'var(--color-primary)' : 'var(--color-border)') + ';color:' + (useAmap ? '#fff' : 'var(--color-text-secondary)') + ';cursor:pointer;">' + (useAmap ? '高德' : 'HERE') + '</button>';
+        h += '<button id="sched-alt-engine" style="padding:3px 6px;border-radius:999px;border:1px solid var(--color-border);font-size:10px;font-weight:500;background:#fff;color:var(--color-text-secondary);cursor:pointer;">' + (useAmap ? 'HERE' : '高德') + '</button>';
         h += '</span>';
         h += '</div>';
 
@@ -1304,7 +1304,7 @@ window.App = { showToast: null };
         var btnTransit = container.querySelector('#sched-toggle-transit');
         if (btnTransit) {
           btnTransit.onclick = function() {
-            openTransitModal(useAmap ? 'amap' : 'osrm');
+            openTransitModal(useAmap ? 'amap' : 'here');
           };
         }
         // Alt engine button — switches engine, clears cache, reprefetch
@@ -1347,15 +1347,15 @@ window.App = { showToast: null };
           } else {
             modeHTML = ''
               + '<div style="display:flex;gap:6px;margin-bottom:6px;">'
-              + '<button id="modal-osrm-query" style="flex:1;padding:12px;border-radius:8px;border:none;background:var(--color-primary);color:#fff;font-size:13px;font-weight:600;cursor:pointer;">驾车</button>'
-              + '<button id="modal-osrm-transit" style="flex:1;padding:12px;border-radius:8px;border:1px solid var(--color-primary);background:#fff;color:var(--color-primary);font-size:13px;font-weight:600;cursor:pointer;">公交(估算)</button>'
+              + '<button id="modal-here-query" style="flex:1;padding:12px;border-radius:8px;border:none;background:var(--color-primary);color:#fff;font-size:13px;font-weight:600;cursor:pointer;">HERE驾车</button>'
+              + '<button id="modal-here-transit" style="flex:1;padding:12px;border-radius:8px;border:1px solid var(--color-primary);background:#fff;color:var(--color-primary);font-size:13px;font-weight:600;cursor:pointer;">HERE公交</button>'
               + '</div>'
-              + '<div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:12px;">基于OSM路网理论畅通时间。公交为驾车×1.6（据UITP/INRIX：含步行到站+候车+换乘）</div>';
+              + '<div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:12px;">HERE Maps 全球路线（驾车/公交/步行），高德覆盖中国</div>';
           }
 
           box.innerHTML = ''
             + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">'
-            + '<span style="font-weight:700;font-size:16px;">' + (isAmap ? '高德路线规划' : 'OSRM 路线查询') + '</span>'
+            + '<span style="font-weight:700;font-size:16px;">' + (isAmap ? '高德路线规划' : 'HERE 路线查询') + '</span>'
             + '<button id="modal-close" style="border:none;background:none;font-size:20px;cursor:pointer;color:var(--color-text-secondary);padding:4px;">×</button>'
             + '</div>'
             + '<div style="margin-bottom:10px;"><label style="font-size:12px;color:var(--color-text-secondary);">出发地</label>'
@@ -1387,26 +1387,26 @@ window.App = { showToast: null };
               };
             });
           } else {
-            // OSRM: driving query button
-            var osrmBtn = document.getElementById('modal-osrm-query');
-            if (osrmBtn) {
-              osrmBtn.onclick = function() {
+            // HERE: driving query button
+            var hereBtn = document.getElementById('modal-here-query');
+            if (hereBtn) {
+              hereBtn.onclick = function() {
                 var fromId = document.getElementById('modal-from').value;
                 var toId = document.getElementById('modal-to').value;
                 if (fromId === toId) { sameLocErr(); return; }
-                document.getElementById('modal-result').innerHTML = '查询中...';
-                fetchOSRMMode(fromId, toId, 'driving');
+                document.getElementById('modal-result').innerHTML = '查询HERE驾车...';
+                fetchHEREMode(fromId, toId, 'driving');
               };
             }
-            // OSRM: transit estimate button
-            var osrmTransitBtn = document.getElementById('modal-osrm-transit');
-            if (osrmTransitBtn) {
-              osrmTransitBtn.onclick = function() {
+            // HERE: transit query button
+            var hereTransitBtn = document.getElementById('modal-here-transit');
+            if (hereTransitBtn) {
+              hereTransitBtn.onclick = function() {
                 var fromId = document.getElementById('modal-from').value;
                 var toId = document.getElementById('modal-to').value;
                 if (fromId === toId) { sameLocErr(); return; }
-                document.getElementById('modal-result').innerHTML = '查询驾车时间后换算...';
-                fetchOSRMMode(fromId, toId, 'transit');
+                document.getElementById('modal-result').innerHTML = '查询HERE公交...';
+                fetchHEREMode(fromId, toId, 'transit');
               };
             }
           }
@@ -1458,55 +1458,55 @@ window.App = { showToast: null };
             });
           }
 
-          function fetchOSRMMode(fromId, toId, mode) {
+          function fetchHEREMode(fromId, toId, mode) {
             var isTransit = mode === 'transit';
             var fromLoc = locById(fromId), toLoc = locById(toId);
             if (!fromLoc || !toLoc) return;
             var cacheKey = fromId + '|' + toId;
-            // For transit: check if we already have driving time cached
-            if (isTransit && transitDetail[cacheKey] && transitDetail[cacheKey].engine === 'osrm') {
-              applyTransit(cacheKey, transitDetail[cacheKey].minutes, fromLoc, toLoc);
-              return;
-            }
-            var coords = fromLoc.coordinates.lng + ',' + fromLoc.coordinates.lat + ';'
-                       + toLoc.coordinates.lng   + ',' + toLoc.coordinates.lat;
-            var url = 'https://router.project-osrm.org/route/v1/driving/' + coords + '?overview=false';
-            fetch(url).then(function(r) { return r.json(); }).then(function(data) {
-              var resultEl = document.getElementById('modal-result');
-              if (data && data.code === 'Ok' && data.routes && data.routes[0]) {
-                var dist = data.routes[0].distance / 1000;
-                var dur  = Math.round(data.routes[0].duration / 60);
-                if (isTransit) {
-                  applyTransit(cacheKey, dur, fromLoc, toLoc);
-                } else {
-                  var ceilSlots = Math.ceil(dur / 30);
+            if (isTransit) {
+              fetchHERETransit(fromLoc, toLoc, cacheKey, function() {
+                var det = transitDetail[cacheKey];
+                if (det && det.minutes) {
+                  var ceilSlots = Math.ceil(det.minutes / 30);
                   transitCache[cacheKey] = ceilSlots;
-                  transitDetail[cacheKey] = { minutes: dur, engine: 'osrm' };
+                  var resultEl = document.getElementById('modal-result');
+                  resultEl.innerHTML = '<div style="background:#fdf2f8;padding:10px;border-radius:8px;">'
+                    + '<span style="font-weight:700;color:#9b2c5e;">HERE 公交</span> '
+                    + '<span>' + det.minutes + '分钟</span>'
+                    + '<div style="margin-top:4px;">' + fromLoc.name_zh + ' → ' + toLoc.name_zh + '</div>'
+                    + '<div style="font-size:10px;color:var(--color-text-secondary);margin-top:2px;">已更新至日程（时间线间隔' + (ceilSlots*30) + '分钟）</div></div>';
+                } else {
+                  document.getElementById('modal-result').innerHTML = '<span style="color:#e63946;">HERE 公交查询失败</span>';
+                }
+              });
+            } else {
+              fetchHERE(fromLoc, toLoc, cacheKey, function() {
+                var det = transitDetail[cacheKey];
+                if (det && det.minutes) {
+                  var ceilSlots = Math.ceil(det.minutes / 30);
+                  transitCache[cacheKey] = ceilSlots;
+                  var resultEl = document.getElementById('modal-result');
                   resultEl.innerHTML = '<div style="background:#f0fdf4;padding:10px;border-radius:8px;">'
-                    + '<span style="font-weight:700;color:#166534;">OSRM 驾车</span> '
-                    + '<span>' + dist.toFixed(1) + 'km · ' + dur + '分钟</span>'
-                  + '<div style="margin-top:4px;display:flex;align-items:center;gap:4px;font-size:11px;color:var(--color-primary);">'
-                  + fromLoc.name_zh + ' <span style="font-size:9px;">→' + dur + 'min→</span> ' + toLoc.name_zh
-                  + '</div>'
-                  + '<div style="font-size:10px;color:var(--color-text-secondary);margin-top:2px;">已更新至日程（时间线间隔' + (ceilSlots*30) + '分钟）</div>'
-                  + '<div style="font-size:10px;color:#d97706;margin-top:2px;">基于OSM静态路网，不含实时路况</div></div>';
-                } // end isTransit else (driving)
-              } else {
-                resultEl.innerHTML = '<span style="color:#e63946;">查询失败，OSRM 暂不支持该路线</span>';
-              }
-            }).catch(function() {
-              document.getElementById('modal-result').innerHTML = '<span style="color:#e63946;">网络错误，OSRM 服务可能不可用</span>';
-            });
+                    + '<span style="font-weight:700;color:#166534;">HERE 驾车</span> '
+                    + '<span>' + det.minutes + '分钟</span>'
+                    + '<div style="margin-top:4px;">' + fromLoc.name_zh + ' → ' + toLoc.name_zh + '</div>'
+                    + '<div style="font-size:10px;color:var(--color-text-secondary);margin-top:2px;">已更新至日程（时间线间隔' + (ceilSlots*30) + '分钟）</div></div>';
+                } else {
+                  document.getElementById('modal-result').innerHTML = '<span style="color:#e63946;">HERE 驾车查询失败</span>';
+                }
+              });
+            }
+            return; // Async — don't fall through
           }
 
           function applyTransit(cacheKey, driveMin, fromLoc, toLoc) {
             var transitMin = Math.round(driveMin * TRANSIT_FACTOR);
             var ceilSlots = Math.ceil(transitMin / 30);
             transitCache[cacheKey] = ceilSlots;
-            transitDetail[cacheKey] = { minutes: transitMin, engine: 'osrm-transit' };
+            transitDetail[cacheKey] = { minutes: transitMin, engine: 'here-transit-est' };
             var resultEl = document.getElementById('modal-result');
             resultEl.innerHTML = '<div style="background:#fdf2f8;padding:10px;border-radius:8px;">'
-              + '<span style="font-weight:700;color:#9b2c5e;">OSRM 公交(估算)</span> '
+              + '<span style="font-weight:700;color:#9b2c5e;">HERE 公交(估算)</span> '
               + '<span>' + transitMin + '分钟</span>'
               + '<div style="margin-top:4px;display:flex;align-items:center;gap:4px;font-size:11px;color:var(--color-primary);">'
               + fromLoc.name_zh + ' <span style="font-size:9px;">→' + transitMin + 'min→</span> ' + toLoc.name_zh

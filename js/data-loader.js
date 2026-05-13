@@ -2,6 +2,16 @@
 const DataLoader = (() => {
   const cache = new Map();
 
+  async function loadIPIndex() {
+    const key = 'ip_index';
+    if (cache.has(key)) return cache.get(key);
+    const resp = await fetch('../data/ip/index.json');
+    if (!resp.ok) throw new Error('Failed to load IP index');
+    const data = await resp.json();
+    cache.set(key, data);
+    return data;
+  }
+
   async function loadIPList() {
     // For MVP, hardcoded. Later: fetch from data/ip/index.json
     return [
@@ -46,5 +56,5 @@ const DataLoader = (() => {
     return colors[idx % colors.length];
   }
 
-  return { loadIPList, loadIPMeta, loadLocations, loadRoutes, getCityColor };
+  return { loadIPIndex, loadIPList, loadIPMeta, loadLocations, loadRoutes, getCityColor };
 })();

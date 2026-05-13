@@ -1171,10 +1171,11 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     });
     timeline.sort(function(a, b) { return b.ts - a.ts; });
 
-    var h = '<div class="profile-content" style="text-align:center;padding:16px;">';
+    var h = '<div class="profile-content" style="padding:16px;">';
 
-    // Avatar
-    h += '<div id="profile-avatar-d" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#b91c1c,#991b1b);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;margin-bottom:8px;" onclick="var i=document.createElement(\'input\');i.type=\'file\';i.accept=\'image/*\';i.onchange=function(e){var f=e.target.files[0];if(f){var r=new FileReader();r.onload=function(){var p=Storage.get(\'profile\')||{};p.avatar=r.result;Storage.set(\'profile\',p);renderProfileContent();openPanel(\'个人\',renderProfileContent());};r.readAsDataURL(f);}};i.click();">';
+    // Avatar (centered)
+    h += '<div style="text-align:center;margin-bottom:16px;">';
+    h += '<div id="profile-avatar-d" style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#b91c1c,#991b1b);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;box-shadow:0 4px 16px rgba(185,28,28,0.2);border:3px solid #fff;" onclick="var i=document.createElement(\'input\');i.type=\'file\';i.accept=\'image/*\';i.onchange=function(e){var f=e.target.files[0];if(f){var r=new FileReader();r.onload=function(){var p=Storage.get(\'profile\')||{};p.avatar=r.result;Storage.set(\'profile\',p);renderProfileContent();openPanel(\'个人\',renderProfileContent());};r.readAsDataURL(f);}};i.click();">';
     if (profile.avatar) {
       h += '<img src="'+profile.avatar+'" style="width:100%;height:100%;object-fit:cover;">';
     } else {
@@ -1182,34 +1183,40 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     }
     h += '</div>';
 
-    // Nickname
-    h += '<div id="profile-nickname-d" style="font-weight:600;font-size:16px;color:#1c1917;cursor:pointer;margin-bottom:4px;" onclick="var n=prompt(\'输入昵称\',this.textContent);if(n){var p=Storage.get(\'profile\')||{};p.nickname=n;Storage.set(\'profile\',p);renderProfileContent();openPanel(\'个人\',renderProfileContent());}">'+profile.nickname+'</div>';
-    h += '<div style="font-size:12px;color:#8b7e6b;margin-bottom:16px;">'+checked+'次打卡 · '+cityCount+'座城市 · '+bookmarks.length+'个收藏</div>';
+    // Nickname (centered)
+    h += '<div id="profile-nickname-d" style="font-weight:700;font-size:17px;color:#1c1917;cursor:pointer;text-align:center;margin-top:8px;" onclick="var n=prompt(\'输入昵称\',this.textContent);if(n){var p=Storage.get(\'profile\')||{};p.nickname=n;Storage.set(\'profile\',p);renderProfileContent();openPanel(\'个人\',renderProfileContent());}">'+profile.nickname+'</div>';
+    h += '<div style="font-size:12px;color:#8b7e6b;text-align:center;margin-bottom:16px;">巡礼'+checked+'次 · '+cityCount+'座城市 · '+bookmarks.length+'个收藏</div>';
+    h += '</div>';
 
-    // Stats cards
-    h += '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">';
-    h += '<div style="min-width:90px;padding:10px 12px;border-radius:10px;background:#f2f7fb;">';
-    h += '<div style="font-size:10px;color:#8b7e6b;">☆ 想去</div>';
-    h += '<div style="font-size:20px;font-weight:700;color:#1c1917;">'+bookmarks.length+'</div></div>';
-    h += '<div style="min-width:90px;padding:10px 12px;border-radius:10px;background:#f0faf3;">';
-    h += '<div style="font-size:10px;color:#8b7e6b;">✓ 已打卡</div>';
-    h += '<div style="font-size:20px;font-weight:700;color:#1c1917;">'+checked+'<span style="font-size:13px;font-weight:400;color:#8b7e6b;">/'+locations.length+'</span></div></div>';
-    // My trip card
+    // Stats cards (travel-themed, full width)
+    h += '<div style="display:flex;gap:10px;padding:0 0 16px;">';
+    h += '<div style="flex:1;padding:14px 12px;border-radius:14px;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:1px solid #bae6fd;text-align:center;">';
+    h += '<div style="font-size:22px;margin-bottom:2px;">☆</div>';
+    h += '<div style="font-size:10px;color:#0c4a6e;font-weight:500;">想去的地点</div>';
+    h += '<div style="font-size:22px;font-weight:800;color:#0c4a6e;margin-top:2px;">'+bookmarks.length+'</div></div>';
+    h += '<div style="flex:1;padding:14px 12px;border-radius:14px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #bbf7d0;text-align:center;">';
+    h += '<div style="font-size:22px;margin-bottom:2px;">✓</div>';
+    h += '<div style="font-size:10px;color:#166534;font-weight:500;">已打卡</div>';
+    h += '<div style="font-size:22px;font-weight:800;color:#166534;margin-top:2px;">'+checked+'<span style="font-size:14px;font-weight:500;">/'+locations.length+'</span></div></div>';
     var sched = Storage.get('schedule');
     if (sched && sched.days) {
       var totalBlocks = 0;
       sched.days.forEach(function(d) { totalBlocks += d.blocks.length; });
-      h += '<div style="min-width:90px;padding:10px 12px;border-radius:10px;background:#fef9f0;margin:0 2px;">';
-      h += '<div style="font-size:10px;color:#8b7e6b;">⏱ 我的行程</div>';
-      h += '<div style="font-size:20px;font-weight:700;color:#1c1917;">'+sched.days.length+'<span style="font-size:13px;font-weight:400;color:#8b7e6b;">天</span></div></div>';
+      h += '<div style="flex:1;padding:14px 12px;border-radius:14px;background:linear-gradient(135deg,#fff7ed,#fed7aa);border:1px solid #fdba74;text-align:center;">';
+      h += '<div style="font-size:22px;margin-bottom:2px;">⏱</div>';
+      h += '<div style="font-size:10px;color:#9a3412;font-weight:500;">我的行程</div>';
+      h += '<div style="font-size:22px;font-weight:800;color:#9a3412;margin-top:2px;">'+sched.days.length+'<span style="font-size:14px;font-weight:500;">天</span></div></div>';
     }
     h += '</div>';
 
     // Timeline
-    h += '<div style="text-align:left;margin-bottom:12px;">';
-    h += '<div style="font-weight:700;font-size:13px;color:#1c1917;margin-bottom:8px;">时间轴</div>';
+    h += '<div style="margin-bottom:12px;">';
+    h += '<div style="font-weight:700;font-size:14px;color:#1c1917;margin-bottom:10px;">📅 时间轴</div>';
     if (timeline.length === 0) {
-      h += '<div style="font-size:11px;color:#8b7e6b;padding:12px;text-align:center;">还没有打卡记录</div>';
+      h += '<div style="text-align:center;padding:20px 16px;background:#fafaf8;border-radius:12px;border:1px dashed #e0dcd5;">';
+      h += '<div style="font-size:28px;margin-bottom:6px;">🗺️</div>';
+      h += '<div style="font-size:11px;color:#8b7e6b;">还没有打卡记录</div>';
+      h += '<div style="font-size:10px;color:#c4bdb0;">在地图上点击取景地，添加你的巡礼打卡</div></div>';
     } else {
       var lastDate = '';
       timeline.forEach(function(entry) {

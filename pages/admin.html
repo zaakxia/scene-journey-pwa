@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>数据面板</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #faf8f5; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+.card { background: #fff; border-radius: 16px; padding: 32px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); max-width: 420px; width: 90%; }
+h1 { font-size: 20px; font-weight: 700; margin-bottom: 24px; text-align: center; color: #1c1917; }
+.stat { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0ede6; }
+.stat:last-child { border-bottom: none; }
+.stat-label { font-size: 14px; color: #8b7e6b; }
+.stat-value { font-size: 28px; font-weight: 800; color: #1c1917; }
+.btn-row { display: flex; gap: 8px; margin-top: 16px; }
+.btn { flex: 1; padding: 10px; border-radius: 8px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; }
+.btn-add { background: #b91c1c; color: #fff; }
+.btn-sub { background: #f0ede6; color: #1c1917; }
+.btn-edit { background: none; border: 1px solid #e0dcd5; color: #8b7e6b; padding: 6px 12px; font-size: 12px; border-radius: 6px; cursor: pointer; }
+input { width: 100%; padding: 8px; border: 1px solid #e0dcd5; border-radius: 6px; font-size: 14px; margin-top: 4px; text-align: center; }
+.note { font-size: 11px; color: #c4bdb0; text-align: center; margin-top: 16px; }
+#lock-screen { text-align: center; }
+#lock-screen input { margin-bottom: 12px; font-size: 16px; padding: 10px; }
+</style>
+</head>
+<body>
+
+<div class="card" id="lock-screen">
+  <h1>🔒</h1>
+  <input type="password" id="pw-input" placeholder="输入管理密码" autofocus>
+  <button class="btn btn-add" onclick="unlock()" style="width:100%;">进入</button>
+  <div class="note">密码错误将无法查看数据</div>
+</div>
+
+<div class="card" id="main-screen" style="display:none;">
+  <h1>📊 圣地巡礼 · 数据面板</h1>
+  <div class="stat">
+    <span class="stat-label">累计访问</span>
+    <span class="stat-value" id="count-visitors">0</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">今日访问</span>
+    <span class="stat-value" id="count-today">0</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">收藏数</span>
+    <span class="stat-value" id="count-bookmarks">—</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">打卡数</span>
+    <span class="stat-value" id="count-checkins">—</span>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-add" onclick="adjust('total', 1)">+1 累计</button>
+    <button class="btn btn-sub" onclick="adjust('total', -1)">−1</button>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-add" onclick="adjust('today', 1)">+1 今日</button>
+    <button class="btn btn-sub" onclick="adjust('today', -1)">−1</button>
+  </div>
+  <div style="margin-top:12px;text-align:center;">
+    <button class="btn-edit" onclick="editValue()">手动输入数值</button>
+    <button class="btn-edit" onclick="resetToday()" style="margin-left:8px;">重置今日</button>
+  </div>
+  <div class="note">数据仅保存在此浏览器中</div>
+</div>
+
+<script>
+var PASSWORD = 'scene2026';
+var STORAGE_KEY = 'sj_admin_data';
+
+function getData() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e) { return {}; }
+}
+function saveData(d) { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+
+function unlock() {
+  var pw = document.getElementById('pw-input').value;
+  if (pw === PASSWORD) {
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('main-screen').style.display = '';
+    refresh();
+  } else {
+    alert('密码错误');
+  }
+}
+
+function refresh() {
+  var d = getData();
+  document.getElementById('count-visitors').textContent = d.total || 0;
+  document.getElementById('count-today').textContent = d.today || 0;
+
+  // Try to read bookmark/checkin counts from localStorage
+  try {
+    var bm = JSON.parse(localStorage.getItem('sj_bookmarks') || '[]');
+    document.getElementById('count-bookmarks').textContent = Array.isArray(bm) ? bm.length : '—';
+  } catch(e) {}
+  try {
+    var ck = JSON.parse(localStorage.getItem('sj_checkins') || '{}');
+    document.getElementById('count-checkins').textContent = Object.keys(ck).length;
+  } catch(e) {}
+}
+
+function adjust(key, delta) {
+  var d = getData();
+  d[key] = Math.max(0, (d[key] || 0) + delta);
+  saveData(d);
+  refresh();
+}
+
+function editValue() {
+  var key = prompt('修改哪个？输入 total 或 today', 'total');
+  if (!key) return;
+  var val = parseInt(prompt('输入新数值:', getData()[key] || 0));
+  if (isNaN(val) || val < 0) return;
+  var d = getData();
+  d[key] = val;
+  saveData(d);
+  refresh();
+}
+
+function resetToday() {
+  var d = getData();
+  d.today = 0;
+  saveData(d);
+  refresh();
+}
+
+// Check if already unlocked
+document.getElementById('pw-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') unlock();
+});
+</script>
+</body>
+</html>

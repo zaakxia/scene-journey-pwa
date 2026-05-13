@@ -1789,58 +1789,54 @@ window.App = { showToast: null };
       });
       timeline.sort(function(a, b) { return b.ts - a.ts; });
 
-      var h = '<div style="padding:12px 12px 100px;text-align:center;">';
+      var h = '<div style="padding:16px 12px 100px;">';
 
-      // ── Profile row (centered) ──
-      h += '<div style="display:flex;flex-direction:column;align-items:center;padding:8px 4px 14px;border-bottom:1px solid var(--color-border);margin-bottom:14px;">';
-      h += '<div id="profile-avatar" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;margin-bottom:8px;">';
+      // ── Profile header (centered) ──
+      h += '<div style="text-align:center;padding:8px 0 16px;">';
+      h += '<div id="profile-avatar" style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#b91c1c,#991b1b);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;box-shadow:0 4px 16px rgba(185,28,28,0.2);border:3px solid #fff;">';
       if (profile.avatar) {
         h += '<img src="' + profile.avatar + '" style="width:100%;height:100%;object-fit:cover;">';
       } else {
-        h += '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+        h += '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
       }
       h += '</div>';
-      h += '<div id="profile-nickname" style="font-weight:600;font-size:16px;color:#1c1917;cursor:pointer;">' + profile.nickname + '</div>';
-      h += '<div style="font-size:12px;color:var(--color-text-secondary);margin-top:2px;">' + checked + '次打卡 · ' + cityCount + '座城市 · ' + bookmarks.length + '个收藏</div>';
+      h += '<div id="profile-nickname" style="font-weight:700;font-size:17px;color:#1c1917;cursor:pointer;margin-top:8px;">' + profile.nickname + '</div>';
+      h += '<div style="font-size:12px;color:var(--color-text-secondary);margin-top:2px;">巡礼' + checked + '次 · ' + cityCount + '座城市 · ' + bookmarks.length + '个收藏</div>';
       h += '</div>';
 
-      // ── Stats chips (centered) ──
-      h += '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:0 0 14px;">';
-      h += '<div style="flex-shrink:0;min-width:100px;padding:12px 14px;border-radius:12px;background:#f2f7fb;border:1px solid rgba(0,0,0,0.04);">';
-      h += '<div style="display:flex;align-items:center;gap:6px;">';
-      h += '<span>' + Icons.star + '</span>';
-      h += '<span style="font-size:10px;color:var(--color-text-secondary);">想去的地点</span>';
+      // ── Stats cards ──
+      h += '<div style="display:flex;gap:10px;padding:0 0 16px;">';
+      h += '<div style="flex:1;padding:14px 12px;border-radius:14px;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:1px solid #bae6fd;text-align:center;">';
+      h += '<div style="font-size:22px;margin-bottom:2px;">☆</div>';
+      h += '<div style="font-size:10px;color:#0c4a6e;font-weight:500;">想去的地点</div>';
+      h += '<div style="font-size:22px;font-weight:800;color:#0c4a6e;margin-top:2px;">' + bookmarks.length + '</div>';
       h += '</div>';
-      h += '<div style="font-weight:700;font-size:20px;color:#1c1917;margin-top:4px;">' + bookmarks.length + '</div>';
+      h += '<div style="flex:1;padding:14px 12px;border-radius:14px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #bbf7d0;text-align:center;">';
+      h += '<div style="font-size:22px;margin-bottom:2px;">✓</div>';
+      h += '<div style="font-size:10px;color:#166534;font-weight:500;">已打卡</div>';
+      h += '<div style="font-size:22px;font-weight:800;color:#166534;margin-top:2px;">' + checked + '<span style="font-size:14px;font-weight:500;">/' + totalLocs + '</span></div>';
       h += '</div>';
-
-      h += '<div style="flex-shrink:0;min-width:100px;padding:12px 14px;border-radius:12px;background:#f0faf3;border:1px solid rgba(0,0,0,0.04);">';
-      h += '<div style="display:flex;align-items:center;gap:6px;">';
-      h += '<span>' + Icons.check + '</span>';
-      h += '<span style="font-size:10px;color:var(--color-text-secondary);">已打卡</span>';
-      h += '</div>';
-      h += '<div style="font-weight:700;font-size:20px;color:#1c1917;margin-top:4px;">' + checked + '<span style="font-size:13px;color:var(--color-text-secondary);">/' + totalLocs + '</span></div>';
-      h += '</div>';
-
       if (hasSchedule) {
         var sched = Storage.get('schedule');
         var totalBlocks = 0;
         (sched.days || []).forEach(function(d) { totalBlocks += d.blocks.length; });
-        h += '<div style="flex-shrink:0;min-width:100px;padding:12px 14px;border-radius:12px;background:#fef9f0;border:1px solid rgba(0,0,0,0.04);">';
-        h += '<div style="display:flex;align-items:center;gap:6px;">';
-        h += '<span>' + Icons.clock + '</span>';
-        h += '<span style="font-size:10px;color:var(--color-text-secondary);">我的行程</span>';
-        h += '</div>';
-        h += '<div style="font-weight:700;font-size:20px;color:#1c1917;margin-top:4px;">' + (sched.days || []).length + '<span style="font-size:13px;color:var(--color-text-secondary);">天</span></div>';
+        h += '<div style="flex:1;padding:14px 12px;border-radius:14px;background:linear-gradient(135deg,#fff7ed,#fed7aa);border:1px solid #fdba74;text-align:center;">';
+        h += '<div style="font-size:22px;margin-bottom:2px;">⏱</div>';
+        h += '<div style="font-size:10px;color:#9a3412;font-weight:500;">我的行程</div>';
+        h += '<div style="font-size:22px;font-weight:800;color:#9a3412;margin-top:2px;">' + (sched.days || []).length + '<span style="font-size:14px;font-weight:500;">天</span></div>';
         h += '</div>';
       }
       h += '</div>';
 
       // ── Check-in Timeline ──
-      h += '<div style="margin-bottom:14px;">';
-      h += '<div style="font-weight:700;font-size:14px;color:#1c1917;margin-bottom:10px;padding:0 4px;">时间轴</div>';
+      h += '<div style="margin-bottom:16px;">';
+      h += '<div style="font-weight:700;font-size:15px;color:#1c1917;margin-bottom:12px;">📅 时间轴</div>';
       if (timeline.length === 0) {
-        h += '<div style="font-size:12px;color:var(--color-text-secondary);padding:16px 4px;">还没有打卡记录。在地图上点击取景地，添加你的巡礼打卡。</div>';
+        h += '<div style="text-align:center;padding:24px 16px;background:#fafaf8;border-radius:12px;border:1px dashed #e0dcd5;">';
+        h += '<div style="font-size:32px;margin-bottom:8px;">🗺️</div>';
+        h += '<div style="font-size:12px;color:var(--color-text-secondary);line-height:1.6;">还没有打卡记录</div>';
+        h += '<div style="font-size:11px;color:var(--color-faint);">在地图上点击取景地，添加你的巡礼打卡</div>';
+        h += '</div>';
       } else {
         var lastDate = '';
         timeline.forEach(function(entry, i) {
@@ -1855,22 +1851,31 @@ window.App = { showToast: null };
 
           if (dateStr !== lastDate) {
             if (lastDate !== '') h += '</div>';
-            h += '<div style="margin-bottom:4px;">';
-            h += '<div style="font-size:11px;font-weight:700;color:#1c1917;padding:6px 4px 4px;">' + label + '</div>';
+            h += '<div style="margin-bottom:6px;">';
+            h += '<div style="font-size:12px;font-weight:700;color:#1c1917;padding:8px 4px 4px;display:flex;align-items:center;gap:6px;">';
+            h += '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--color-primary);"></span>' + label;
+            h += '</div>';
             lastDate = dateStr;
           }
 
           var loc = entry.loc;
           var timeStr = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
-          h += '<div class="card card-clickable" data-lid="' + loc.id + '" style="display:flex;align-items:center;gap:10px;padding:10px;margin-bottom:4px;">';
-          h += '<div style="width:32px;height:32px;border-radius:50%;background:var(--color-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;">';
-          h += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
-          h += '</div>';
+          var thumbUrl = loc.real_photo || '';
+          h += '<div class="card card-clickable" data-lid="' + loc.id + '" style="display:flex;align-items:center;gap:10px;padding:8px 10px;margin-bottom:4px;border-radius:10px;">';
+          if (thumbUrl) {
+            h += '<div style="width:44px;height:44px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#f0ede6;">';
+            h += '<img src="' + thumbUrl + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">';
+            h += '</div>';
+          } else {
+            h += '<div style="width:36px;height:36px;border-radius:50%;background:var(--color-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;">';
+            h += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+            h += '</div>';
+          }
           h += '<div style="flex:1;min-width:0;">';
-          h += '<div style="font-weight:600;font-size:13px;color:#1c1917;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + loc.name_zh + '</div>';
-          h += '<div style="font-size:10px;color:var(--color-text-secondary);">' + loc.city + '</div>';
+          h += '<div style="font-weight:600;font-size:13px;color:#1c1917;">' + loc.name_zh + '</div>';
+          h += '<div style="font-size:10px;color:var(--color-text-secondary);">' + loc.city + ' · ' + timeStr + '</div>';
           h += '</div>';
-          h += '<div style="font-size:11px;color:var(--color-text-secondary);">' + timeStr + '</div>';
+          h += '<div style="font-size:18px;color:var(--color-primary);">✓</div>';
           h += '</div>';
         });
         h += '</div>';

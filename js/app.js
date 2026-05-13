@@ -979,7 +979,7 @@ window.App = { showToast: null };
             if (showLabel) {
               h += '<span style="flex:1;font-weight:590;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#1c1917;font-size:10px;min-width:0;">' + loc.name_zh + '</span>';
               h += '<span style="font-size:9px;font-weight:500;color:' + accent + ';margin-left:3px;flex-shrink:0;opacity:0.75;">' + block.slots / 2 + 'h</span>';
-              h += '<span class="sched-remove" data-lid="' + block.locId + '" style="flex-shrink:0;margin-left:4px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:center;font-size:13px;color:rgba(0,0,0,0.3);cursor:pointer;line-height:1;">×</span>';
+              h += '<span class="sched-remove" data-lid="' + block.locId + '" style="flex-shrink:0;margin-left:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(0,0,0,0.35);cursor:pointer;line-height:1;">×</span>';
             }
             h += '</div>';
           }
@@ -1236,6 +1236,23 @@ window.App = { showToast: null };
               startSlot = Math.max(0, 48 - dur);
             }
 
+            // Auto-calculate transit gap from nearest previous block
+            var prevBlocks = day.blocks.filter(function(b) { return b.startSlot + b.slots <= startSlot; });
+            if (prevBlocks.length > 0) {
+              var pb = prevBlocks[prevBlocks.length - 1];
+              var ploc = locById(pb.locId);
+              if (ploc) {
+                var gapKey = ploc.id + '|' + loc.id;
+                var gapSlots = transitCache[gapKey];
+                if (!gapSlots) {
+                  var km = GeoUtils.haversineDistance(ploc.coordinates.lat, ploc.coordinates.lng, loc.coordinates.lat, loc.coordinates.lng);
+                  gapSlots = Math.ceil((km / URBAN_SPEED * 60) / 30);
+                }
+                var minStart = pb.startSlot + pb.slots + gapSlots;
+                if (startSlot < minStart) startSlot = minStart;
+              }
+            }
+
             day.blocks.push({ locId: selectedLocId, startSlot: startSlot, slots: dur });
             day.blocks.sort(function(a, b) { return a.startSlot - b.startSlot; });
             Storage.set('schedule', schedule);
@@ -1244,15 +1261,15 @@ window.App = { showToast: null };
           };
         });
 
-        // Remove block — stopPropagation to avoid navigating to map
+        // Remove block
         container.querySelectorAll('.sched-remove').forEach(function(btn) {
-          btn.addEventListener('click', function(e) {
+          btn.onclick = function(e) {
             e.stopPropagation();
             e.preventDefault();
             day.blocks = day.blocks.filter(function(b) { return b.locId !== btn.dataset.lid; });
             Storage.set('schedule', schedule);
             buildHTML();
-          }, true); // capture phase to beat the block's click handler
+          };
         });
 
         // Block → map (skip if × was clicked)

@@ -1055,12 +1055,47 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     // Transit toggle — main button
     var btnTransit = panel.querySelector('#sched-toggle-transit');
     if (btnTransit) btnTransit.onclick = function() {
-      // Toggle engine for personal plan
-      planState._useAmap = !planState._useAmap;
-      planState.transitCache = {};
-      planState.transitDetail = {};
-      panel.querySelector('.panel-body').innerHTML = renderPlanContent();
-      rebind();
+      // Open transit query modal for current engine
+      var locOpts = '';
+      planLocs.forEach(function(l) {
+        locOpts += '<option value="'+l.id+'">'+l.name_zh+' ('+l.city+')</option>';
+      });
+      var overlay = document.createElement('div');
+      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center;';
+      overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
+      var box = document.createElement('div');
+      box.style.cssText = 'background:#fff;border-radius:14px;padding:20px;width:calc(100% - 40px);max-width:400px;max-height:80vh;overflow-y:auto;';
+      var engine = planState._useAmap ? '高德' : 'HERE';
+      box.innerHTML = '<div style="font-weight:700;font-size:16px;margin-bottom:14px;">'+engine+' 通勤查询</div>'
+        + '<div style="margin-bottom:8px;"><label style="font-size:11px;">出发地</label><select id="modal-from" style="width:100%;padding:8px;border-radius:6px;border:1px solid #ddd;margin-top:2px;">'+locOpts+'</select></div>'
+        + '<div style="margin-bottom:12px;"><label style="font-size:11px;">目的地</label><select id="modal-to" style="width:100%;padding:8px;border-radius:6px;border:1px solid #ddd;margin-top:2px;">'+locOpts+'</select></div>'
+        + '<button id="modal-query-btn" style="width:100%;padding:10px;border-radius:8px;border:none;background:#b91c1c;color:#fff;font-size:13px;font-weight:600;cursor:pointer;">查询驾车时间</button>'
+        + '<div id="modal-result" style="margin-top:10px;font-size:11px;color:#555;min-height:20px;"></div>'
+        + '<button id="modal-close" style="margin-top:12px;width:100%;padding:8px;border-radius:8px;border:1px solid #ddd;background:#fff;font-size:13px;cursor:pointer;">关闭</button>';
+      overlay.appendChild(box);
+      document.body.appendChild(overlay);
+      document.getElementById('modal-close').onclick = function() { document.body.removeChild(overlay); };
+      document.getElementById('modal-query-btn').onclick = function() {
+        var fid = document.getElementById('modal-from').value;
+        var tid = document.getElementById('modal-to').value;
+        if (fid === tid) { document.getElementById('modal-result').innerHTML = '<span style="color:#e63946;">请选择不同的地点</span>'; return; }
+        var fl = planLocs.find(function(l){return l.id===fid});
+        var tl = planLocs.find(function(l){return l.id===tid});
+        if (!fl || !tl) return;
+        document.getElementById('modal-result').innerHTML = '查询中...';
+        var ck = fid + '|' + tid;
+        fetchTransit(fl, tl, function() {
+          var det = planState.transitDetail[ck];
+          if (det && det.minutes) {
+            var ceilSlots = Math.ceil(det.minutes / 30);
+            planState.transitCache[ck] = ceilSlots;
+            var engLabel = det.engine === 'amap' ? '高德驾车' : det.engine === 'here' ? 'HERE驾车' : det.engine;
+            document.getElementById('modal-result').innerHTML = '<div style="background:#f0fdf4;padding:10px;border-radius:8px;"><b>'+engLabel+'</b> '+det.minutes+'分钟 · '+(ceilSlots*30)+'分钟间隔</div>';
+          } else {
+            document.getElementById('modal-result').innerHTML = '<span style="color:#e63946;">查询失败</span>';
+          }
+        });
+      };
     };
 
     // Add day

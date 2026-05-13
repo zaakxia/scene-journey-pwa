@@ -550,7 +550,8 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     // Auto mode state
     optRouteLocs: [], optRouteResult: null, optRouteEngine: 'here',
     optDays: 1, optDayStart: 16, optDayEnd: 40,
-    transitCache: {}, transitDetail: {}
+    transitCache: {}, transitDetail: {},
+    _useAmap: false // false=HERE(global), true=高德(China only)
   };
   var AMAP_KEY = '5863650c584b70f0acfcc28ce028f90d';
   var HERE_KEY = 'dMiGuj4zcqtcdaecBgclwcZ44IYRALPP9X_q9A28Ajg';
@@ -567,7 +568,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     var k=fromLoc.id+'|'+toLoc.id;
     if (planState.transitCache[k]!==undefined) { if(cb)cb(); return; }
     if (!cb) { planState.transitCache[k]=fromLoc.city===toLoc.city?2:4; }
-    if (isChina(fromLoc)&&isChina(toLoc)) fetchAmap(fromLoc,toLoc,k,cb);
+    if (planState._useAmap && isChina(fromLoc)&&isChina(toLoc)) fetchAmap(fromLoc,toLoc,k,cb);
     else fetchHERE(fromLoc,toLoc,k,cb);
   }
   function fetchTransitByEngine(fromLoc, toLoc, engine, cb) {
@@ -800,6 +801,12 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       if (schedule.days.length < 7) {
         h += '<button id="plan-add-day" style="flex-shrink:0;width:26px;height:26px;border-radius:50%;border:1.5px dashed #ddd;background:none;color:#999;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>';
       }
+      // Transit toggle (PWA-style)
+      h += '<span style="margin-left:auto;display:flex;align-items:center;gap:4px;flex-shrink:0;">';
+      h += '<span style="font-size:11px;font-weight:600;color:var(--color-text-secondary);">交通</span>';
+      h += '<button id="sched-toggle-transit" style="padding:3px 8px;border-radius:999px;border:1px solid #eee;font-size:11px;font-weight:600;background:'+(planState._useAmap?'#b91c1c':'#eee')+';color:'+(planState._useAmap?'#fff':'#999')+';cursor:pointer;">'+(planState._useAmap?'高德':'HERE')+'</button>';
+      h += '<button id="sched-alt-engine" style="padding:3px 6px;border-radius:999px;border:1px solid #eee;font-size:10px;font-weight:500;background:#fff;color:#999;cursor:pointer;">'+(planState._useAmap?'HERE':'高德')+'</button>';
+      h += '</span>';
       h += '</div>';
 
       // Timeline
@@ -1044,6 +1051,17 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
         rebind();
       };
     });
+
+    // Transit toggle — main button
+    var btnTransit = panel.querySelector('#sched-toggle-transit');
+    if (btnTransit) btnTransit.onclick = function() {
+      // Toggle engine for personal plan
+      planState._useAmap = !planState._useAmap;
+      planState.transitCache = {};
+      planState.transitDetail = {};
+      panel.querySelector('.panel-body').innerHTML = renderPlanContent();
+      rebind();
+    };
 
     // Add day
     var addBtn = panel.querySelector('#plan-add-day');

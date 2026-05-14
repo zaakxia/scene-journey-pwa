@@ -184,6 +184,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
   .leftbar { width: 42px; min-width: 42px; }
   .overlay-panel.open { width: 100vw; min-width: 100vw; }
 }
+.book-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
 </style>
 </head>
 <body>
@@ -319,7 +320,6 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       gb.style.display = '';
       gb.onclick = function(e) { e.stopPropagation(); showGuide(title+'使用指南', guideContents[tabName]||guideContents.map); };
     }
-    bindPanelEvents();
   }
 
   function closePanel() {
@@ -513,14 +513,46 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       + (isChecked && checkinData ? '<div style="margin:8px 0;padding:10px;background:rgba(42,157,143,0.06);border-radius:8px;"><span style="font-size:11px;font-weight:600;color:#2a9d8f;">✓ 已打卡</span>'+(checkinData.photo ? '<img src="'+checkinData.photo+'" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:6px;margin-top:6px;">' : '')+(checkinData.note ? '<p style="font-size:11px;color:var(--color-text-secondary);margin-top:4px;">'+checkinData.note+'</p>' : '')+'</div>' : '')
       // Actions
       + '<div class="loc-actions">'
-      + '<button class="btn-action'+(isFav?' primary':'')+'" onclick="event.stopPropagation();var b=this;if(Storage.isBookmarked(\''+loc.id+'\')){Storage.removeBookmark(\''+loc.id+'\');b.className=\'btn-action\';b.textContent=\'☆ 收藏\';}else{Storage.addBookmark(\''+loc.id+'\');b.className=\'btn-action primary\';b.textContent=\'★ 已收藏\';}updateBadge();showLocations(locations);">'+(isFav?'★ 已收藏':'☆ 收藏')+'</button>'
-      + '<button class="btn-action'+(isChecked?' primary':'')+'" onclick="event.stopPropagation();var b=this;var c=Storage.getCheckins();if(c[\''+loc.id+'\']){delete c[\''+loc.id+'\'];Storage.set(\'checkins\',c);b.className=\'btn-action\';b.textContent=\'○ 打卡\';}else{c[\''+loc.id+'\']={timestamp:Date.now()};Storage.set(\'checkins\',c);b.className=\'btn-action primary\';b.textContent=\'✓ 已打卡\';}updateBadge();showLocations(locations);">'+(isChecked?'✓ 已打卡':'○ 打卡')+'</button>'
-      + '<button class="btn-action" onclick="event.stopPropagation();window.open(\'https://www.google.com/maps/dir/?api=1&destination=\'+window._currentLoc.coordinates.lat+\',\'+window._currentLoc.coordinates.lng,\'_blank\');">🧭 导航</button>'
+      + '<button class="btn-action detail-fav-btn'+(isFav?' primary':'')+'" data-loc-id="'+loc.id+'">'+(isFav?'★ 已收藏':'☆ 收藏')+'</button>'
+      + '<button class="btn-action detail-check-btn'+(isChecked?' primary':'')+'" data-loc-id="'+loc.id+'">'+(isChecked?'✓ 已打卡':'○ 打卡')+'</button>'
+      + '<button class="btn-action detail-nav-btn" data-lat="'+loc.coordinates.lat+'" data-lng="'+loc.coordinates.lng+'">🧭 导航</button>'
       + '</div></div>';
 
-    window._currentLoc = loc;
     document.getElementById('panel-title').textContent = loc.name_zh;
     document.getElementById('panel-body').innerHTML = html;
+    var pb = document.getElementById('panel-body');
+    var favBtn = pb.querySelector('.detail-fav-btn');
+    if (favBtn) favBtn.onclick = function(e) {
+      e.stopPropagation();
+      var b = this, id = b.dataset.locId;
+      if (Storage.isBookmarked(id)) {
+        Storage.removeBookmark(id);
+        b.classList.remove('primary'); b.textContent = '☆ 收藏';
+      } else {
+        Storage.addBookmark(id);
+        b.classList.add('primary'); b.textContent = '★ 已收藏';
+      }
+      updateBadge(); showLocations(locations);
+    };
+    var chkBtn = pb.querySelector('.detail-check-btn');
+    if (chkBtn) chkBtn.onclick = function(e) {
+      e.stopPropagation();
+      var b = this, id = b.dataset.locId;
+      var c = Storage.getCheckins();
+      if (c[id]) {
+        delete c[id]; Storage.set('checkins', c);
+        b.classList.remove('primary'); b.textContent = '○ 打卡';
+      } else {
+        c[id] = {timestamp: Date.now()}; Storage.set('checkins', c);
+        b.classList.add('primary'); b.textContent = '✓ 已打卡';
+      }
+      updateBadge(); showLocations(locations);
+    };
+    var navBtn = pb.querySelector('.detail-nav-btn');
+    if (navBtn) navBtn.onclick = function(e) {
+      e.stopPropagation();
+      window.open('https://www.google.com/maps/dir/?api=1&destination='+this.dataset.lat+','+this.dataset.lng, '_blank');
+    };
     document.getElementById('overlay-panel').classList.add('open');
   }
 
@@ -1303,7 +1335,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
 
     // Avatar (centered)
     h += '<div style="text-align:center;margin-bottom:16px;">';
-    h += '<div id="profile-avatar-d" style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#b91c1c,#991b1b);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;box-shadow:0 4px 16px rgba(185,28,28,0.2);border:3px solid #fff;" onclick="var i=document.createElement(\'input\');i.type=\'file\';i.accept=\'image/*\';i.onchange=function(e){var f=e.target.files[0];if(f){var r=new FileReader();r.onload=function(){var p=Storage.get(\'profile\')||{};p.avatar=r.result;Storage.set(\'profile\',p);renderProfileContent();openPanel(\'个人\',renderProfileContent());};r.readAsDataURL(f);}};i.click();">';
+    h += '<div id="profile-avatar-d" style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#b91c1c,#991b1b);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;box-shadow:0 4px 16px rgba(185,28,28,0.2);border:3px solid #fff;" onclick="profileHandleAvatar()">';
     if (profile.avatar) {
       h += '<img src="'+profile.avatar+'" style="width:100%;height:100%;object-fit:cover;">';
     } else {
@@ -1312,7 +1344,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     h += '</div>';
 
     // Nickname (centered)
-    h += '<div id="profile-nickname-d" style="font-weight:700;font-size:17px;color:#1c1917;cursor:pointer;text-align:center;margin-top:8px;" onclick="var n=prompt(\'输入昵称\',this.textContent);if(n){var p=Storage.get(\'profile\')||{};p.nickname=n;Storage.set(\'profile\',p);renderProfileContent();openPanel(\'个人\',renderProfileContent());}">'+profile.nickname+'</div>';
+    h += '<div id="profile-nickname-d" style="font-weight:700;font-size:17px;color:#1c1917;cursor:pointer;text-align:center;margin-top:8px;" onclick="profileHandleNick(this)">'+profile.nickname+'</div>';
     h += '<div style="font-size:12px;color:#8b7e6b;text-align:center;margin-bottom:16px;">巡礼'+checked+'次 · '+cityCount+'座城市 · '+bookmarks.length+'个收藏</div>';
     h += '</div>';
 
@@ -1379,12 +1411,70 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     h += '</div>';
     h += '<div style="text-align:center;padding:8px 0 0;font-size:10px;color:#8b7e6b;">';
     h += '<span>数据</span>';
-    h += '<span style="color:var(--color-primary);cursor:pointer;margin:0 10px;" onclick="var d=JSON.stringify({bookmarks:Storage.getBookmarks(),checkins:Storage.getCheckins(),schedule:Storage.get(\'schedule\'),profile:Storage.get(\'profile\')},null,2);var b=new Blob([d],{type:\'application/json\'});var a=document.createElement(\'a\');a.href=URL.createObjectURL(b);a.download=\'sj-backup-\'+new Date().toISOString().slice(0,10)+\'.json\';a.click();">导出备份</span>';
+    h += '<span style="color:var(--color-primary);cursor:pointer;margin:0 10px;" onclick="profileHandleExport()">导出备份</span>';
     h += '<span style="color:var(--color-border);">|</span>';
-    h += '<span style="color:var(--color-primary);cursor:pointer;margin:0 10px;" onclick="var i=document.createElement(\'input\');i.type=\'file\';i.accept=\'.json\';i.onchange=function(e){var f=e.target.files[0];if(f){var r=new FileReader();r.onload=function(){try{var d=JSON.parse(r.result);if(d.bookmarks)Storage.set(\'bookmarks\',d.bookmarks);if(d.checkins)Storage.set(\'checkins\',d.checkins);if(d.schedule)Storage.set(\'schedule\',d.schedule);if(d.profile)Storage.set(\'profile\',d.profile);alert(\'恢复成功！刷新页面查看。\');}catch(ex){alert(\'文件格式错误\');}};r.readAsText(f);}};i.click();">恢复备份</span>';
+    h += '<span style="color:var(--color-primary);cursor:pointer;margin:0 10px;" onclick="profileHandleRestore()">恢复备份</span>';
     h += '</div>';
     h += '</div>';
     return h;
+  }
+
+  function profileHandleAvatar() {
+    var i = document.createElement('input');
+    i.type = 'file'; i.accept = 'image/*';
+    i.onchange = function(e) {
+      var f = e.target.files[0];
+      if (f) {
+        var r = new FileReader();
+        r.onload = function() {
+          var p = Storage.get('profile') || {};
+          p.avatar = r.result;
+          Storage.set('profile', p);
+          openPanel('个人', renderProfileContent(), 'bookmarks');
+        };
+        r.readAsDataURL(f);
+      }
+    };
+    i.click();
+  }
+  function profileHandleNick(el) {
+    var n = prompt('输入昵称', el.textContent);
+    if (n) {
+      var p = Storage.get('profile') || {};
+      p.nickname = n;
+      Storage.set('profile', p);
+      openPanel('个人', renderProfileContent(), 'bookmarks');
+    }
+  }
+  function profileHandleExport() {
+    var d = JSON.stringify({bookmarks:Storage.getBookmarks(),checkins:Storage.getCheckins(),schedule:Storage.get('schedule'),profile:Storage.get('profile')}, null, 2);
+    var b = new Blob([d], {type: 'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(b);
+    a.download = 'sj-backup-' + new Date().toISOString().slice(0,10) + '.json';
+    a.click();
+  }
+  function profileHandleRestore() {
+    var i = document.createElement('input');
+    i.type = 'file'; i.accept = '.json';
+    i.onchange = function(e) {
+      var f = e.target.files[0];
+      if (f) {
+        var r = new FileReader();
+        r.onload = function() {
+          try {
+            var d = JSON.parse(r.result);
+            if (d.bookmarks) Storage.set('bookmarks', d.bookmarks);
+            if (d.checkins) Storage.set('checkins', d.checkins);
+            if (d.schedule) Storage.set('schedule', d.schedule);
+            if (d.profile) Storage.set('profile', d.profile);
+            alert('恢复成功！刷新页面查看。');
+          } catch(ex) { alert('文件格式错误'); }
+        };
+        r.readAsText(f);
+      }
+    };
+    i.click();
   }
 
   function updateBadge() {
@@ -1490,10 +1580,6 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     });
   }
 
-  function bindPanelEvents() {
-    document.getElementById('panel-close').addEventListener('click', closePanel);
-  }
-
   // ── Boot ──
   function init() {
     initMap();
@@ -1501,7 +1587,8 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     document.querySelectorAll('.ltab').forEach(function(tab) {
       tab.addEventListener('click', function() { switchTab(this.dataset.tab); });
     });
-    document.getElementById('panel-close').addEventListener('click', function(e) { e.stopPropagation(); closePanel(); });
+    var pc = document.getElementById('panel-close');
+    if (pc) pc.onclick = function(e) { e.stopPropagation(); closePanel(); };
     // Map guide button
     var mgb = document.getElementById('guide-btn-map');
     if (mgb) mgb.addEventListener('click', function(e) { e.stopPropagation(); showGuide('地图使用指南', guideContents.map); });
@@ -1522,7 +1609,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
         html += '<p style="color:#8b7e6b;font-size:14px;margin-bottom:40px;">探索文学与动漫世界的真实取景地</p>';
         html += '<div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;">';
         books.forEach(function(book) {
-          html += '<a href="?book='+book.book_id+'" style="display:block;width:240px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;" onmouseover="this.style.transform=\'translateY(-4px)\';this.style.boxShadow=\'0 8px 32px rgba(0,0,0,0.12)\'" onmouseout="this.style.transform=\'\';this.style.boxShadow=\'\'">';
+          html += '<a href="?book='+book.book_id+'" style="display:block;width:240px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;" class="book-card">';
           html += '<img src="'+book.cover+'" alt="'+book.subtitle+'" style="width:100%;height:280px;object-fit:contain;background:#faf8f5;" onerror="this.src=\'assets/images/ui/placeholder-scene.svg\'">';
           html += '<div style="padding:16px;">';
           html += '<div style="font-size:16px;font-weight:700;color:#1c1917;">'+book.subtitle+'</div>';

@@ -205,16 +205,23 @@ window.App = { showToast: null };
 
         var url;
         if (isChina) {
-          // Amap input tips for China
-          url = 'https://restapi.amap.com/v3/assistant/inputtips?keywords=' + encodeURIComponent(query) + '&key=' + AMAP_KEY + '&citylimit=false';
+          url = 'https://restapi.amap.com/v3/assistant/inputtips?keywords=' + encodeURIComponent(query) + '&key=' + AMAP_KEY + '&output=JSON';
         } else {
-          // HERE geocoding for global
           url = 'https://geocode.search.hereapi.com/v1/geocode?q=' + encodeURIComponent(query) + '&apiKey=' + HERE_KEY + '&limit=5';
         }
-        fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+        // AbortController for 12s timeout
+        var ctrl = new AbortController();
+        var timer = setTimeout(function() { ctrl.abort(); }, 12000);
+        fetch(url, { signal: ctrl.signal }).then(function(r) {
+          clearTimeout(timer);
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        }).then(function(data) {
+          // Check API-level errors
+          if (data.status === '0') { console.error('[Search] Amap error:', data.info); }
+          if (data.error) { console.error('[Search] HERE error:', data.error); }
           var items = [];
-          if (data.tips) {
-            // Amap format
+          if (data.tips && data.status === '1') {
             data.tips.forEach(function(tip) {
               if (tip.location) {
                 var parts = tip.location.split(',');
@@ -222,9 +229,10 @@ window.App = { showToast: null };
               }
             });
           } else if (data.items) {
-            // HERE format
             data.items.forEach(function(item) {
-              items.push({ lat: item.position.lat, lng: item.position.lng, title: item.title, addr: item.address ? item.address.label : '' });
+              if (item.position) {
+                items.push({ lat: item.position.lat, lng: item.position.lng, title: item.title, addr: item.address ? item.address.label : '' });
+              }
             });
           }
           if (items.length === 0) {
@@ -242,7 +250,6 @@ window.App = { showToast: null };
           });
           results.innerHTML = h;
 
-          // Fly to on click
           results.querySelectorAll('.search-result-item').forEach(function(el) {
             el.onclick = function() {
               SceneMap.flyTo(parseFloat(el.dataset.lat), parseFloat(el.dataset.lng), 14);
@@ -251,7 +258,6 @@ window.App = { showToast: null };
             };
           });
 
-          // Set as pilgrimage site
           results.querySelectorAll('.search-set-btn').forEach(function(btn) {
             btn.onclick = function(e) {
               e.stopPropagation();
@@ -259,7 +265,6 @@ window.App = { showToast: null };
               var lng = parseFloat(btn.dataset.lng);
               var title = btn.dataset.title;
               var customLocs = Storage.get('custom_locations') || [];
-              // Check duplicate
               if (customLocs.some(function(l) { return l.name_zh === title; })) {
                 App.showToast('已存在该取景地');
                 return;
@@ -283,12 +288,17 @@ window.App = { showToast: null };
               App.showToast('已设为取景地: ' + title);
               results.style.display = 'none';
               input.value = '';
-              // Reload to show new location
               setTimeout(function() { renderMap(); }, 300);
             };
           });
-        }).catch(function() {
-          results.innerHTML = '<div style="padding:16px;text-align:center;color:#e63946;">搜索失败</div>';
+        }).catch(function(err) {
+          clearTimeout(timer);
+          console.error('[Search] fetch error:', err.message || err);
+          if (err.name === 'AbortError') {
+            results.innerHTML = '<div style="padding:16px;text-align:center;color:#e63946;">请求超时，请检查网络或切换国内/国外重试</div>';
+          } else {
+            results.innerHTML = '<div style="padding:16px;text-align:center;color:#e63946;">搜索失败：网络不通，请检查代理设置或切换搜索地区</div>';
+          }
         });
       }
 

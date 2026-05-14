@@ -1432,13 +1432,48 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
         }
         var h = '';
         items.forEach(function(item) {
-          h += '<div class="search-result-item" style="padding:12px 14px;border-bottom:1px solid #f0ede6;cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="map.flyTo(['+item.lat+','+item.lng+'],14);document.getElementById(\'map-search-results\').style.display=\'none\';">';
+          h += '<div class="search-result-item" data-lat="'+item.lat+'" data-lng="'+item.lng+'" style="padding:12px 14px;border-bottom:1px solid #f0ede6;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">';
           h += '<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#1c1917;">'+item.title+'</div>';
           h += '<div style="font-size:11px;color:#8b7e6b;margin-top:2px;">'+item.addr+'</div></div>';
-          h += '<button onclick="event.stopPropagation();var cl=Storage.get(\'custom_locations\')||[];if(cl.some(function(l){return l.name_zh===\''+item.title.replace(/'/g,'\\\'')+'\'})){alert(\'已存在该取景地\');return;}cl.push({id:\'custom_\'+Date.now(),name_zh:\''+item.title.replace(/'/g,'\\\'')+'\',name_local:\'\',city:\''+item.title.split(\',\')[0].replace(/'/g,'\\\'')+'\',category:\'attraction\',accessibility:\'open\',popularity:1,coordinates:{lat:'+item.lat+',lng:'+item.lng+'},address:\''+item.addr.replace(/'/g,'\\\'')+'\',visit_duration:\'2h\',is_custom:true,real_photo:\'\'});Storage.set(\'custom_locations\',cl);alert(\'已设为取景地\');showLocations(locations);document.getElementById(\'map-search-results\').style.display=\'none\';" style="flex-shrink:0;margin-left:8px;padding:5px 10px;border-radius:999px;border:none;background:#b91c1c;color:#fff;font-size:10px;font-weight:600;cursor:pointer;">设为取景地</button>';
+          h += '<button class="search-set-btn-d" data-lat="'+item.lat+'" data-lng="'+item.lng+'" data-title="'+item.title.replace(/"/g,'&quot;')+'" data-addr="'+(item.addr||'').replace(/"/g,'&quot;')+'" style="flex-shrink:0;margin-left:8px;padding:5px 10px;border-radius:999px;border:none;background:#b91c1c;color:#fff;font-size:10px;font-weight:600;cursor:pointer;">设为取景地</button>';
           h += '</div>';
         });
         results.innerHTML = h;
+        results.querySelectorAll('.search-result-item').forEach(function(el) {
+          el.onclick = function() {
+            map.flyTo([parseFloat(el.dataset.lat), parseFloat(el.dataset.lng)], 14);
+            results.style.display = 'none';
+          };
+        });
+        results.querySelectorAll('.search-set-btn-d').forEach(function(btn) {
+          btn.onclick = function(e) {
+            e.stopPropagation();
+            var title = btn.dataset.title;
+            var cl = Storage.get('custom_locations') || [];
+            if (cl.some(function(l) { return l.name_zh === title; })) {
+              alert('已存在该取景地');
+              return;
+            }
+            cl.push({
+              id: 'custom_' + Date.now(),
+              name_zh: title,
+              name_local: '',
+              city: title.split(',')[0] || title,
+              category: 'attraction',
+              accessibility: 'open',
+              popularity: 1,
+              coordinates: { lat: parseFloat(btn.dataset.lat), lng: parseFloat(btn.dataset.lng) },
+              address: btn.dataset.addr || '',
+              visit_duration: '2h',
+              is_custom: true,
+              real_photo: ''
+            });
+            Storage.set('custom_locations', cl);
+            alert('已设为取景地');
+            showLocations(locations);
+            results.style.display = 'none';
+          };
+        });
       }).catch(function() {
         results.innerHTML = '<div style="padding:16px;text-align:center;color:#e63946;">搜索失败</div>';
       });

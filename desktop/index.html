@@ -945,6 +945,36 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       h += '</div>';
       h += '</div>';
 
+      // Transit summary between blocks
+      var allLocs3 = locations.concat(Storage.get('custom_locations')||[]);
+      var sortedBlocks = day.blocks.slice().sort(function(a,b){return a.startSlot - b.startSlot;});
+      if (sortedBlocks.length > 1) {
+        h += '<div style="padding:4px 10px;border-top:1px solid #eee;font-size:10px;color:#999;max-height:80px;overflow-y:auto;">';
+        h += '<span style="font-weight:600;color:#666;">通勤明细</span>';
+        for (var bi = 0; bi < sortedBlocks.length - 1; bi++) {
+          var b = sortedBlocks[bi], nb = sortedBlocks[bi + 1];
+          var bl = allLocs3.find(function(l){return l.id===b.locId;});
+          var nl = allLocs3.find(function(l){return l.id===nb.locId;});
+          var dk = b.locId + '|' + nb.locId;
+          var td = planState.transitDetail[dk];
+          var tMin, tLabel;
+          if (td) {
+            tMin = td.minutes;
+            tLabel = (td.engine === 'here-transit-est' || td.engine === 'osrm') ? td.engine.replace('here-transit-est','HERE公交').replace('osrm','OSRM')+'估算' : (td.engine==='here'?'HERE驾车':td.engine==='here-transit'?'HERE公交':td.engine==='here-walk'?'HERE步行':td.engine==='amap'?'高德驾车':td.engine==='amap-transit'?'高德公交':td.engine);
+          } else {
+            tMin = (nb.startSlot - b.startSlot - b.slots) * 30;
+            tLabel = '未计算';
+          }
+          var rMin = Math.ceil(tMin / 30) * 30;
+          h += '<div style="display:flex;align-items:center;gap:4px;margin-top:2px;">';
+          h += '<span>' + (bl?bl.name_zh:'?') + ' → ' + (nl?nl.name_zh:'?') + '</span>';
+          h += '<span style="color:#d97706;font-weight:600;">' + tLabel + ' ' + tMin + 'min</span>';
+          h += '<span>→ 归整' + rMin + 'min</span>';
+          h += '</div>';
+        }
+        h += '</div>';
+      }
+
       // Selected indicator
       h += '<div id="plan-selected" style="padding:6px 10px;font-size:12px;color:#999;text-align:center;border-top:1px solid #eee;min-height:30px;">';
       if (planState.selectedLocId) {

@@ -249,7 +249,7 @@ window.App = { showToast: null };
           var deduped = [];
           items.forEach(function(item) {
             var dup = deduped.some(function(d) {
-              return Math.abs(d.lat - item.lat) < 0.001 && Math.abs(d.lng - item.lng) < 0.001;
+              return Math.abs(d.lat - item.lat) < 0.003 && Math.abs(d.lng - item.lng) < 0.003;
             });
             if (!dup) deduped.push(item);
           });

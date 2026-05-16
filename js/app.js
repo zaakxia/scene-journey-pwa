@@ -245,6 +245,15 @@ window.App = { showToast: null };
               .then(function(aData) { return parseAmap(aData); });
           })
           .then(function(items) {
+          // Deduplicate by proximity (~100m)
+          var deduped = [];
+          items.forEach(function(item) {
+            var dup = deduped.some(function(d) {
+              return Math.abs(d.lat - item.lat) < 0.001 && Math.abs(d.lng - item.lng) < 0.001;
+            });
+            if (!dup) deduped.push(item);
+          });
+          items = deduped.slice(0, 8);
           if (items.length === 0) {
             results.innerHTML = '<div style="padding:16px;text-align:center;color:#999;">未找到结果</div>';
             return;

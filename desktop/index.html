@@ -67,7 +67,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
 .leftbar .bar-spacer { flex: 1; }
 
 /* ══════ MAP ZONE ══════ */
-.map-zone { flex: 1; position: relative; min-width: 0; background: #f2efe9; z-index: 0; }
+.map-zone { flex: 1; position: relative; min-width: 0; background: #f0ede6; z-index: 0; }
 .map-zone #map { position: absolute; inset: 0; z-index: 0; }
 .map-zone .custom-zoom {
   position: absolute; bottom: 24px; right: 14px; z-index: 100;
@@ -345,7 +345,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       : 'https://zaakxia.github.io/scene-journey-pwa/assets/tiles/{z}/{x}/{y}.png';
     tileLayer = L.tileLayer(tileUrl, {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> | <a href="https://carto.com/">CARTO</a>',
-      maxNativeZoom: 12, maxZoom: 12, minZoom: 2
+      maxNativeZoom: 15, maxZoom: 18, minZoom: 0
     }).addTo(map);
     L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
     document.getElementById('zoom-in-btn').addEventListener('click', function(e) { e.stopPropagation(); map.zoomIn(); });

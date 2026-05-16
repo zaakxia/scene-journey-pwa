@@ -706,8 +706,9 @@ window.App = { showToast: null };
         var url = 'https://router.hereapi.com/v8/routes?transportMode=publicTransport' +
           '&origin=' + fromLoc.coordinates.lat + ',' + fromLoc.coordinates.lng +
           '&destination=' + toLoc.coordinates.lat + ',' + toLoc.coordinates.lng +
-          '&apiKey=' + HERE_KEY + '&return=summary';
+          '&apiKey=' + HERE_KEY;
         fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+          console.log('[HERE transit raw]', fromLoc.name_zh, '→', toLoc.name_zh, data);
           var totalSec = 0;
           if (data && data.routes && data.routes[0] && data.routes[0].sections) {
             data.routes[0].sections.forEach(function(sec) {
@@ -721,6 +722,7 @@ window.App = { showToast: null };
             transitDetail[cacheKey] = { minutes: durMin, engine: 'here-transit' };
             log('HERE公交 ' + fromLoc.name_zh + '→' + toLoc.name_zh + ': ' + durMin + 'min');
           } else {
+            console.log('[HERE transit] no duration found, totalSec=0, routes:', data && data.routes && data.routes.length, 'sections:', data && data.routes && data.routes[0] && data.routes[0].sections && data.routes[0].sections.length);
             log('HERE公交 FAIL ' + fromLoc.name_zh + '→' + toLoc.name_zh + ' — estimate');
             var km = GeoUtils.haversineDistance(fromLoc.coordinates.lat, fromLoc.coordinates.lng, toLoc.coordinates.lat, toLoc.coordinates.lng);
             var durMin = Math.round((km / URBAN_SPEED) * 60 * TRANSIT_FACTOR);
@@ -728,7 +730,8 @@ window.App = { showToast: null };
             transitDetail[cacheKey] = { minutes: durMin, engine: 'here-transit-est' };
           }
           if (cb) cb();
-        }).catch(function() {
+        }).catch(function(err) {
+          console.error('[HERE transit ERR]', fromLoc.name_zh, '→', toLoc.name_zh, err);
           log('HERE公交 ERR ' + fromLoc.name_zh + '→' + toLoc.name_zh + ' — estimate');
           var km = GeoUtils.haversineDistance(fromLoc.coordinates.lat, fromLoc.coordinates.lng, toLoc.coordinates.lat, toLoc.coordinates.lng);
           var durMin = Math.round((km / URBAN_SPEED) * 60 * TRANSIT_FACTOR);

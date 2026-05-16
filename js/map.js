@@ -7,7 +7,7 @@ const SceneMap = (() => {
     const container = document.getElementById(containerId);
     if (!container || map) return;
     container.style.minHeight = '300px';
-    container.style.background = '#f0ede6';
+    container.style.background = '#f2efe9';
     container.style.touchAction = 'none';
     container.style.msTouchAction = 'none';
 

@@ -198,36 +198,29 @@ window.App = { showToast: null };
       function doSearch() {
         var query = input.value.trim();
         if (!query) return;
-        var region = document.getElementById('map-search-region');
-        var isChina = region && region.value === 'china';
         results.style.display = 'block';
         results.innerHTML = '<div style="padding:16px;text-align:center;color:#999;">搜索中...</div>';
 
-        var url, isGlobal = false;
-        if (isChina) {
-          url = 'https://restapi.amap.com/v3/assistant/inputtips?keywords=' + encodeURIComponent(query) + '&key=' + AMAP_KEY;
-        } else {
-          isGlobal = true;
-          url = 'https://photon.komoot.io/api/?q=' + encodeURIComponent(query) + '&limit=5';
-        }
+        var hasChinese = /[一-鿿]/.test(query);
+        var photonUrl = 'https://photon.komoot.io/api/?q=' + encodeURIComponent(query) + '&limit=5';
+
         var ctrl = new AbortController();
         var timer = setTimeout(function() { ctrl.abort(); }, 8000);
-        fetch(url, { signal: ctrl.signal }).then(function(r) {
+
+        // Always fetch Photon, also Amap for Chinese queries
+        var fetches = [fetch(photonUrl, { signal: ctrl.signal }).then(function(r) { return r.ok ? r.json() : {}; }).catch(function(){ return {}; })];
+        if (hasChinese) {
+          var amapUrl = 'https://restapi.amap.com/v3/assistant/inputtips?keywords=' + encodeURIComponent(query) + '&key=' + AMAP_KEY;
+          fetches.push(fetch(amapUrl, { signal: ctrl.signal }).then(function(r) { return r.ok ? r.json() : {}; }).catch(function(){ return {}; }));
+        }
+
+        Promise.all(fetches).then(function(results) {
           clearTimeout(timer);
-          if (!r.ok) throw new Error('HTTP ' + r.status);
-          return r.json();
-        }).then(function(data) {
-          if (data.status === '0') { console.error('[Search] Amap error:', data.info); }
-                    var items = [];
-          if (data.tips && data.status === '1') {
-            data.tips.forEach(function(tip) {
-              if (tip.location) {
-                var parts = tip.location.split(',');
-                items.push({ lat: parseFloat(parts[1]), lng: parseFloat(parts[0]), title: tip.name, addr: tip.address || tip.district || '' });
-              }
-            });
-          } else if (Array.isArray(data.features)) {
-            data.features.forEach(function(f) {
+          var items = [];
+          // 1. Photon results (primary, works without proxy)
+          var pData = results[0];
+          if (pData && Array.isArray(pData.features)) {
+            pData.features.forEach(function(f) {
               if (f.geometry && f.geometry.coordinates) {
                 var props = f.properties || {};
                 var addr = [props.city, props.country].filter(Boolean).join(', ');
@@ -235,20 +228,25 @@ window.App = { showToast: null };
               }
             });
           }
-          if (items.length === 0 && isGlobal) {
-            var hereUrl = 'https://geocode.search.hereapi.com/v1/geocode?q=' + encodeURIComponent(query) + '&apiKey=' + HERE_KEY + '&limit=5';
-            return fetch(hereUrl).then(function(r) { return r.json(); }).then(function(hData) {
-              if (hData.items) {
-                hData.items.forEach(function(item) {
-                  if (item.position) {
-                    items.push({ lat: item.position.lat, lng: item.position.lng, title: item.title, addr: item.address ? item.address.label : '' });
-                  }
-                });
+          // 2. Amap results (bonus for Chinese, fails silently if proxy on)
+          var aData = results[1];
+          if (aData && aData.tips && aData.status === '1') {
+            aData.tips.forEach(function(tip) {
+              if (tip.location) {
+                var parts = tip.location.split(',');
+                items.push({ lat: parseFloat(parts[1]), lng: parseFloat(parts[0]), title: tip.name, addr: tip.address || tip.district || '' });
               }
-              return items;
             });
           }
-          return items;
+          // Deduplicate by proximity (~100m)
+          var deduped = [];
+          items.forEach(function(item) {
+            var dup = deduped.some(function(d) {
+              return Math.abs(d.lat - item.lat) < 0.001 && Math.abs(d.lng - item.lng) < 0.001;
+            });
+            if (!dup) deduped.push(item);
+          });
+          return deduped.slice(0, 8);
         }).then(function(items) {
           if (items.length === 0) {
             results.innerHTML = '<div style="padding:16px;text-align:center;color:#999;">未找到结果</div>';
@@ -361,7 +359,8 @@ window.App = { showToast: null };
       BottomSheet.open(LocationCard.render(loc, {}), null);
       LocationCard.bindEvents(loc, {
         onBookmark: function() { renderMap(); updateBadges(); },
-        onCheckin: function() { renderMap(); updateBadges(); }
+        onCheckin: function() { renderMap(); updateBadges(); },
+        onDelete: function() { renderMap(); updateBadges(); }
       });
     }
 

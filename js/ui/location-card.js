@@ -146,6 +146,9 @@ const LocationCard = (() => {
     if (!isChecked) {
       h += '<button class="btn btn-outline btn-block" id="btn-checkin">' + Icons.iconLabel('check', '打卡') + '</button>';
     }
+    if (location.is_custom) {
+      h += '<button class="btn btn-outline btn-block" id="btn-delete-custom" style="color:#e63946;border-color:#e63946;">删除取景地</button>';
+    }
     h += '</div>';
 
     return h;
@@ -212,6 +215,19 @@ const LocationCard = (() => {
         });
         input.click();
       });
+    }
+
+    var btnDeleteCustom = document.getElementById('btn-delete-custom');
+    if (btnDeleteCustom) {
+      btnDeleteCustom.onclick = function() {
+        if (confirm('确定删除此取景地？')) {
+          var customLocs = Storage.get('custom_locations') || [];
+          customLocs = customLocs.filter(function(l) { return l.id !== location.id; });
+          Storage.set('custom_locations', customLocs);
+          BottomSheet.close();
+          if (callbacks.onDelete) callbacks.onDelete(location);
+        }
+      };
     }
   }
 

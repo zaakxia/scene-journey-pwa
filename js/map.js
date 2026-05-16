@@ -36,25 +36,11 @@ const SceneMap = (() => {
     _tileLayer = L.tileLayer(tileUrl, {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> | <a href="https://carto.com/">CARTO</a>',
       maxNativeZoom: 15,
-      maxZoom: 18,
+      maxZoom: 14,
       minZoom: 2,
       noWrap: true,
       bounds: [[-85, -180], [85, 180]]
     }).addTo(map);
-    _tileLayer.on('tileerror', function(e) {
-      var tc = e.coords;
-      if (tc.z > 2) {
-        var fz = tc.z - 1;
-        while (fz >= 2) {
-          var fallbackUrl = tileUrl.replace('{z}', fz).replace('{x}', Math.floor(tc.x / Math.pow(2, tc.z - fz))).replace('{y}', Math.floor(tc.y / Math.pow(2, tc.z - fz)));
-          var img = new Image();
-          img.onload = function() { e.tile.src = fallbackUrl; };
-          img.onerror = function() { fz--; if (fz >= 2) img.src = tileUrl.replace('{z}', fz).replace('{x}', Math.floor(tc.x / Math.pow(2, tc.z - fz))).replace('{y}', Math.floor(tc.y / Math.pow(2, tc.z - fz))); };
-          img.src = fallbackUrl;
-          break;
-        }
-      }
-    });
     map.setMaxBounds([[-85, -180], [85, 180]]);
     map.setMinZoom(2);
 

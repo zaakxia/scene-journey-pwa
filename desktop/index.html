@@ -322,6 +322,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     document.getElementById('overlay-panel').classList.remove('open');
     var guideMap = document.getElementById('guide-btn-map');
     if (guideMap) guideMap.style.display = '';
+    var gb = document.getElementById('guide-btn-d'); if (gb) gb.style.display = '';
     switchTab('map');
   }
 
@@ -520,29 +521,37 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     document.getElementById('panel-body').innerHTML = html;
     var pb = document.getElementById('panel-body');
 
-    // Editable duration for custom locations
-    if (loc.is_custom) {
-      var durEl = pb.querySelector('.tag .icon-label');
-      var editBtn = document.createElement('button');
-      editBtn.textContent = '编辑';
-      editBtn.style.cssText = 'font-size:10px;padding:1px 6px;border-radius:4px;border:1px solid #d4cfc8;background:#fff;color:#8b7e6b;cursor:pointer;margin-left:4px;';
-      editBtn.onclick = function(e) {
-        e.stopPropagation();
-        var cur = parseInt(loc.visit_duration) || 2;
-        var val = prompt('游玩时间（小时）：', cur);
-        if (val && !isNaN(val) && parseInt(val) > 0) {
-          loc.visit_duration = parseInt(val) + 'h';
+    // Editable duration for all locations
+    var durOvrD = Storage.get('duration_overrides') || {};
+    var showDurD = durOvrD[loc.id] || loc.visit_duration || '2h';
+    var durRow = document.createElement('div');
+    durRow.style.cssText = 'margin:8px 0;padding:8px;background:#fafaf8;border-radius:6px;display:flex;align-items:center;gap:8px;font-size:13px;';
+    durRow.innerHTML = '<span style="font-weight:600;">游玩时间：</span><span>' + showDurD + '</span>';
+    var editBtn = document.createElement('button');
+    editBtn.textContent = '编辑';
+    editBtn.style.cssText = 'font-size:11px;padding:2px 10px;border-radius:4px;border:1px solid #d4cfc8;background:#fff;color:#8b7e6b;cursor:pointer;';
+    editBtn.onclick = function(e) {
+      e.stopPropagation();
+      var curOvr = Storage.get('duration_overrides') || {};
+      var cur = parseInt(curOvr[loc.id] || loc.visit_duration) || 2;
+      var val = prompt('游玩时间（小时）：', cur);
+      if (val && !isNaN(val) && parseInt(val) > 0) {
+        loc.visit_duration = parseInt(val) + 'h';
+        curOvr[loc.id] = parseInt(val) + 'h';
+        Storage.set('duration_overrides', curOvr);
+        if (loc.is_custom) {
           var cl = Storage.get('custom_locations') || [];
           for (var i = 0; i < cl.length; i++) {
             if (cl[i].id === loc.id) { cl[i].visit_duration = parseInt(val) + 'h'; break; }
           }
           Storage.set('custom_locations', cl);
-          renderLocDetail(loc);
         }
-      };
-      var durTag = pb.querySelector('.tag:last-of-type');
-      if (durTag) durTag.appendChild(editBtn);
-    }
+        renderLocDetail(loc);
+      }
+    };
+    durRow.appendChild(editBtn);
+    var actionsEl = pb.querySelector('.loc-actions');
+    if (actionsEl) actionsEl.parentNode.insertBefore(durRow, actionsEl);
 
     var favBtn = pb.querySelector('.detail-fav-btn');
     if (favBtn) favBtn.onclick = function(e) {
@@ -585,6 +594,8 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       Storage.set('custom_locations', cl);
       closePanel(); showLocations(locations, null, true);
     };
+    var gb = document.getElementById('guide-btn-d'); if (gb) gb.style.display = 'none';
+    var mgb = document.getElementById('guide-btn-map'); if (mgb) mgb.style.display = 'none';
     document.getElementById('overlay-panel').classList.add('open');
   }
 
@@ -844,6 +855,8 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     var favs = Storage.getBookmarks();
     var customLocs = Storage.get('custom_locations') || [];
     var planLocs = locations.filter(function(l){return favs.indexOf(l.id)>=0;}).concat(customLocs);
+    var durOvr = Storage.get('duration_overrides') || {};
+    planLocs.forEach(function(loc) { if (durOvr[loc.id]) loc.visit_duration = durOvr[loc.id]; });
     planState._planLocs = planLocs;
     if (planLocs.length === 0) return '<div class="empty-state">还没有收藏取景地<br><span style="font-size:12px;">在地图上点击取景地收藏后规划行程</span></div>';
 

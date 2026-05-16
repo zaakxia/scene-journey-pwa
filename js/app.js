@@ -385,6 +385,8 @@ window.App = { showToast: null };
       var bookmarks = Storage.getBookmarks();
       var customLocs = Storage.get('custom_locations') || [];
       var planLocs = locations.filter(function(l) { return bookmarks.indexOf(l.id) >= 0; }).concat(customLocs);
+      var durOvr = Storage.get('duration_overrides') || {};
+      planLocs.forEach(function(loc) { if (durOvr[loc.id]) loc.visit_duration = durOvr[loc.id]; });
       var checkins = Storage.getCheckins();
 
       if (planLocs.length === 0) {

@@ -125,15 +125,15 @@ const LocationCard = (() => {
     if (location.nearest_station) h += '<div class="text-sm text-secondary">' + Icons.iconLabel('train', '最近车站: ' + location.nearest_station, 14) + '</div>';
     h += '</div>';
 
-    // Editable duration for custom locations
-    if (location.is_custom) {
-      h += '<div class="memo-card" style="margin-bottom:8px;">';
-      h += '<div style="display:flex;align-items:center;gap:8px;">';
-      h += '<span style="font-size:13px;font-weight:600;">游玩时间：</span>';
-      h += '<span id="txt-duration" style="font-size:13px;">' + (location.visit_duration || '2h') + '</span>';
-      h += '<button class="btn btn-outline" id="btn-edit-duration" style="font-size:11px;padding:2px 10px;">编辑</button>';
-      h += '</div></div>';
-    }
+    // Editable duration for all locations
+    var durOvr = Storage.get('duration_overrides') || {};
+    var showDur = durOvr[location.id] || location.visit_duration || '2h';
+    h += '<div class="memo-card" style="margin-bottom:8px;">';
+    h += '<div style="display:flex;align-items:center;gap:8px;">';
+    h += '<span style="font-size:13px;font-weight:600;">游玩时间：</span>';
+    h += '<span id="txt-duration" style="font-size:13px;">' + showDur + '</span>';
+    h += '<button class="btn btn-outline" id="btn-edit-duration" style="font-size:11px;padding:2px 10px;">编辑</button>';
+    h += '</div></div>';
 
     // Checkin stamp
     if (isChecked && checkinData) {
@@ -230,19 +230,21 @@ const LocationCard = (() => {
     var btnEditDuration = document.getElementById('btn-edit-duration');
     if (btnEditDuration) {
       btnEditDuration.onclick = function() {
-        var current = parseInt(location.visit_duration) || 2;
+        var durOvr = Storage.get('duration_overrides') || {};
+        var current = parseInt(durOvr[location.id] || location.visit_duration) || 2;
         var val = prompt('游玩时间（小时）：', current);
         if (val && !isNaN(val) && parseInt(val) > 0) {
           var hours = parseInt(val);
           location.visit_duration = hours + 'h';
-          var customLocs = Storage.get('custom_locations') || [];
-          var idx = -1;
-          for (var i = 0; i < customLocs.length; i++) {
-            if (customLocs[i].id === location.id) { idx = i; break; }
-          }
-          if (idx >= 0) {
-            customLocs[idx].visit_duration = hours + 'h';
-            Storage.set('custom_locations', customLocs);
+          durOvr[location.id] = hours + 'h';
+          Storage.set('duration_overrides', durOvr);
+          // Also update custom_locations if applicable
+          if (location.is_custom) {
+            var cl = Storage.get('custom_locations') || [];
+            for (var i = 0; i < cl.length; i++) {
+              if (cl[i].id === location.id) { cl[i].visit_duration = hours + 'h'; break; }
+            }
+            Storage.set('custom_locations', cl);
           }
           // Refresh card to show updated duration
           BottomSheet.open(render(location, callbacks), callbacks.onClose);

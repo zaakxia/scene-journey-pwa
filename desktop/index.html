@@ -300,10 +300,10 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
   }
 
   var guideContents = {
-    map: '搜索框输入地点名称，可设为取景地并收藏打卡\n点击地图标记查看取景地详情卡片\n详情卡片中，收藏标记加入计划，打卡记录巡礼足迹\n双指缩放或点击右下角+/-缩放地图\n个人添加取景地可在详情卡片处修改游玩时间，修改后自动同步至计划页面模块中',
-    plan: '选中下方取景地卡片，点击时间线放置行程模块\n交通按钮切换国内高德/全球HERE获取实时通勤时间\n相邻模块放置自动留出最短通勤时间\n点击日程标签可切换天数，支持最多7天行程安排\n时间线中的模块点击×可删除单个模块。清空按钮一键移除当天时间线上所有模块\n切换到智能推荐选择通勤方式，系统自动规划最优路线',
-    story: '按原著章节顺序浏览取景地\n每个取景地包含出处、剧情简介和原文摘录\n点击取景地查看详情卡片\n收藏感兴趣的取景地加入个人计划',
-    bookmarks: '用户使用情况无联网上传，仅存于本地存储\n点击头像上传照片,点击昵称修改称呼\n在地图取景地详情中打卡后,时间轴自动记录\n打卡记录按日期分组,展示你的个人足迹\n底部可导出数据备份,换设备时恢复\n收藏取景地后可在计划页规划路线'
+    map: '1.搜索框输入地点名称，可设为取景地并收藏打卡\n2.点击地图标记查看取景地详情卡片\n3.详情卡片中，收藏标记加入计划，打卡记录巡礼足迹\n4.双指缩放或点击右下角+/-缩放地图\n5.个人添加取景地可在详情卡片处修改游玩时间，修改后自动同步至计划页面模块中',
+    plan: '1.选中下方取景地卡片，点击时间线放置行程模块\n2.交通按钮切换国内高德/全球HERE获取实时通勤时间\n3.相邻模块放置自动留出最短通勤时间\n4.点击日程标签可切换天数，支持最多7天行程安排\n5.时间线中的模块点击×可删除单个模块。清空按钮一键移除当天时间线上所有模块\n6.切换到智能推荐选择通勤方式，系统自动规划最优路线',
+    story: '1.按原著章节顺序浏览取景地\n2.每个取景地包含出处、剧情简介和原文摘录\n3.点击取景地查看详情卡片\n4.收藏感兴趣的取景地加入个人计划',
+    bookmarks: '1.用户使用情况无联网上传，仅存于本地存储\n2.点击头像上传照片,点击昵称修改称呼\n3.在地图取景地详情中打卡后,时间轴自动记录\n4.打卡记录按日期分组,展示你的个人足迹\n5.底部可导出数据备份,换设备时恢复\n6.收藏取景地后可在计划页规划路线'
   };
 
   function openPanel(title, html, tabName) {
@@ -1245,18 +1245,19 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     // Slot click to place
     panel.querySelectorAll('.plan-slot').forEach(function(slot) {
       slot.onclick = function() {
-        console.log('[Plan] slot click', slot.dataset.slot, 'selectedLocId:', planState.selectedLocId);
-        if (!planState.selectedLocId) { console.log('[Plan] no selectedLocId'); return; }
+        if (!planState.selectedLocId) return;
         var clickedSlot = parseInt(slot.dataset.slot);
         var loc = planLocs.find(function(l){return l.id===planState.selectedLocId;});
-        if (!loc) { console.log('[Plan] loc not found in planLocs, id:', planState.selectedLocId); return; }
+        if (!loc) return;
         var dur = parseDuration(loc.visit_duration);
         var oh = getOpenHours(loc);
-        console.log('[Plan] loc:', loc.name_zh, 'dur:', dur, 'oh:', oh.open+'-'+oh.close, 'clicked:', clickedSlot);
-        if (clickedSlot < oh.open || clickedSlot + dur > oh.close) { console.log('[Plan] outside hours'); return; }
+        if (clickedSlot < oh.open || clickedSlot + dur > oh.close) {
+          alert(loc.name_zh + ' 营业时间 ' + slotsToTime(oh.open) + '-' + slotsToTime(oh.close) + '，无法放入该时段');
+          return;
+        }
         var overlap = day.blocks.some(function(b){return clickedSlot < b.startSlot+b.slots && clickedSlot+dur > b.startSlot;});
-        if (overlap) { console.log('[Plan] overlap'); return; }
-        if (clickedSlot + dur > 48) { console.log('[Plan] exceeds 48'); return; }
+        if (overlap) { alert('该时段与已有行程重叠'); return; }
+        if (clickedSlot + dur > 48) { alert('游玩时长超出当日范围'); return; }
         day.blocks.push({ locId: planState.selectedLocId, startSlot: clickedSlot, slots: dur });
         day.blocks.sort(function(a,b){return a.startSlot - b.startSlot;});
         Storage.set('schedule', schedule);

@@ -1,7 +1,7 @@
 // Service Worker for scene-journey PWA
 // Cache shell assets only — tiles bypass SW (too many files)
 
-const CACHE_NAME = 'scene-journey-v4';
+const CACHE_NAME = 'scene-journey-v5';
 
 // Core app shell — small, changes rarely
 const SHELL = [
@@ -67,8 +67,7 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       fetch(event.request)
         .then(response => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          try { const clone = response.clone(); caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone)); } catch(e) {}
           return response;
         })
         .catch(() => caches.match(event.request))
@@ -78,7 +77,7 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       caches.match(event.request).then(cached => {
         const fetchPromise = fetch(event.request).then(response => {
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, response.clone()));
+          try { caches.open(CACHE_NAME).then(cache => cache.put(event.request, response.clone())); } catch(e) {}
           return response;
         });
         return cached || fetchPromise;

@@ -208,19 +208,17 @@ window.App = { showToast: null };
           url = 'https://restapi.amap.com/v3/assistant/inputtips?keywords=' + encodeURIComponent(query) + '&key=' + AMAP_KEY;
         } else {
           isGlobal = true;
-          url = 'https://autosuggest.search.hereapi.com/v1/autosuggest?q=' + encodeURIComponent(query) + '&apiKey=' + HERE_KEY + '&limit=5';
+          url = 'https://photon.komoot.io/api/?q=' + encodeURIComponent(query) + '&limit=5';
         }
-        // AbortController for 12s timeout
         var ctrl = new AbortController();
-        var timer = setTimeout(function() { ctrl.abort(); }, 12000);
+        var timer = setTimeout(function() { ctrl.abort(); }, 8000);
         fetch(url, { signal: ctrl.signal }).then(function(r) {
           clearTimeout(timer);
           if (!r.ok) throw new Error('HTTP ' + r.status);
           return r.json();
         }).then(function(data) {
           if (data.status === '0') { console.error('[Search] Amap error:', data.info); }
-          if (data.error) { console.error('[Search] HERE error:', data.error); }
-          var items = [];
+                    var items = [];
           if (data.tips && data.status === '1') {
             data.tips.forEach(function(tip) {
               if (tip.location) {
@@ -228,20 +226,23 @@ window.App = { showToast: null };
                 items.push({ lat: parseFloat(parts[1]), lng: parseFloat(parts[0]), title: tip.name, addr: tip.address || tip.district || '' });
               }
             });
-          } else if (data.items) {
-            data.items.forEach(function(item) {
-              if (item.position) {
-                items.push({ lat: item.position.lat, lng: item.position.lng, title: item.title, addr: item.address ? item.address.label : '' });
+          } else if (Array.isArray(data.features)) {
+            data.features.forEach(function(f) {
+              if (f.geometry && f.geometry.coordinates) {
+                var props = f.properties || {};
+                var addr = [props.city, props.country].filter(Boolean).join(', ');
+                items.push({ lat: f.geometry.coordinates[1], lng: f.geometry.coordinates[0], title: props.name || '', addr: addr });
               }
             });
           }
-          // If global search returned nothing, try Nominatim (handles Chinese names of landmarks)
           if (items.length === 0 && isGlobal) {
-            var nomUrl = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(query) + '&format=json&limit=5';
-            return fetch(nomUrl).then(function(r) { return r.json(); }).then(function(nData) {
-              if (Array.isArray(nData)) {
-                nData.forEach(function(item) {
-                  items.push({ lat: parseFloat(item.lat), lng: parseFloat(item.lon), title: item.name || item.display_name.split(',')[0], addr: item.display_name });
+            var hereUrl = 'https://geocode.search.hereapi.com/v1/geocode?q=' + encodeURIComponent(query) + '&apiKey=' + HERE_KEY + '&limit=5';
+            return fetch(hereUrl).then(function(r) { return r.json(); }).then(function(hData) {
+              if (hData.items) {
+                hData.items.forEach(function(item) {
+                  if (item.position) {
+                    items.push({ lat: item.position.lat, lng: item.position.lng, title: item.title, addr: item.address ? item.address.label : '' });
+                  }
                 });
               }
               return items;
@@ -266,9 +267,9 @@ window.App = { showToast: null };
 
           results.querySelectorAll('.search-result-item').forEach(function(el) {
             el.onclick = function() {
-              SceneMap.flyTo(parseFloat(el.dataset.lat), parseFloat(el.dataset.lng), 14);
-              results.style.display = 'none';
-              input.value = '';
+              var lat = parseFloat(el.dataset.lat), lng = parseFloat(el.dataset.lng);
+              SceneMap.showTempMarker(lat, lng, el.dataset.title);
+              SceneMap.flyTo(lat, lng, 14);
             };
           });
 
@@ -300,6 +301,7 @@ window.App = { showToast: null };
               customLocs.push(newLoc);
               Storage.set('custom_locations', customLocs);
               App.showToast('已设为取景地: ' + title);
+              SceneMap.removeTempMarker();
               results.style.display = 'none';
               input.value = '';
               setTimeout(function() { renderMap(); }, 300);
@@ -324,6 +326,7 @@ window.App = { showToast: null };
       document.addEventListener('click', function(e) {
         if (!results.contains(e.target) && e.target !== input && e.target !== btn) {
           results.style.display = 'none';
+          SceneMap.removeTempMarker();
         }
       });
 

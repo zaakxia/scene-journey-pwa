@@ -1,7 +1,7 @@
 // Scene Map — Leaflet + CartoDB Light tiles via GitHub Pages CDN
 const SceneMap = (() => {
   let map, _markers = [], _onMarkerClick = null;
-  let _tileLayer = null;
+  let _tileLayer = null, _tempMarker = null;
 
   function init(containerId) {
     const container = document.getElementById(containerId);
@@ -41,6 +41,20 @@ const SceneMap = (() => {
       noWrap: true,
       bounds: [[-85, -180], [85, 180]]
     }).addTo(map);
+    _tileLayer.on('tileerror', function(e) {
+      var tc = e.coords;
+      if (tc.z > 2) {
+        var fz = tc.z - 1;
+        while (fz >= 2) {
+          var fallbackUrl = tileUrl.replace('{z}', fz).replace('{x}', Math.floor(tc.x / Math.pow(2, tc.z - fz))).replace('{y}', Math.floor(tc.y / Math.pow(2, tc.z - fz)));
+          var img = new Image();
+          img.onload = function() { e.tile.src = fallbackUrl; };
+          img.onerror = function() { fz--; if (fz >= 2) img.src = tileUrl.replace('{z}', fz).replace('{x}', Math.floor(tc.x / Math.pow(2, tc.z - fz))).replace('{y}', Math.floor(tc.y / Math.pow(2, tc.z - fz))); };
+          img.src = fallbackUrl;
+          break;
+        }
+      }
+    });
     map.setMaxBounds([[-85, -180], [85, 180]]);
     map.setMinZoom(2);
 
@@ -184,7 +198,23 @@ const SceneMap = (() => {
     if (map) map.invalidateSize();
   }
 
-  // No-op functions kept for backward compatibility with app.js
+  function showTempMarker(lat, lng, title) {
+    if (!map) return;
+    removeTempMarker();
+    var icon = L.divIcon({
+      className: 'temp-search-marker',
+      html: '<div style="width:20px;height:20px;border-radius:50%;background:#1d4ed8;border:3px solid #fff;box-shadow:0 0 0 3px rgba(29,78,216,0.3),0 2px 8px rgba(0,0,0,0.2);animation:temp-pulse 1.5s ease-in-out infinite;"></div>',
+      iconSize: [20, 20],
+      iconAnchor: [10, 10]
+    });
+    _tempMarker = L.marker([lat, lng], { icon: icon, interactive: false }).addTo(map);
+    if (title) {
+      _tempMarker.bindTooltip(title, { permanent: true, direction: 'top', offset: [0, -14], className: 'temp-marker-label' });
+    }
+  }
+  function removeTempMarker() {
+    if (_tempMarker) { map.removeLayer(_tempMarker); _tempMarker = null; }
+  }
   function switchSource(src) {}
 
   return {
@@ -195,6 +225,8 @@ const SceneMap = (() => {
     filterByCategory: filterByCategory,
     flyTo: flyTo,
     invalidateSize: invalidateSize,
-    switchSource: switchSource
+    switchSource: switchSource,
+    showTempMarker: showTempMarker,
+    removeTempMarker: removeTempMarker
   };
 })();

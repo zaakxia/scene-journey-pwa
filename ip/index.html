@@ -348,6 +348,9 @@
 
     /* Hide Leaflet's built-in zoom — we use custom above */
     .leaflet-control-zoom { display: none !important; }
+    @keyframes temp-pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.3);opacity:0.6} }
+    .temp-marker-label { background:#1d4ed8;color:#fff;border:none;font-size:12px;font-weight:600;padding:3px 8px;border-radius:4px; }
+    .temp-marker-label::before { border-top-color:#1d4ed8 !important; }
   </style>
 </head>
 <body>

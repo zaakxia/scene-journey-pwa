@@ -711,7 +711,8 @@ window.App = { showToast: null };
           var totalSec = 0;
           if (data && data.routes && data.routes[0] && data.routes[0].sections) {
             data.routes[0].sections.forEach(function(sec) {
-              if (sec.summary && sec.summary.duration) totalSec += sec.summary.duration;
+              var s = sec.travelSummary || sec.summary;
+              if (s && s.duration) totalSec += s.duration;
             });
           }
           if (totalSec > 0) {

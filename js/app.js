@@ -708,9 +708,14 @@ window.App = { showToast: null };
           '&destination=' + toLoc.coordinates.lat + ',' + toLoc.coordinates.lng +
           '&apiKey=' + HERE_KEY + '&return=summary';
         fetch(url).then(function(r) { return r.json(); }).then(function(data) {
-          if (data && data.routes && data.routes[0] && data.routes[0].sections && data.routes[0].sections[0]) {
-            var s = data.routes[0].sections[0].summary;
-            var durMin = Math.round(s.duration / 60);
+          var totalSec = 0;
+          if (data && data.routes && data.routes[0] && data.routes[0].sections) {
+            data.routes[0].sections.forEach(function(sec) {
+              if (sec.summary && sec.summary.duration) totalSec += sec.summary.duration;
+            });
+          }
+          if (totalSec > 0) {
+            var durMin = Math.round(totalSec / 60);
             transitCache[cacheKey] = Math.max(1, Math.ceil(durMin / 30));
             transitDetail[cacheKey] = { minutes: durMin, engine: 'here-transit' };
             log('HERE公交 ' + fromLoc.name_zh + '→' + toLoc.name_zh + ': ' + durMin + 'min');

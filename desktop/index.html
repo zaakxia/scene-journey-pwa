@@ -716,7 +716,13 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
         planState.transitDetail[cacheKey]={minutes:m,engine:'here-transit-est'};
       }
       if(cb)cb();
-    }).catch(function(){if(cb)cb();});
+    }).catch(function(){
+      var km=GeoUtils.haversineDistance(fromLoc.coordinates.lat,fromLoc.coordinates.lng,toLoc.coordinates.lat,toLoc.coordinates.lng);
+      var m=Math.round(km/URBAN_SPEED*60*TRANSIT_FACTOR);
+      planState.transitCache[cacheKey]=Math.max(1,Math.ceil(km/URBAN_SPEED*2*TRANSIT_FACTOR));
+      planState.transitDetail[cacheKey]={minutes:m,engine:'here-transit-est'};
+      if(cb)cb();
+    });
   }
   function fetchHEREWalk(fromLoc, toLoc, cacheKey, cb) {
     hereCallCount++;

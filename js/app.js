@@ -860,8 +860,14 @@ window.App = { showToast: null };
         if (daysExpanded && schedule.days.length < 7) {
           h += '<button id="sched-add-day" style="flex-shrink:0;width:26px;height:26px;border-radius:50%;border:1.5px dashed var(--color-border);background:none;color:var(--color-text-secondary);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>';
         }
+        // Clear blocks button
+        var hasBlocks = false;
+        schedule.days.forEach(function(d) { if (d.blocks && d.blocks.length > 0) hasBlocks = true; });
+        if (hasBlocks) {
+          h += '<button id="sched-clear-blocks" style="margin-left:auto;flex-shrink:0;padding:4px 10px;border-radius:999px;border:1px solid #e63946;background:#fff;color:#e63946;font-size:10px;font-weight:600;cursor:pointer;">清空</button>';
+        }
         // Transit toggle
-        h += '<span style="margin-left:auto;display:flex;align-items:center;gap:4px;flex-shrink:0;">';
+        h += '<span style="display:flex;align-items:center;gap:4px;flex-shrink:0;margin-left:' + (hasBlocks ? '8px' : 'auto') + ';">';
         h += '<span style="font-size:11px;font-weight:600;color:var(--color-text-secondary);">交通</span>';
         h += '<button id="sched-toggle-transit" style="padding:3px 8px;border-radius:999px;border:1px solid var(--color-border);font-size:11px;font-weight:600;background:' + (useAmap ? 'var(--color-primary)' : 'var(--color-border)') + ';color:' + (useAmap ? '#fff' : 'var(--color-text-secondary)') + ';cursor:pointer;">' + (useAmap ? '高德' : 'HERE') + '</button>';
         h += '<button id="sched-alt-engine" style="padding:3px 6px;border-radius:999px;border:1px solid var(--color-border);font-size:10px;font-weight:500;background:#fff;color:var(--color-text-secondary);cursor:pointer;">' + (useAmap ? 'HERE' : '高德') + '</button>';
@@ -1468,6 +1474,17 @@ window.App = { showToast: null };
             schedule.days.push({ day: nextDay, label: '第' + nextDay + '天', blocks: [] });
             schedule.days.sort(function(a, b) { return a.day - b.day; });
             currentDayIdx = schedule.days.findIndex(function(d) { return d.day === nextDay; });
+            Storage.set('schedule', schedule);
+            buildHTML();
+          };
+        }
+
+        // Clear all blocks on current day
+        var btnClear = container.querySelector('#sched-clear-blocks');
+        if (btnClear) {
+          btnClear.onclick = function() {
+            if (!confirm('清空 ' + schedule.days[currentDayIdx].label + ' 的所有行程？')) return;
+            schedule.days[currentDayIdx].blocks = [];
             Storage.set('schedule', schedule);
             buildHTML();
           };

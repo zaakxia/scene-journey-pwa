@@ -1046,8 +1046,9 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
         if (gapEnd > blockEnd) {
           var gapTop = (blockEnd - colStart) * planState.SLOT_H;
           var gapH = (gapEnd - blockEnd) * planState.SLOT_H;
-          var curLoc = planLocs.find(function(l){return l.id===block.locId;});
-          var nxtLoc = planLocs.find(function(l){return l.id===nextBlock.locId;});
+          var allLocs = locations.concat(Storage.get('custom_locations')||[]);
+          var curLoc = allLocs.find(function(l){return l.id===block.locId;});
+          var nxtLoc = allLocs.find(function(l){return l.id===nextBlock.locId;});
           var tKey = (curLoc?curLoc.id:'')+'|'+(nxtLoc?nxtLoc.id:'');
           var tInfo = planState.transitDetail[tKey];
           var tMins = tInfo ? tInfo.minutes : Math.round((nextStart - blockEnd) * 30);

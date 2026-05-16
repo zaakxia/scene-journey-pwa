@@ -1142,7 +1142,7 @@ window.App = { showToast: null };
             if (showLabel) {
               h += '<span style="flex:1;font-weight:590;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#1c1917;font-size:10px;min-width:0;">' + loc.name_zh + '</span>';
               h += '<span style="font-size:9px;font-weight:500;color:' + accent + ';margin-left:3px;flex-shrink:0;opacity:0.75;">' + block.slots / 2 + 'h</span>';
-              h += '<span class="sched-remove" data-lid="' + block.locId + '" style="flex-shrink:0;margin-left:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(0,0,0,0.35);cursor:pointer;line-height:1;">×</span>';
+              h += '<span class="sched-remove" data-lid="' + block.locId + '" style="flex-shrink:0;margin-left:8px;padding:3px 12px;border-radius:999px;background:rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:rgba(0,0,0,0.35);cursor:pointer;line-height:1;">×</span>';
             }
             h += '</div>';
           }

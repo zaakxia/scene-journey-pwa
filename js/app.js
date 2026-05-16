@@ -708,14 +708,15 @@ window.App = { showToast: null };
           '&destination=' + toLoc.coordinates.lat + ',' + toLoc.coordinates.lng +
           '&apiKey=' + HERE_KEY;
         fetch(url).then(function(r) { return r.json(); }).then(function(data) {
-          console.log('[HERE transit raw]', fromLoc.name_zh, '→', toLoc.name_zh, JSON.stringify(data));
           var totalSec = 0;
           if (data && data.routes && data.routes[0] && data.routes[0].sections) {
-            data.routes[0].sections.forEach(function(sec, i) {
-              console.log('[HERE transit sec' + i + ' keys]', Object.keys(sec));
+            data.routes[0].sections.forEach(function(sec) {
               var s = sec.travelSummary || sec.summary;
-              if (s) console.log('[HERE transit sec' + i + ' dur]', s.duration, typeof s.duration);
-              if (s && typeof s.duration === 'number') totalSec += s.duration;
+              if (s && typeof s.duration === 'number') {
+                totalSec += s.duration;
+              } else if (sec.departure && sec.departure.time && sec.arrival && sec.arrival.time) {
+                totalSec += (new Date(sec.arrival.time) - new Date(sec.departure.time)) / 1000;
+              }
             });
           }
           if (totalSec > 0) {
@@ -724,7 +725,6 @@ window.App = { showToast: null };
             transitDetail[cacheKey] = { minutes: durMin, engine: 'here-transit' };
             log('HERE公交 ' + fromLoc.name_zh + '→' + toLoc.name_zh + ': ' + durMin + 'min');
           } else {
-            console.log('[HERE transit] no duration found, totalSec=0, routes:', data && data.routes && data.routes.length, 'sections:', data && data.routes && data.routes[0] && data.routes[0].sections && data.routes[0].sections.length);
             log('HERE公交 FAIL ' + fromLoc.name_zh + '→' + toLoc.name_zh + ' — estimate');
             var km = GeoUtils.haversineDistance(fromLoc.coordinates.lat, fromLoc.coordinates.lng, toLoc.coordinates.lat, toLoc.coordinates.lng);
             var durMin = Math.round((km / URBAN_SPEED) * 60 * TRANSIT_FACTOR);
@@ -732,8 +732,7 @@ window.App = { showToast: null };
             transitDetail[cacheKey] = { minutes: durMin, engine: 'here-transit-est' };
           }
           if (cb) cb();
-        }).catch(function(err) {
-          console.error('[HERE transit ERR]', fromLoc.name_zh, '→', toLoc.name_zh, err);
+        }).catch(function() {
           log('HERE公交 ERR ' + fromLoc.name_zh + '→' + toLoc.name_zh + ' — estimate');
           var km = GeoUtils.haversineDistance(fromLoc.coordinates.lat, fromLoc.coordinates.lng, toLoc.coordinates.lat, toLoc.coordinates.lng);
           var durMin = Math.round((km / URBAN_SPEED) * 60 * TRANSIT_FACTOR);

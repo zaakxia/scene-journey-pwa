@@ -422,11 +422,13 @@ window.App = { showToast: null };
         var h = durStr.match(/(\d+)\s*小时/);
         var d = durStr.match(/(\d+)\s*天/);
         var m = durStr.match(/(\d+)\s*分钟/);
-        if (d) return parseInt(d[1]) * 24; // 1天=12h=24 half-hour slots
+        var hh = durStr.match(/(\d+)\s*h/i); // "2h", "3H"
+        if (d) return parseInt(d[1]) * 24;
         var total = 0;
         if (h) total += parseInt(h[1]) * 2;
+        if (hh && !h) total += parseInt(hh[1]) * 2;
         if (m) total += Math.ceil(parseInt(m[1]) / 30);
-        return Math.max(1, total); // minimum 30min = 1 half-hour
+        return Math.max(1, total);
       }
 
       function slotsToTime(slotIdx) {

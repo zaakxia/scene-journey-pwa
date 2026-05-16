@@ -223,12 +223,8 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     <div id="map"></div>
     <!-- Search bar -->
     <div style="position:absolute;top:10px;left:10px;right:52px;z-index:800;display:flex;gap:6px;align-items:center;">
-      <input id="map-search-input" type="text" placeholder="搜索地点设为取景地..." style="flex:1;min-width:0;padding:8px 12px;border-radius:999px;border:none;font-size:13px;background:rgba(255,255,255,0.95);box-shadow:0 2px 8px rgba(0,0,0,0.1);outline:none;color:#1c1917;">
-      <select id="map-search-region" style="padding:6px 4px;border-radius:999px;border:none;font-size:11px;font-weight:500;background:rgba(255,255,255,0.95);box-shadow:0 2px 8px rgba(0,0,0,0.1);outline:none;color:#1c1917;cursor:pointer;flex-shrink:0;">
-        <option value="global">国外</option>
-        <option value="china">国内</option>
-      </select>
-      <button id="map-search-btn" style="width:36px;height:36px;border-radius:50%;border:none;background:#b91c1c;color:#fff;font-size:16px;cursor:pointer;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.12);">🔍</button>
+      <input id="map-search-input" type="text" placeholder="搜索地点，中英文均可..." style="flex:1;min-width:0;padding:8px 12px;border-radius:999px;border:none;font-size:13px;background:rgba(255,255,255,0.95);box-shadow:0 2px 8px rgba(0,0,0,0.1);outline:none;color:#1c1917;">
+      <button id="map-search-btn" style="padding:6px 14px;border-radius:999px;border:1.5px solid #d4cfc8;background:#fff;color:#1c1917;font-size:13px;font-weight:600;cursor:pointer;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.06);white-space:nowrap;">搜索</button>
     </div>
     <div id="map-search-results" style="position:absolute;top:54px;left:10px;right:10px;z-index:801;display:none;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.15);max-height:240px;overflow-y:auto;"></div>
     <!-- Filter chips -->
@@ -304,10 +300,10 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
   }
 
   var guideContents = {
-    map: '点击彩色标记查看取景地详情\n双指缩放或点击右下角+/-缩放地图\n点击取景地可查看照片并打卡\n收藏后可到行程页规划路线',
-    plan: '点击下方取景地卡片选中,再点击时间线放置\n时间线为24小时制,上午/下午双列显示\n交通按钮可切换高德/HERE计算出行时间\n切换到智能推荐让系统自动规划最优路线\n点击已放置的模块可跳转取景地详情\n× 按钮可移除已放置的模块',
-    story: '按原著章节顺序浏览取景地\n每个取景地包含原著原文摘录\n点击取景地可查看详情和实景照片\n收藏感兴趣的取景地加入个人计划',
-    bookmarks: '点击头像上传照片,点击昵称修改称呼\n在地图取景地详情中打卡后,时间轴自动记录\n打卡记录按日期分组,展示你的巡礼足迹\n底部可导出数据备份,换设备时恢复\n收藏取景地后可在计划页规划路线'
+    map: '搜索框输入地点名称，可设为取景地并收藏打卡\n点击地图标记查看取景地详情卡片\n详情卡片中，收藏标记加入计划，打卡记录巡礼足迹\n双指缩放或点击右下角+/-缩放地图\n个人添加取景地可在详情卡片处修改游玩时间，修改后自动同步至计划页面模块中',
+    plan: '选中下方取景地卡片，点击时间线放置行程模块\n交通按钮切换国内高德/全球HERE获取实时通勤时间\n相邻模块放置自动留出最短通勤时间\n点击日程标签可切换天数，支持最多7天行程安排\n时间线中的模块点击×可删除单个模块。清空按钮一键移除当天时间线上所有模块\n切换到智能推荐选择通勤方式，系统自动规划最优路线',
+    story: '按原著章节顺序浏览取景地\n每个取景地包含出处、剧情简介和原文摘录\n点击取景地查看详情卡片\n收藏感兴趣的取景地加入个人计划',
+    bookmarks: '用户使用情况无联网上传，仅存于本地存储\n点击头像上传照片,点击昵称修改称呼\n在地图取景地详情中打卡后,时间轴自动记录\n打卡记录按日期分组,展示你的个人足迹\n底部可导出数据备份,换设备时恢复\n收藏取景地后可在计划页规划路线'
   };
 
   function openPanel(title, html, tabName) {
@@ -516,11 +512,38 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       + '<button class="btn-action detail-fav-btn'+(isFav?' primary':'')+'" data-loc-id="'+loc.id+'">'+(isFav?'★ 已收藏':'☆ 收藏')+'</button>'
       + '<button class="btn-action detail-check-btn'+(isChecked?' primary':'')+'" data-loc-id="'+loc.id+'">'+(isChecked?'✓ 已打卡':'○ 打卡')+'</button>'
       + '<button class="btn-action detail-nav-btn" data-lat="'+loc.coordinates.lat+'" data-lng="'+loc.coordinates.lng+'">🧭 导航</button>'
-      + '</div></div>';
+      + '</div>'
+      + (loc.is_custom ? '<div class="loc-actions" style="margin-top:8px;"><button class="btn-action detail-del-btn" data-loc-id="'+loc.id+'" style="color:#e63946;border-color:#e63946;">删除取景地</button></div>' : '')
+      + '</div>';
 
     document.getElementById('panel-title').textContent = loc.name_zh;
     document.getElementById('panel-body').innerHTML = html;
     var pb = document.getElementById('panel-body');
+
+    // Editable duration for custom locations
+    if (loc.is_custom) {
+      var durEl = pb.querySelector('.tag .icon-label');
+      var editBtn = document.createElement('button');
+      editBtn.textContent = '编辑';
+      editBtn.style.cssText = 'font-size:10px;padding:1px 6px;border-radius:4px;border:1px solid #d4cfc8;background:#fff;color:#8b7e6b;cursor:pointer;margin-left:4px;';
+      editBtn.onclick = function(e) {
+        e.stopPropagation();
+        var cur = parseInt(loc.visit_duration) || 2;
+        var val = prompt('游玩时间（小时）：', cur);
+        if (val && !isNaN(val) && parseInt(val) > 0) {
+          loc.visit_duration = parseInt(val) + 'h';
+          var cl = Storage.get('custom_locations') || [];
+          for (var i = 0; i < cl.length; i++) {
+            if (cl[i].id === loc.id) { cl[i].visit_duration = parseInt(val) + 'h'; break; }
+          }
+          Storage.set('custom_locations', cl);
+          renderLocDetail(loc);
+        }
+      };
+      var durTag = pb.querySelector('.tag:last-of-type');
+      if (durTag) durTag.appendChild(editBtn);
+    }
+
     var favBtn = pb.querySelector('.detail-fav-btn');
     if (favBtn) favBtn.onclick = function(e) {
       e.stopPropagation();
@@ -532,7 +555,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
         Storage.addBookmark(id);
         b.classList.add('primary'); b.textContent = '★ 已收藏';
       }
-      updateBadge(); showLocations(locations);
+      updateBadge(); showLocations(locations, null, true);
     };
     var chkBtn = pb.querySelector('.detail-check-btn');
     if (chkBtn) chkBtn.onclick = function(e) {
@@ -546,12 +569,21 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
         c[id] = {timestamp: Date.now()}; Storage.set('checkins', c);
         b.classList.add('primary'); b.textContent = '✓ 已打卡';
       }
-      updateBadge(); showLocations(locations);
+      updateBadge(); showLocations(locations, null, true);
     };
     var navBtn = pb.querySelector('.detail-nav-btn');
     if (navBtn) navBtn.onclick = function(e) {
       e.stopPropagation();
       window.open('https://www.google.com/maps/dir/?api=1&destination='+this.dataset.lat+','+this.dataset.lng, '_blank');
+    };
+    var delBtn = pb.querySelector('.detail-del-btn');
+    if (delBtn) delBtn.onclick = function(e) {
+      e.stopPropagation();
+      if (!confirm('确定删除此取景地？')) return;
+      var cl = Storage.get('custom_locations') || [];
+      cl = cl.filter(function(l) { return l.id !== loc.id; });
+      Storage.set('custom_locations', cl);
+      closePanel(); showLocations(locations, null, true);
     };
     document.getElementById('overlay-panel').classList.add('open');
   }
@@ -663,12 +695,20 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
   }
   function fetchHERETransit(fromLoc, toLoc, cacheKey, cb) {
     hereCallCount++;
-    var u='https://router.hereapi.com/v8/routes?transportMode=publicTransport&origin='+fromLoc.coordinates.lat+','+fromLoc.coordinates.lng+'&destination='+toLoc.coordinates.lat+','+toLoc.coordinates.lng+'&apiKey='+HERE_KEY+'&return=summary';
+    var u='https://transit.hereapi.com/v8/routes?origin='+fromLoc.coordinates.lat+','+fromLoc.coordinates.lng+'&destination='+toLoc.coordinates.lat+','+toLoc.coordinates.lng+'&apiKey='+HERE_KEY+'&return=summary';
     fetch(u).then(function(r){return r.json()}).then(function(d){
-      if(d&&d.routes&&d.routes[0]&&d.routes[0].sections&&d.routes[0].sections[0]){
-        var s=d.routes[0].sections[0].summary,m=Math.round(s.duration/60);
-        planState.transitCache[cacheKey]=Math.max(1,Math.ceil(m/30));
-        planState.transitDetail[cacheKey]={minutes:m,engine:'here-transit'};
+      var totalSec=0;
+        if(d&&d.routes&&d.routes[0]&&d.routes[0].sections){
+          d.routes[0].sections.forEach(function(sec){
+            var s=sec.travelSummary||sec.summary;
+            if(s&&typeof s.duration==='number')totalSec+=s.duration;
+            else if(sec.departure&&sec.departure.time&&sec.arrival&&sec.arrival.time)totalSec+=(new Date(sec.arrival.time)-new Date(sec.departure.time))/1000;
+          });
+        }
+        if(totalSec>0){
+          var m=Math.round(totalSec/60);
+          planState.transitCache[cacheKey]=Math.max(1,Math.ceil(m/30));
+          planState.transitDetail[cacheKey]={minutes:m,engine:'here-transit'};
       }else{
         var km=GeoUtils.haversineDistance(fromLoc.coordinates.lat,fromLoc.coordinates.lng,toLoc.coordinates.lat,toLoc.coordinates.lng);
         var m=Math.round(km/URBAN_SPEED*60*TRANSIT_FACTOR);
@@ -763,10 +803,11 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
 
   function parseDuration(durStr) {
     if (!durStr) return 3;
-    var h = durStr.match(/(\d+)\s*小时/), d = durStr.match(/(\d+)\s*天/), m = durStr.match(/(\d+)\s*分钟/);
+    var h = durStr.match(/(\d+)\s*小时/), d = durStr.match(/(\d+)\s*天/), m = durStr.match(/(\d+)\s*分钟/), hh = durStr.match(/(\d+)\s*h/i);
     if (d) return parseInt(d[1]) * 24;
     var total = 0;
     if (h) total += parseInt(h[1]) * 2;
+    if (hh && !h) total += parseInt(hh[1]) * 2;
     if (m) total += Math.ceil(parseInt(m[1]) / 30);
     return Math.max(1, total);
   }
@@ -1406,7 +1447,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     h += '<p style="margin:0 0 4px;">📧 2062527951@qq.com</p>';
     h += '<div style="background:#fafaf8;border-radius:6px;padding:8px;margin:8px 0;text-align:center;font-size:10px;line-height:1.6;color:#8b7e6b;">';
     h += '<p style="font-weight:700;margin:0 0 4px;color:#1c1917;">📢 公告</p>';
-    h += '<p style="margin:0;">欢迎使用圣地巡礼！在地图上探索取景地，使用计划功能规划巡礼路线。打卡记录会在此形成时间轴。HERE引擎查询海外路线，高德引擎仅限中国大陆。</p></div>';
+    h += '<p style="margin:0;">欢迎使用圣地巡礼！在地图上探索取景地，使用计划功能规划巡礼路线。打卡记录会在此形成时间轴。HERE引擎查询海外路线，高德引擎仅限中国大陆。<br>点击各页面右上角 ! 按钮可查看使用指南。</p></div>';
     h += '<p style="margin:0;font-size:10px;">更新日期：2026-05-13</p>';
     h += '</div>';
     h += '<div style="text-align:center;padding:8px 0 0;font-size:10px;color:#8b7e6b;">';
@@ -1492,30 +1533,60 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     function doSearch() {
       var query = input.value.trim();
       if (!query) return;
-      var region = document.getElementById('map-search-region');
-      var isChina = region && region.value === 'china';
       results.style.display = 'block';
       results.innerHTML = '<div style="padding:16px;text-align:center;color:#999;">搜索中...</div>';
-      var url;
-      if (isChina) {
-        url = 'https://restapi.amap.com/v3/assistant/inputtips?keywords=' + encodeURIComponent(query) + '&key=' + AMAP_KEY + '&citylimit=false';
-      } else {
-        url = 'https://geocode.search.hereapi.com/v1/geocode?q=' + encodeURIComponent(query) + '&apiKey=' + HERE_KEY + '&limit=5';
-      }
-      fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+
+      var ctrl = new AbortController();
+      var timer = setTimeout(function() { ctrl.abort(); }, 8000);
+      var nomUrl = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(query) + '&format=json&limit=5&accept-language=zh';
+
+      function parseAmap(data) {
         var items = [];
-        if (data.tips) {
+        if (data && data.tips && data.status === '1') {
           data.tips.forEach(function(tip) {
             if (tip.location) {
               var parts = tip.location.split(',');
               items.push({ lat: parseFloat(parts[1]), lng: parseFloat(parts[0]), title: tip.name, addr: tip.address || tip.district || '' });
             }
           });
-        } else if (data.items) {
-          data.items.forEach(function(item) {
-            items.push({ lat: item.position.lat, lng: item.position.lng, title: item.title, addr: item.address ? item.address.label : '' });
+        }
+        return items;
+      }
+      function parseNominatim(data) {
+        var items = [];
+        if (Array.isArray(data)) {
+          data.forEach(function(item) {
+            if (item.lat && item.lon) {
+              var parts = (item.display_name || '').split(',');
+              var addr = parts.slice(0, 3).join(',').trim();
+              items.push({ lat: parseFloat(item.lat), lng: parseFloat(item.lon), title: item.name || parts[0] || '', addr: addr });
+            }
           });
         }
+        return items;
+      }
+
+      fetch(nomUrl, { signal: ctrl.signal })
+        .then(function(r) { clearTimeout(timer); return r.json(); })
+        .then(function(data) {
+          var items = parseNominatim(data);
+          if (items.length > 0) return items;
+          var amapUrl = 'https://restapi.amap.com/v3/assistant/inputtips?keywords=' + encodeURIComponent(query) + '&key=' + AMAP_KEY;
+          var t2 = setTimeout(function() { ctrl.abort(); }, 6000);
+          return fetch(amapUrl, { signal: ctrl.signal })
+            .then(function(r) { clearTimeout(t2); return r.json(); })
+            .then(function(aData) { return parseAmap(aData); });
+        })
+        .then(function(items) {
+          // Deduplicate by proximity (~300m)
+          var deduped = [];
+          items.forEach(function(item) {
+            var dup = deduped.some(function(d) {
+              return Math.abs(d.lat - item.lat) < 0.003 && Math.abs(d.lng - item.lng) < 0.003;
+            });
+            if (!dup) deduped.push(item);
+          });
+          items = deduped.slice(0, 8);
         if (items.length === 0) {
           results.innerHTML = '<div style="padding:16px;text-align:center;color:#999;">未找到结果</div>';
           return;

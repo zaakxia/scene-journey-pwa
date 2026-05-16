@@ -345,7 +345,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       : 'https://zaakxia.github.io/scene-journey-pwa/assets/tiles/{z}/{x}/{y}.png';
     tileLayer = L.tileLayer(tileUrl, {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> | <a href="https://carto.com/">CARTO</a>',
-      maxNativeZoom: 15, maxZoom: 14, minZoom: 2
+      maxNativeZoom: 12, maxZoom: 12, minZoom: 2
     }).addTo(map);
     L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
     document.getElementById('zoom-in-btn').addEventListener('click', function(e) { e.stopPropagation(); map.zoomIn(); });

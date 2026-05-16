@@ -201,26 +201,26 @@ window.App = { showToast: null };
         results.style.display = 'block';
         results.innerHTML = '<div style="padding:16px;text-align:center;color:#999;">搜索中...</div>';
 
-        var hasChinese = /[一-鿿]/.test(query);
+        var ctrl = new AbortController();
+        var timer = setTimeout(function() { ctrl.abort(); }, 6000);
         var photonUrl = 'https://photon.komoot.io/api/?q=' + encodeURIComponent(query) + '&limit=5';
 
-        var ctrl = new AbortController();
-        var timer = setTimeout(function() { ctrl.abort(); }, 8000);
-
-        // Always fetch Photon, also Amap for Chinese queries
-        var fetches = [fetch(photonUrl, { signal: ctrl.signal }).then(function(r) { return r.ok ? r.json() : {}; }).catch(function(){ return {}; })];
-        if (hasChinese) {
-          var amapUrl = 'https://restapi.amap.com/v3/assistant/inputtips?keywords=' + encodeURIComponent(query) + '&key=' + AMAP_KEY;
-          fetches.push(fetch(amapUrl, { signal: ctrl.signal }).then(function(r) { return r.ok ? r.json() : {}; }).catch(function(){ return {}; }));
-        }
-
-        Promise.all(fetches).then(function(results) {
-          clearTimeout(timer);
+        function parseAmap(data) {
           var items = [];
-          // 1. Photon results (primary, works without proxy)
-          var pData = results[0];
-          if (pData && Array.isArray(pData.features)) {
-            pData.features.forEach(function(f) {
+          if (data && data.tips && data.status === '1') {
+            data.tips.forEach(function(tip) {
+              if (tip.location) {
+                var parts = tip.location.split(',');
+                items.push({ lat: parseFloat(parts[1]), lng: parseFloat(parts[0]), title: tip.name, addr: tip.address || tip.district || '' });
+              }
+            });
+          }
+          return items;
+        }
+        function parsePhoton(data) {
+          var items = [];
+          if (data && Array.isArray(data.features)) {
+            data.features.forEach(function(f) {
               if (f.geometry && f.geometry.coordinates) {
                 var props = f.properties || {};
                 var addr = [props.city, props.country].filter(Boolean).join(', ');
@@ -228,26 +228,23 @@ window.App = { showToast: null };
               }
             });
           }
-          // 2. Amap results (bonus for Chinese, fails silently if proxy on)
-          var aData = results[1];
-          if (aData && aData.tips && aData.status === '1') {
-            aData.tips.forEach(function(tip) {
-              if (tip.location) {
-                var parts = tip.location.split(',');
-                items.push({ lat: parseFloat(parts[1]), lng: parseFloat(parts[0]), title: tip.name, addr: tip.address || tip.district || '' });
-              }
-            });
-          }
-          // Deduplicate by proximity (~100m)
-          var deduped = [];
-          items.forEach(function(item) {
-            var dup = deduped.some(function(d) {
-              return Math.abs(d.lat - item.lat) < 0.001 && Math.abs(d.lng - item.lng) < 0.001;
-            });
-            if (!dup) deduped.push(item);
-          });
-          return deduped.slice(0, 8);
-        }).then(function(items) {
+          return items;
+        }
+
+        fetch(photonUrl, { signal: ctrl.signal })
+          .then(function(r) { clearTimeout(timer); return r.json(); })
+          .then(function(data) {
+            var items = parsePhoton(data);
+            // If Photon got results, return them
+            if (items.length > 0) return items;
+            // Otherwise try Amap (works without proxy for China IPs)
+            var amapUrl = 'https://restapi.amap.com/v3/assistant/inputtips?keywords=' + encodeURIComponent(query) + '&key=' + AMAP_KEY;
+            var t2 = setTimeout(function() { ctrl.abort(); }, 6000);
+            return fetch(amapUrl, { signal: ctrl.signal })
+              .then(function(r) { clearTimeout(t2); return r.json(); })
+              .then(function(aData) { return parseAmap(aData); });
+          })
+          .then(function(items) {
           if (items.length === 0) {
             results.innerHTML = '<div style="padding:16px;text-align:center;color:#999;">未找到结果</div>';
             return;
@@ -307,11 +304,11 @@ window.App = { showToast: null };
           });
         }).catch(function(err) {
           clearTimeout(timer);
-          console.error('[Search] fetch error:', err.message || err);
+          console.error('[Search]', err.name || err.message || err);
           if (err.name === 'AbortError') {
-            results.innerHTML = '<div style="padding:16px;text-align:center;color:#e63946;">请求超时，请检查网络或切换国内/国外重试</div>';
+            results.innerHTML = '<div style="padding:16px;text-align:center;color:#e63946;">搜索超时，请检查网络后重试</div>';
           } else {
-            results.innerHTML = '<div style="padding:16px;text-align:center;color:#e63946;">搜索失败：网络不通，请检查代理设置或切换搜索地区</div>';
+            results.innerHTML = '<div style="padding:16px;text-align:center;color:#e63946;">搜索失败，请检查网络连接</div>';
           }
         });
       }

@@ -35,8 +35,8 @@ const SceneMap = (() => {
       : 'https://zaakxia.github.io/scene-journey-pwa/assets/tiles/{z}/{x}/{y}.png';
     _tileLayer = L.tileLayer(tileUrl, {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> | <a href="https://carto.com/">CARTO</a>',
-      maxNativeZoom: 15,
-      maxZoom: 14,
+      maxNativeZoom: 12,
+      maxZoom: 12,
       minZoom: 2,
       noWrap: true,
       bounds: [[-85, -180], [85, 180]]

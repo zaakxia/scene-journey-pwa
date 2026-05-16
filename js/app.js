@@ -202,8 +202,8 @@ window.App = { showToast: null };
         results.innerHTML = '<div style="padding:16px;text-align:center;color:#999;">搜索中...</div>';
 
         var ctrl = new AbortController();
-        var timer = setTimeout(function() { ctrl.abort(); }, 6000);
-        var photonUrl = 'https://photon.komoot.io/api/?q=' + encodeURIComponent(query) + '&limit=5';
+        var timer = setTimeout(function() { ctrl.abort(); }, 8000);
+        var nomUrl = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(query) + '&format=json&limit=5&accept-language=zh';
 
         function parseAmap(data) {
           var items = [];
@@ -217,27 +217,25 @@ window.App = { showToast: null };
           }
           return items;
         }
-        function parsePhoton(data) {
+        function parseNominatim(data) {
           var items = [];
-          if (data && Array.isArray(data.features)) {
-            data.features.forEach(function(f) {
-              if (f.geometry && f.geometry.coordinates) {
-                var props = f.properties || {};
-                var addr = [props.city, props.country].filter(Boolean).join(', ');
-                items.push({ lat: f.geometry.coordinates[1], lng: f.geometry.coordinates[0], title: props.name || '', addr: addr });
+          if (Array.isArray(data)) {
+            data.forEach(function(item) {
+              if (item.lat && item.lon) {
+                var parts = (item.display_name || '').split(',');
+                var addr = parts.slice(0, 3).join(',').trim();
+                items.push({ lat: parseFloat(item.lat), lng: parseFloat(item.lon), title: item.name || parts[0] || '', addr: addr });
               }
             });
           }
           return items;
         }
 
-        fetch(photonUrl, { signal: ctrl.signal })
+        fetch(nomUrl, { signal: ctrl.signal })
           .then(function(r) { clearTimeout(timer); return r.json(); })
           .then(function(data) {
-            var items = parsePhoton(data);
-            // If Photon got results, return them
+            var items = parseNominatim(data);
             if (items.length > 0) return items;
-            // Otherwise try Amap (works without proxy for China IPs)
             var amapUrl = 'https://restapi.amap.com/v3/assistant/inputtips?keywords=' + encodeURIComponent(query) + '&key=' + AMAP_KEY;
             var t2 = setTimeout(function() { ctrl.abort(); }, 6000);
             return fetch(amapUrl, { signal: ctrl.signal })

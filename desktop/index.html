@@ -351,7 +351,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
 
   // ── Markers ──
   var sharedRenderer = null;
-  function showLocations(locs) {
+  function showLocations(locs, onClick, keepView) {
     var customLocs = Storage.get('custom_locations') || [];
     var allLocs = locs.concat(customLocs);
     markers.forEach(function(m) { map.removeLayer(m); });
@@ -394,7 +394,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       marker.on('click', function(e) { L.DomEvent.stopPropagation(e); openDetail(loc); });
       markers.push(marker); map.addLayer(marker);
     });
-    if (locs.length > 0) {
+    if (locs.length > 0 && !keepView) {
       map.fitBounds([[minLat, minLng], [maxLat, maxLng]], { padding: [50, 50], maxZoom: 13, animate: false });
     }
     renderFilters(locs, cityColor);

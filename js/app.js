@@ -2118,7 +2118,7 @@ window.App = { showToast: null };
       h += '<p style="font-weight:700;margin:0 0 4px;color:#1c1917;">📢 公告</p>';
       h += '<p style="margin:0;color:var(--color-text-secondary);">欢迎使用圣地巡礼！在地图上探索取景地，收藏感兴趣的景点，使用计划功能规划你的巡礼路线。';
       h += '点击取景地可查看详情、实景照片和原著原文摘录，打卡记录会在个人页形成时间轴。';
-      h += '建议优先使用HERE引擎查询海外路线，高德引擎仅限中国大陆。如有问题或建议，欢迎邮件反馈。</p>';
+      h += '建议优先使用HERE引擎查询海外路线，高德引擎仅限中国大陆。如有问题或建议，欢迎邮件反馈。<br>点击各页面右上角 ! 按钮可查看使用指南。</p>';
       h += '</div>';
       h += '<p style="margin:0;font-size:10px;color:var(--color-faint);">更新日期：2026-05-13</p>';
       h += '</div>';

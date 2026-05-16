@@ -371,7 +371,7 @@
           </a>
           <div class="bar-divider"></div>
           <span class="bar-title" id="map-title-text">龙族</span>
-          <button class="guide-btn" onclick="App.showGuide('地图使用指南','点击彩色标记查看取景地详情\n双指缩放或点击右下角+/-缩放地图\n点击取景地可查看照片并打卡\n收藏后可到行程页规划路线')" style="width:28px;height:28px;border-radius:50%;border:none;background:rgba(0,0,0,0.06);font-size:14px;font-weight:700;color:rgba(28,25,23,0.5);cursor:pointer;flex-shrink:0;margin-left:2px;">!</button>
+          <button class="guide-btn" onclick="App.showGuide('地图使用指南','搜索框输入地点名称，可设为取景地并收藏打卡\n点击地图标记查看取景地详情卡片\n详情卡片中，收藏标记加入计划，打卡记录巡礼足迹\n双指缩放或点击右下角+/-缩放地图\n个人添加取景地可在详情卡片处修改游玩时间，修改后自动同步至计划页面模块中')" style="width:28px;height:28px;border-radius:50%;border:none;background:rgba(0,0,0,0.06);font-size:14px;font-weight:700;color:rgba(28,25,23,0.5);cursor:pointer;flex-shrink:0;margin-left:2px;">!</button>
         </div>
 
         <!-- Search bar -->
@@ -408,7 +408,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
         <span class="view-title">游览计划</span>
-        <button class="guide-btn" onclick="App.showGuide('计划使用指南','点击下方取景地卡片选中,再点击时间线放置\n时间线为24小时制,上午/下午双列显示\n交通按钮可切换高德/OSRM计算出行时间\n切换到智能推荐让系统自动规划最优路线\n点击已放置的模块可跳转取景地详情\n× 按钮可移除已放置的模块')" style="position:absolute;right:12px;width:26px;height:26px;border-radius:50%;border:none;background:rgba(0,0,0,0.06);font-size:13px;font-weight:700;color:rgba(28,25,23,0.5);cursor:pointer;">!</button>
+        <button class="guide-btn" onclick="App.showGuide('计划使用指南','选中下方取景地卡片，点击时间线放置行程模块\n交通按钮切换国内高德/全球HERE获取实时通勤时间\n相邻模块放置自动留出最短通勤时间\n点击日程标签可切换天数，支持最多7天行程安排\n时间线中的模块点击×可删除单个模块。清空按钮一键移除当天时间线上所有模块\n切换到智能推荐选择通勤方式，系统自动规划最优路线')" style="position:absolute;right:12px;width:26px;height:26px;border-radius:50%;border:none;background:rgba(0,0,0,0.06);font-size:13px;font-weight:700;color:rgba(28,25,23,0.5);cursor:pointer;">!</button>
       </div>
       <div id="view-plan-content"></div>
     </div>
@@ -420,7 +420,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
         <span class="view-title">按原著章节浏览</span>
-        <button class="guide-btn" onclick="App.showGuide('剧情使用指南','按原著章节顺序浏览取景地\n每个取景地包含原著原文摘录\n点击取景地可查看详情和实景照片\n收藏感兴趣的取景地加入个人计划')" style="position:absolute;right:12px;width:26px;height:26px;border-radius:50%;border:none;background:rgba(0,0,0,0.06);font-size:13px;font-weight:700;color:rgba(28,25,23,0.5);cursor:pointer;">!</button>
+        <button class="guide-btn" onclick="App.showGuide('剧情使用指南','按原著章节顺序浏览取景地\n每个取景地包含出处、剧情简介和原文摘录\n点击取景地查看详情卡片\n收藏感兴趣的取景地加入个人计划')" style="position:absolute;right:12px;width:26px;height:26px;border-radius:50%;border:none;background:rgba(0,0,0,0.06);font-size:13px;font-weight:700;color:rgba(28,25,23,0.5);cursor:pointer;">!</button>
       </div>
       <div id="view-story-content"></div>
     </div>
@@ -432,7 +432,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
         <span class="view-title">我的个人</span>
-        <button class="guide-btn" onclick="App.showGuide('个人使用指南','点击头像上传照片,点击昵称修改称呼\n在地图取景地详情中打卡后,时间轴自动记录\n打卡记录按日期分组,展示你的个人足迹\n底部可导出数据备份,换设备时恢复\n收藏取景地后可在计划页规划路线')" style="position:absolute;right:12px;width:26px;height:26px;border-radius:50%;border:none;background:rgba(0,0,0,0.06);font-size:13px;font-weight:700;color:rgba(28,25,23,0.5);cursor:pointer;">!</button>
+        <button class="guide-btn" onclick="App.showGuide('个人使用指南','用户使用情况无联网上传，仅存于本地存储\n点击头像上传照片,点击昵称修改称呼\n在地图取景地详情中打卡后,时间轴自动记录\n打卡记录按日期分组,展示你的个人足迹\n底部可导出数据备份,换设备时恢复\n收藏取景地后可在计划页规划路线')" style="position:absolute;right:12px;width:26px;height:26px;border-radius:50%;border:none;background:rgba(0,0,0,0.06);font-size:13px;font-weight:700;color:rgba(28,25,23,0.5);cursor:pointer;">!</button>
       </div>
       <div id="view-bookmarks-content"></div>
     </div>

@@ -1244,16 +1244,18 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     // Slot click to place
     panel.querySelectorAll('.plan-slot').forEach(function(slot) {
       slot.onclick = function() {
-        if (!planState.selectedLocId) return;
+        console.log('[Plan] slot click', slot.dataset.slot, 'selectedLocId:', planState.selectedLocId);
+        if (!planState.selectedLocId) { console.log('[Plan] no selectedLocId'); return; }
         var clickedSlot = parseInt(slot.dataset.slot);
         var loc = planLocs.find(function(l){return l.id===planState.selectedLocId;});
-        if (!loc) return;
+        if (!loc) { console.log('[Plan] loc not found in planLocs, id:', planState.selectedLocId); return; }
         var dur = parseDuration(loc.visit_duration);
         var oh = getOpenHours(loc);
-        if (clickedSlot < oh.open || clickedSlot + dur > oh.close) return;
+        console.log('[Plan] loc:', loc.name_zh, 'dur:', dur, 'oh:', oh.open+'-'+oh.close, 'clicked:', clickedSlot);
+        if (clickedSlot < oh.open || clickedSlot + dur > oh.close) { console.log('[Plan] outside hours'); return; }
         var overlap = day.blocks.some(function(b){return clickedSlot < b.startSlot+b.slots && clickedSlot+dur > b.startSlot;});
-        if (overlap) return;
-        if (clickedSlot + dur > 48) return;
+        if (overlap) { console.log('[Plan] overlap'); return; }
+        if (clickedSlot + dur > 48) { console.log('[Plan] exceeds 48'); return; }
         day.blocks.push({ locId: planState.selectedLocId, startSlot: clickedSlot, slots: dur });
         day.blocks.sort(function(a,b){return a.startSlot - b.startSlot;});
         Storage.set('schedule', schedule);

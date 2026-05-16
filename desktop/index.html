@@ -1032,7 +1032,8 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       if (displaySlots <= 0) return;
       var top = (ds - colStart) * planState.SLOT_H;
       var hpx = Math.max(displaySlots * planState.SLOT_H - 2, 2);
-      var loc = locations.find(function(l){return l.id===block.locId;});
+      var allLocs2 = locations.concat(Storage.get('custom_locations')||[]);
+      var loc = allLocs2.find(function(l){return l.id===block.locId;});
       if (!loc) return;
       var accent = planState.cityColorMap[loc.city] || '#b91c1c';
       var showLabel = (ds === bs);

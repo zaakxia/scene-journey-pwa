@@ -703,8 +703,8 @@ window.App = { showToast: null };
 
       function fetchHERETransit(fromLoc, toLoc, cacheKey, cb) {
         hereCallCount++;
-        var url = 'https://router.hereapi.com/v8/routes?transportMode=publicTransport' +
-          '&origin=' + fromLoc.coordinates.lat + ',' + fromLoc.coordinates.lng +
+        var url = 'https://transit.hereapi.com/v8/routes' +
+          '?origin=' + fromLoc.coordinates.lat + ',' + fromLoc.coordinates.lng +
           '&destination=' + toLoc.coordinates.lat + ',' + toLoc.coordinates.lng +
           '&apiKey=' + HERE_KEY;
         fetch(url).then(function(r) { return r.json(); }).then(function(data) {

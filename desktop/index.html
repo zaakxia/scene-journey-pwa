@@ -888,8 +888,14 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       if (schedule.days.length < 7) {
         h += '<button id="plan-add-day" style="flex-shrink:0;width:26px;height:26px;border-radius:50%;border:1.5px dashed #ddd;background:none;color:#999;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>';
       }
+      // Clear blocks button
+      var hasBlocks = false;
+      schedule.days.forEach(function(d) { if (d.blocks && d.blocks.length > 0) hasBlocks = true; });
+      if (hasBlocks) {
+        h += '<button id="plan-clear-day-top" style="margin-left:auto;flex-shrink:0;padding:4px 10px;border-radius:999px;border:1px solid #e63946;background:#fff;color:#e63946;font-size:10px;font-weight:600;cursor:pointer;">清空</button>';
+      }
       // Transit toggle (PWA-style)
-      h += '<span style="margin-left:auto;display:flex;align-items:center;gap:4px;flex-shrink:0;">';
+      h += '<span style="display:flex;align-items:center;gap:4px;flex-shrink:0;margin-left:'+(hasBlocks?'8px':'auto')+';">';
       h += '<span style="font-size:11px;font-weight:600;color:var(--color-text-secondary);">交通</span>';
       h += '<button id="sched-toggle-transit" style="padding:3px 8px;border-radius:999px;border:1px solid #eee;font-size:11px;font-weight:600;background:'+(planState._useAmap?'#b91c1c':'#eee')+';color:'+(planState._useAmap?'#fff':'#999')+';cursor:pointer;">'+(planState._useAmap?'高德':'HERE')+'</button>';
       h += '<button id="sched-alt-engine" style="padding:3px 6px;border-radius:999px;border:1px solid #eee;font-size:10px;font-weight:500;background:#fff;color:#999;cursor:pointer;">'+(planState._useAmap?'HERE':'高德')+'</button>';
@@ -1011,7 +1017,8 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
   function renderPlanBlocks(day, col) {
     var colStart = col === 0 ? 0 : 24, colEnd = col === 0 ? 24 : 48;
     var h = '<div style="position:absolute;top:24px;left:0;right:0;bottom:0;pointer-events:none;">';
-    day.blocks.forEach(function(block) {
+    var sorted = day.blocks.slice().sort(function(a,b){return a.startSlot-b.startSlot;});
+    sorted.forEach(function(block, bi) {
       var bs = block.startSlot, be = block.startSlot + block.slots;
       if (be <= colStart || bs >= colEnd) return;
       var ds = Math.max(bs, colStart), de = Math.min(be, colEnd);
@@ -1027,9 +1034,34 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       if (showLabel && hpx > 14) {
         h += '<span style="flex:1;font-weight:600;color:#1c1917;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;">'+loc.name_zh+'</span>';
         h += '<span style="font-size:9px;color:'+accent+';margin-left:3px;flex-shrink:0;">'+(block.slots/2).toFixed(1).replace('.0','')+'h</span>';
-        h += '<span class="plan-remove-block" data-lid="'+block.locId+'" style="margin-left:3px;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:center;font-size:12px;color:rgba(0,0,0,0.3);cursor:pointer;">×</span>';
+        h += '<span class="plan-remove-block" data-lid="'+block.locId+'" style="margin-left:6px;padding:2px 10px;border-radius:999px;background:rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:rgba(0,0,0,0.35);cursor:pointer;">×</span>';
       }
       h += '</div>';
+      // Transit arrow to next block
+      if (bi < sorted.length - 1) {
+        var nextBlock = sorted[bi + 1];
+        var nextStart = nextBlock.startSlot;
+        var gapEnd = Math.min(nextStart, colEnd);
+        var blockEnd = block.startSlot + block.slots;
+        if (gapEnd > blockEnd) {
+          var gapTop = (blockEnd - colStart) * planState.SLOT_H;
+          var gapH = (gapEnd - blockEnd) * planState.SLOT_H;
+          var curLoc = planLocs.find(function(l){return l.id===block.locId;});
+          var nxtLoc = planLocs.find(function(l){return l.id===nextBlock.locId;});
+          var tKey = (curLoc?curLoc.id:'')+'|'+(nxtLoc?nxtLoc.id:'');
+          var tInfo = planState.transitDetail[tKey];
+          var tMins = tInfo ? tInfo.minutes : Math.round((nextStart - blockEnd) * 30);
+          var tLabel = tMins >= 60 ? (tMins/60).toFixed(1)+'h' : tMins+'min';
+          if (gapH >= 10) {
+            h += '<div style="position:absolute;left:0;right:0;top:'+gapTop+'px;height:'+gapH+'px;display:flex;align-items:center;justify-content:center;z-index:3;">';
+            h += '<div style="display:flex;align-items:center;gap:4px;padding:1px 8px;border-radius:999px;background:rgba(0,0,0,0.04);">';
+            h += '<span style="font-size:8px;color:rgba(0,0,0,0.3);">↓</span>';
+            h += '<span style="font-size:9px;font-weight:500;color:rgba(0,0,0,0.35);white-space:nowrap;">'+tLabel+'</span>';
+            h += '<span style="font-size:8px;color:rgba(0,0,0,0.3);">↓</span>';
+            h += '</div></div>';
+          }
+        }
+      }
     });
     h += '</div>';
     return h;
@@ -1245,6 +1277,14 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     // Clear day
     var clearBtn = panel.querySelector('#plan-clear-day');
     if (clearBtn) clearBtn.onclick = function() {
+      day.blocks = [];
+      Storage.set('schedule', schedule);
+      panel.querySelector('.panel-body').innerHTML = renderPlanContent();
+      rebind();
+    };
+    var clearBtnTop = panel.querySelector('#plan-clear-day-top');
+    if (clearBtnTop) clearBtnTop.onclick = function() {
+      if (!confirm('清空 ' + day.label + ' 的所有行程？')) return;
       day.blocks = [];
       Storage.set('schedule', schedule);
       panel.querySelector('.panel-body').innerHTML = renderPlanContent();

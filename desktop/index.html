@@ -695,7 +695,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
   }
   function fetchHERETransit(fromLoc, toLoc, cacheKey, cb) {
     hereCallCount++;
-    var u='https://transit.hereapi.com/v8/routes?origin='+fromLoc.coordinates.lat+','+fromLoc.coordinates.lng+'&destination='+toLoc.coordinates.lat+','+toLoc.coordinates.lng+'&apiKey='+HERE_KEY+'&return=summary';
+    var u='https://transit.hereapi.com/v8/routes?origin='+fromLoc.coordinates.lat+','+fromLoc.coordinates.lng+'&destination='+toLoc.coordinates.lat+','+toLoc.coordinates.lng+'&apiKey='+HERE_KEY;
     fetch(u).then(function(r){return r.json()}).then(function(d){
       var totalSec=0;
         if(d&&d.routes&&d.routes[0]&&d.routes[0].sections){

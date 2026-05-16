@@ -708,12 +708,14 @@ window.App = { showToast: null };
           '&destination=' + toLoc.coordinates.lat + ',' + toLoc.coordinates.lng +
           '&apiKey=' + HERE_KEY;
         fetch(url).then(function(r) { return r.json(); }).then(function(data) {
-          console.log('[HERE transit raw]', fromLoc.name_zh, '→', toLoc.name_zh, data);
+          console.log('[HERE transit raw]', fromLoc.name_zh, '→', toLoc.name_zh, JSON.stringify(data));
           var totalSec = 0;
           if (data && data.routes && data.routes[0] && data.routes[0].sections) {
-            data.routes[0].sections.forEach(function(sec) {
+            data.routes[0].sections.forEach(function(sec, i) {
+              console.log('[HERE transit sec' + i + ' keys]', Object.keys(sec));
               var s = sec.travelSummary || sec.summary;
-              if (s && s.duration) totalSec += s.duration;
+              if (s) console.log('[HERE transit sec' + i + ' dur]', s.duration, typeof s.duration);
+              if (s && typeof s.duration === 'number') totalSec += s.duration;
             });
           }
           if (totalSec > 0) {

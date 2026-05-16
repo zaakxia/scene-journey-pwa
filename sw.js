@@ -1,7 +1,7 @@
 // Service Worker for scene-journey PWA
 // Cache shell assets only — tiles bypass SW (too many files)
 
-const CACHE_NAME = 'scene-journey-v2';
+const CACHE_NAME = 'scene-journey-v4';
 
 // Core app shell — small, changes rarely
 const SHELL = [
@@ -50,6 +50,11 @@ self.addEventListener('fetch', event => {
 
   // NEVER cache tiles — too many, let HTTP cache handle them
   if (url.pathname.includes('/assets/tiles/')) return;
+  // Don't intercept API calls — cross-origin responses can't be cloned
+  if (url.hostname.includes('hereapi.com') ||
+      url.hostname.includes('amap.com') ||
+      url.hostname.includes('nominatim.openstreetmap.org') ||
+      url.hostname.includes('komoot.io')) return;
 
   const isHtml = event.request.headers.get('accept')?.includes('text/html') ||
                  url.pathname.endsWith('.html') ||

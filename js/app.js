@@ -121,7 +121,7 @@ window.App = { showToast: null };
       log('switchTab done: ' + tab);
     }
 
-    function renderMap() {
+    function renderMap(keepView) {
       log('renderMap');
 
       // Collapsible city filter
@@ -177,7 +177,7 @@ window.App = { showToast: null };
       var allLocs = locations.concat(customLocs);
       SceneMap.showLocations(allLocs, function(loc) {
         openSheet(loc);
-      });
+      }, keepView);
       updateBadges();
 
       // Wire up layer menu
@@ -362,9 +362,9 @@ window.App = { showToast: null };
     function openSheet(loc) {
       BottomSheet.open(LocationCard.render(loc, {}), null);
       LocationCard.bindEvents(loc, {
-        onBookmark: function() { renderMap(); updateBadges(); },
-        onCheckin: function() { renderMap(); updateBadges(); },
-        onDelete: function() { renderMap(); updateBadges(); }
+        onBookmark: function() { renderMap(true); updateBadges(); },
+        onCheckin: function() { renderMap(true); updateBadges(); },
+        onDelete: function() { renderMap(true); updateBadges(); }
       });
     }
 
@@ -1094,7 +1094,8 @@ window.App = { showToast: null };
         var h = '';
         var colStart = col === 'am' ? 0 : 24;
         var colEnd   = col === 'am' ? 24 : 48;
-        day.blocks.forEach(function(block) {
+        var sorted = day.blocks.slice().sort(function(a, b) { return a.startSlot - b.startSlot; });
+        sorted.forEach(function(block, bi) {
           var blockStart = block.startSlot;
           var blockEnd   = block.startSlot + block.slots;
           if (blockEnd <= colStart || blockStart >= colEnd) return;
@@ -1144,6 +1145,30 @@ window.App = { showToast: null };
               h += '<span class="sched-remove" data-lid="' + block.locId + '" style="flex-shrink:0;margin-left:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(0,0,0,0.35);cursor:pointer;line-height:1;">×</span>';
             }
             h += '</div>';
+          }
+          // Transit arrow to next block
+          if (bi < sorted.length - 1) {
+            var nextBlock = sorted[bi + 1];
+            var nextStart = nextBlock.startSlot;
+            var gapEnd = Math.min(nextStart, colEnd);
+            if (gapEnd > blockEnd) {
+              var gapTop = (blockEnd - colStart) * SLOT_H;
+              var gapH = (gapEnd - blockEnd) * SLOT_H;
+              var curLoc = locById(block.locId);
+              var nxtLoc = locById(nextBlock.locId);
+              var tKey = (curLoc ? curLoc.id : '') + '|' + (nxtLoc ? nxtLoc.id : '');
+              var tInfo = transitDetail[tKey];
+              var tMins = tInfo ? tInfo.minutes : Math.round((nextStart - blockEnd) * 30);
+              var tLabel = tMins >= 60 ? (tMins / 60).toFixed(1) + 'h' : tMins + 'min';
+              if (gapH >= 12) {
+                h += '<div style="position:absolute;left:0;right:0;top:' + gapTop + 'px;height:' + gapH + 'px;display:flex;align-items:center;justify-content:center;z-index:3;pointer-events:none;">';
+                h += '<div style="display:flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:rgba(0,0,0,0.04);">';
+                h += '<span style="font-size:9px;color:rgba(0,0,0,0.35);">↓</span>';
+                h += '<span style="font-size:9px;font-weight:500;color:rgba(0,0,0,0.35);white-space:nowrap;">' + tLabel + '</span>';
+                h += '<span style="font-size:9px;color:rgba(0,0,0,0.35);">↓</span>';
+                h += '</div></div>';
+              }
+            }
           }
         });
         return h;

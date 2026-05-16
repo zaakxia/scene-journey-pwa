@@ -57,7 +57,7 @@ const SceneMap = (() => {
 
   function setIPMeta(meta) {}
 
-  function showLocations(locations, onClick) {
+  function showLocations(locations, onClick, keepView) {
     if (!map) return;
     _onMarkerClick = onClick;
     _markers.forEach(function(m) { map.removeLayer(m); });
@@ -140,7 +140,7 @@ const SceneMap = (() => {
       map.addLayer(marker);
     });
 
-    if (locations.length > 0) {
+    if (locations.length > 0 && !keepView) {
       map.fitBounds([[minLat, minLng], [maxLat, maxLng]], { padding: [50, 50], maxZoom: 13, animate: false });
     }
   }

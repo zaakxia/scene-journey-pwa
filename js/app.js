@@ -203,11 +203,12 @@ window.App = { showToast: null };
         results.style.display = 'block';
         results.innerHTML = '<div style="padding:16px;text-align:center;color:#999;">搜索中...</div>';
 
-        var url;
+        var url, isGlobal = false;
         if (isChina) {
-          url = 'https://restapi.amap.com/v3/assistant/inputtips?keywords=' + encodeURIComponent(query) + '&key=' + AMAP_KEY + '&output=JSON';
+          url = 'https://restapi.amap.com/v3/assistant/inputtips?keywords=' + encodeURIComponent(query) + '&key=' + AMAP_KEY;
         } else {
-          url = 'https://geocode.search.hereapi.com/v1/geocode?q=' + encodeURIComponent(query) + '&apiKey=' + HERE_KEY + '&limit=5';
+          isGlobal = true;
+          url = 'https://autosuggest.search.hereapi.com/v1/autosuggest?q=' + encodeURIComponent(query) + '&apiKey=' + HERE_KEY + '&limit=5';
         }
         // AbortController for 12s timeout
         var ctrl = new AbortController();
@@ -217,7 +218,6 @@ window.App = { showToast: null };
           if (!r.ok) throw new Error('HTTP ' + r.status);
           return r.json();
         }).then(function(data) {
-          // Check API-level errors
           if (data.status === '0') { console.error('[Search] Amap error:', data.info); }
           if (data.error) { console.error('[Search] HERE error:', data.error); }
           var items = [];
@@ -235,12 +235,26 @@ window.App = { showToast: null };
               }
             });
           }
+          // If global search returned nothing, try Nominatim (handles Chinese names of landmarks)
+          if (items.length === 0 && isGlobal) {
+            var nomUrl = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(query) + '&format=json&limit=5';
+            return fetch(nomUrl).then(function(r) { return r.json(); }).then(function(nData) {
+              if (Array.isArray(nData)) {
+                nData.forEach(function(item) {
+                  items.push({ lat: parseFloat(item.lat), lng: parseFloat(item.lon), title: item.name || item.display_name.split(',')[0], addr: item.display_name });
+                });
+              }
+              return items;
+            });
+          }
+          return items;
+        }).then(function(items) {
           if (items.length === 0) {
             results.innerHTML = '<div style="padding:16px;text-align:center;color:#999;">未找到结果</div>';
             return;
           }
           var h = '';
-          items.forEach(function(item, i) {
+          items.forEach(function(item) {
             var lat = item.lat, lng = item.lng, title = item.title, addr = item.addr;
             h += '<div class="search-result-item" data-lat="'+lat+'" data-lng="'+lng+'" data-title="'+title.replace(/"/g,'&quot;')+'" data-addr="'+addr.replace(/"/g,'&quot;')+'" style="padding:12px 14px;border-bottom:1px solid #f0ede6;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">';
             h += '<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#1c1917;">'+title+'</div>';

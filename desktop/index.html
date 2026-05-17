@@ -1059,6 +1059,28 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       h += '</div></div>';
     }
 
+    // Prefetch transit in background
+    var prefetchPlocs = planLocs;
+    setTimeout(function() {
+      var pairs = [];
+      for (var i = 0; i < prefetchPlocs.length; i++) {
+        for (var j = 0; j < prefetchPlocs.length; j++) {
+          if (i === j) continue;
+          pairs.push([prefetchPlocs[i], prefetchPlocs[j]]);
+        }
+      }
+      var bi = 0;
+      function nextBatch() {
+        var batch = pairs.slice(bi, bi + 3);
+        bi += 3;
+        batch.forEach(function(pair) {
+          fetchTransitByEngine(pair[0], pair[1], planState._useAmap ? 'amap' : 'here');
+        });
+        if (bi < pairs.length) setTimeout(nextBatch, 250);
+      }
+      nextBatch();
+    }, 300);
+
     setTimeout(function(){ bindPlanEvents(planLocs); }, 100);
     return h;
   }

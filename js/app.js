@@ -1552,8 +1552,6 @@ window.App = { showToast: null };
         if (btnAlt) {
           btnAlt.onclick = function() {
             useAmap = !useAmap;
-            transitCache = {};
-            transitDetail = {};
             prefetchTransit();
             buildHTML();
           };

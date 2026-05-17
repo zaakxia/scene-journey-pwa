@@ -711,6 +711,7 @@ window.App = { showToast: null };
           '&apiKey=' + HERE_KEY;
         fetch(url).then(function(r) { return r.json(); }).then(function(data) {
           var totalSec = 0;
+          var noCoverage = data && data.notices && data.notices.some(function(n){return n.code==='noCoverage';});
           if (data && data.routes && data.routes[0] && data.routes[0].sections) {
             data.routes[0].sections.forEach(function(sec) {
               var s = sec.travelSummary || sec.summary;
@@ -727,11 +728,11 @@ window.App = { showToast: null };
             transitDetail[cacheKey] = { minutes: durMin, engine: 'here-transit' };
             log('HERE公交 ' + fromLoc.name_zh + '→' + toLoc.name_zh + ': ' + durMin + 'min');
           } else {
-            log('HERE公交 FAIL ' + fromLoc.name_zh + '→' + toLoc.name_zh + ' — estimate');
+            log('HERE公交 FAIL ' + fromLoc.name_zh + '→' + toLoc.name_zh + (noCoverage?' (无覆盖)':' — estimate'));
             var km = GeoUtils.haversineDistance(fromLoc.coordinates.lat, fromLoc.coordinates.lng, toLoc.coordinates.lat, toLoc.coordinates.lng);
             var durMin = Math.round((km / URBAN_SPEED) * 60 * TRANSIT_FACTOR);
             transitCache[cacheKey] = Math.max(1, Math.ceil((km / URBAN_SPEED) * 2 * TRANSIT_FACTOR));
-            transitDetail[cacheKey] = { minutes: durMin, engine: 'here-transit-est' };
+            transitDetail[cacheKey] = { minutes: durMin, engine: noCoverage ? 'here-no-coverage' : 'here-transit-est' };
           }
           if (cb) cb();
         }).catch(function() {
@@ -947,6 +948,7 @@ window.App = { showToast: null };
             else if (det.engine === 'here-transit') engineLabel = 'HERE公交';
             else if (det.engine === 'here-walk') engineLabel = 'HERE步行';
             else if (det.engine === 'here-best') engineLabel = 'HERE最优';
+            else if (det.engine === 'here-no-coverage') engineLabel = 'HERE公交(无数据)';
             else if (det.engine === 'here-transit-est') engineLabel = 'HERE公交(估算)';
             else engineLabel = 'OSRM';
           }
@@ -1234,6 +1236,7 @@ window.App = { showToast: null };
                 else if (td.engine === 'here-transit') engineLabel = 'HERE公交';
                 else if (td.engine === 'here-walk') engineLabel = 'HERE步行';
                 else if (td.engine === 'here-best') engineLabel = 'HERE最优·' + (td.submode || '驾车');
+                else if (td.engine === 'here-no-coverage') engineLabel = 'HERE公交(无数据)';
                 else if (td.engine === 'here-transit-est') engineLabel = 'HERE公交(估算)';
                 else if (td.engine === 'osrm') engineLabel = 'OSRM(后备)';
                 else engineLabel = td.engine || '?';

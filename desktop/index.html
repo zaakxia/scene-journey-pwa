@@ -708,17 +708,14 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     hereCallCount++;
     var u='https://transit.hereapi.com/v8/routes?origin='+fromLoc.coordinates.lat+','+fromLoc.coordinates.lng+'&destination='+toLoc.coordinates.lat+','+toLoc.coordinates.lng+'&apiKey='+HERE_KEY;
     fetch(u).then(function(r){return r.json()}).then(function(d){
-      console.log('[DESKTOP HERE transit]', fromLoc.name_zh, '→', toLoc.name_zh, JSON.stringify(d).substring(0,500));
-      var totalSec=0;
+      var totalSec=0, noCov=d&&d.notices&&d.notices.some(function(n){return n.code==='noCoverage';});
         if(d&&d.routes&&d.routes[0]&&d.routes[0].sections){
-          d.routes[0].sections.forEach(function(sec,si){
-            console.log('[DESKTOP sec'+si+'] keys:', Object.keys(sec), 'dep:', sec.departure&&sec.departure.time, 'arr:', sec.arrival&&sec.arrival.time);
+          d.routes[0].sections.forEach(function(sec){
             var s=sec.travelSummary||sec.summary;
             if(s&&typeof s.duration==='number')totalSec+=s.duration;
             else if(sec.departure&&sec.departure.time&&sec.arrival&&sec.arrival.time)totalSec+=(new Date(sec.arrival.time)-new Date(sec.departure.time))/1000;
           });
         }
-        console.log('[DESKTOP totalSec]', totalSec);
         if(totalSec>0){
           var m=Math.round(totalSec/60);
           planState.transitCache[cacheKey]=Math.max(1,Math.ceil(m/30));
@@ -727,7 +724,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
         var km=GeoUtils.haversineDistance(fromLoc.coordinates.lat,fromLoc.coordinates.lng,toLoc.coordinates.lat,toLoc.coordinates.lng);
         var m=Math.round(km/URBAN_SPEED*60*TRANSIT_FACTOR);
         planState.transitCache[cacheKey]=Math.max(1,Math.ceil(km/URBAN_SPEED*2*TRANSIT_FACTOR));
-        planState.transitDetail[cacheKey]={minutes:m,engine:'here-transit-est'};
+        planState.transitDetail[cacheKey]={minutes:m,engine:noCov?'here-no-coverage':'here-transit-est'};
       }
       if(cb)cb();
     }).catch(function(){
@@ -963,7 +960,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
           var tMin, tLabel;
           if (td) {
             tMin = td.minutes;
-            tLabel = (td.engine === 'here-transit-est' || td.engine === 'osrm') ? td.engine.replace('here-transit-est','HERE公交').replace('osrm','OSRM')+'估算' : (td.engine==='here'?'HERE驾车':td.engine==='here-transit'?'HERE公交':td.engine==='here-walk'?'HERE步行':td.engine==='amap'?'高德驾车':td.engine==='amap-transit'?'高德公交':td.engine);
+            tLabel = td.engine==='here-no-coverage'?'HERE公交(无数据)':td.engine==='here-transit-est'?'HERE公交(估算)':td.engine==='osrm'?'OSRM估算':(td.engine==='here'?'HERE驾车':td.engine==='here-transit'?'HERE公交':td.engine==='here-walk'?'HERE步行':td.engine==='amap'?'高德驾车':td.engine==='amap-transit'?'高德公交':td.engine);
           } else {
             tMin = (nb.startSlot - b.startSlot - b.slots) * 30;
             tLabel = '未计算';
@@ -1178,6 +1175,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
             else if(td.engine==='here-transit')engineLabel='HERE公交';
             else if(td.engine==='here-walk')engineLabel='HERE步行';
             else if(td.engine==='here-best')engineLabel='HERE最优·'+(td.submode||'驾车');
+            else if(td.engine==='here-no-coverage')engineLabel='HERE公交(无数据)';
             else if(td.engine==='here-transit-est')engineLabel='HERE公交(估算)';
             else if(td.engine==='osrm')engineLabel='OSRM(后备)';
             else engineLabel=td.engine||'?';

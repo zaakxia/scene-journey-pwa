@@ -708,14 +708,17 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     hereCallCount++;
     var u='https://transit.hereapi.com/v8/routes?origin='+fromLoc.coordinates.lat+','+fromLoc.coordinates.lng+'&destination='+toLoc.coordinates.lat+','+toLoc.coordinates.lng+'&apiKey='+HERE_KEY;
     fetch(u).then(function(r){return r.json()}).then(function(d){
+      console.log('[DESKTOP HERE transit]', fromLoc.name_zh, '→', toLoc.name_zh, JSON.stringify(d).substring(0,500));
       var totalSec=0;
         if(d&&d.routes&&d.routes[0]&&d.routes[0].sections){
-          d.routes[0].sections.forEach(function(sec){
+          d.routes[0].sections.forEach(function(sec,si){
+            console.log('[DESKTOP sec'+si+'] keys:', Object.keys(sec), 'dep:', sec.departure&&sec.departure.time, 'arr:', sec.arrival&&sec.arrival.time);
             var s=sec.travelSummary||sec.summary;
             if(s&&typeof s.duration==='number')totalSec+=s.duration;
             else if(sec.departure&&sec.departure.time&&sec.arrival&&sec.arrival.time)totalSec+=(new Date(sec.arrival.time)-new Date(sec.departure.time))/1000;
           });
         }
+        console.log('[DESKTOP totalSec]', totalSec);
         if(totalSec>0){
           var m=Math.round(totalSec/60);
           planState.transitCache[cacheKey]=Math.max(1,Math.ceil(m/30));

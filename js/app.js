@@ -710,23 +710,30 @@ window.App = { showToast: null };
           '&destination=' + toLoc.coordinates.lat + ',' + toLoc.coordinates.lng +
           '&apiKey=' + HERE_KEY;
         fetch(url).then(function(r) { return r.json(); }).then(function(data) {
-          var totalSec = 0;
+          var totalSec = 0, steps = [];
           var noCoverage = data && data.notices && data.notices.some(function(n){return n.code==='noCoverage';});
           if (data && data.routes && data.routes[0] && data.routes[0].sections) {
             data.routes[0].sections.forEach(function(sec) {
+              var durSec = 0;
               var s = sec.travelSummary || sec.summary;
-              if (s && typeof s.duration === 'number') {
-                totalSec += s.duration;
-              } else if (sec.departure && sec.departure.time && sec.arrival && sec.arrival.time) {
-                totalSec += (new Date(sec.arrival.time) - new Date(sec.departure.time)) / 1000;
+              if (s && typeof s.duration === 'number') durSec = s.duration;
+              else if (sec.departure && sec.departure.time && sec.arrival && sec.arrival.time) durSec = (new Date(sec.arrival.time) - new Date(sec.departure.time)) / 1000;
+              totalSec += durSec;
+              var durMin = Math.round(durSec / 60);
+              if (sec.type === 'pedestrian') {
+                steps.push('步行' + durMin + '分钟');
+              } else if (sec.transport) {
+                var modeName = sec.transport.mode === 'bus' ? '公交' : sec.transport.mode === 'train' ? '火车' : sec.transport.mode === 'subway' ? '地铁' : sec.transport.mode === 'tram' ? '电车' : sec.transport.mode;
+                var lineName = sec.transport.name || '';
+                steps.push('搭乘' + modeName + (lineName ? ' ' + lineName : '') + ' ' + durMin + '分钟');
               }
             });
           }
           if (totalSec > 0) {
             var durMin = Math.round(totalSec / 60);
             transitCache[cacheKey] = Math.max(1, Math.ceil(durMin / 30));
-            transitDetail[cacheKey] = { minutes: durMin, engine: 'here-transit' };
-            log('HERE公交 ' + fromLoc.name_zh + '→' + toLoc.name_zh + ': ' + durMin + 'min');
+            transitDetail[cacheKey] = { minutes: durMin, engine: 'here-transit', steps: steps };
+            log('HERE公交 ' + fromLoc.name_zh + '→' + toLoc.name_zh + ': ' + durMin + 'min, ' + steps.join(' → '));
           } else {
             log('HERE公交 FAIL ' + fromLoc.name_zh + '→' + toLoc.name_zh + (noCoverage?' (无覆盖)':' — estimate'));
             var km = GeoUtils.haversineDistance(fromLoc.coordinates.lat, fromLoc.coordinates.lng, toLoc.coordinates.lat, toLoc.coordinates.lng);
@@ -1257,6 +1264,9 @@ window.App = { showToast: null };
                 rh += '<span style="font-size:9px;color:rgba(0,0,0,0.3);">（排程' + actualMin + 'min）</span>';
               }
               rh += '</div>';
+              if (td && td.steps && td.steps.length > 0) {
+                rh += '<div style="font-size:9px;color:rgba(0,0,0,0.4);margin-top:1px;padding-left:20px;">' + td.steps.join(' → ') + '</div>';
+              }
               var nextLoc = locById(nextB.locId);
               rh += '<div style="font-size:9px;color:var(--color-text-secondary);margin-top:1px;padding-left:20px;">→ ' + (nextLoc ? nextLoc.name_zh : '') + '</div>';
               rh += '</div>';

@@ -708,18 +708,23 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
     hereCallCount++;
     var u='https://transit.hereapi.com/v8/routes?origin='+fromLoc.coordinates.lat+','+fromLoc.coordinates.lng+'&destination='+toLoc.coordinates.lat+','+toLoc.coordinates.lng+'&apiKey='+HERE_KEY;
     fetch(u).then(function(r){return r.json()}).then(function(d){
-      var totalSec=0, noCov=d&&d.notices&&d.notices.some(function(n){return n.code==='noCoverage';});
+      var totalSec=0, steps=[], noCov=d&&d.notices&&d.notices.some(function(n){return n.code==='noCoverage';});
         if(d&&d.routes&&d.routes[0]&&d.routes[0].sections){
           d.routes[0].sections.forEach(function(sec){
+            var durSec=0;
             var s=sec.travelSummary||sec.summary;
-            if(s&&typeof s.duration==='number')totalSec+=s.duration;
-            else if(sec.departure&&sec.departure.time&&sec.arrival&&sec.arrival.time)totalSec+=(new Date(sec.arrival.time)-new Date(sec.departure.time))/1000;
+            if(s&&typeof s.duration==='number')durSec=s.duration;
+            else if(sec.departure&&sec.departure.time&&sec.arrival&&sec.arrival.time)durSec=(new Date(sec.arrival.time)-new Date(sec.departure.time))/1000;
+            totalSec+=durSec;
+            var dm=Math.round(durSec/60);
+            if(sec.type==='pedestrian')steps.push('步行'+dm+'分钟');
+            else if(sec.transport){var mn=sec.transport.mode==='bus'?'公交':sec.transport.mode==='train'?'火车':sec.transport.mode==='subway'?'地铁':sec.transport.mode==='tram'?'电车':sec.transport.mode;steps.push('搭乘'+mn+(sec.transport.name?' '+sec.transport.name:'')+' '+dm+'分钟');}
           });
         }
         if(totalSec>0){
           var m=Math.round(totalSec/60);
           planState.transitCache[cacheKey]=Math.max(1,Math.ceil(m/30));
-          planState.transitDetail[cacheKey]={minutes:m,engine:'here-transit'};
+          planState.transitDetail[cacheKey]={minutes:m,engine:'here-transit',steps:steps};
       }else{
         var km=GeoUtils.haversineDistance(fromLoc.coordinates.lat,fromLoc.coordinates.lng,toLoc.coordinates.lat,toLoc.coordinates.lng);
         var m=Math.round(km/URBAN_SPEED*60*TRANSIT_FACTOR);
@@ -971,6 +976,9 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
           h += '<span style="color:#d97706;font-weight:600;">' + tLabel + ' ' + tMin + 'min</span>';
           h += '<span>→ 归整' + rMin + 'min</span>';
           h += '</div>';
+          if (td && td.steps && td.steps.length > 0) {
+            h += '<div style="font-size:9px;color:rgba(0,0,0,0.4);padding-left:20px;">' + td.steps.join(' → ') + '</div>';
+          }
         }
         h += '</div>';
       }
@@ -1190,6 +1198,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
           rh+='<span style="font-size:10px;font-weight:600;color:#999;">取整'+roundedMin+'分钟</span>';
           if(actualMin!==roundedMin)rh+='<span style="font-size:9px;color:rgba(0,0,0,0.3);">（排程'+actualMin+'min）</span>';
           rh+='</div>';
+          if(td&&td.steps&&td.steps.length>0)rh+='<div style="font-size:9px;color:rgba(0,0,0,0.4);margin-top:1px;padding-left:20px;">'+td.steps.join(' → ')+'</div>';
           var nextLoc=locById(nextB.locId);
           rh+='<div style="font-size:9px;color:#999;margin-top:1px;padding-left:20px;">→ '+(nextLoc?nextLoc.name_zh:'')+'</div></div>';
         }

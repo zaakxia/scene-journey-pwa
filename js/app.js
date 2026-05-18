@@ -203,7 +203,7 @@ window.App = { showToast: null };
 
         var ctrl = new AbortController();
         var timer = setTimeout(function() { ctrl.abort(); }, 8000);
-        var hereUrl = 'https://autosuggest.search.hereapi.com/v1/autosuggest?q=' + encodeURIComponent(query) + '&apiKey=' + HERE_KEY + '&limit=5';
+        var hereUrl = 'https://geocode.search.hereapi.com/v1/geocode?q=' + encodeURIComponent(query) + '&apiKey=' + HERE_KEY + '&limit=5';
 
         function parseAmap(data) {
           var items = [];
@@ -230,18 +230,20 @@ window.App = { showToast: null };
         }
 
         fetch(hereUrl, { signal: ctrl.signal })
-          .then(function(r) { clearTimeout(timer); return r.json(); })
-          .then(function(data) { return parseHere(data); })
-          .catch(function() { return []; })
+          .then(function(r) { clearTimeout(timer); console.log('[Search] HERE status:', r.status); return r.json(); })
+          .then(function(data) { console.log('[Search] HERE data keys:', Object.keys(data)); return parseHere(data); })
+          .catch(function(e) { console.log('[Search] HERE failed:', e.name||e.message||e); return []; })
           .then(function(items) {
+            console.log('[Search] HERE items:', items.length);
             if (items.length > 0) return items;
+            console.log('[Search] falling back to Amap...');
             var ctrl2 = new AbortController();
             var t2 = setTimeout(function() { ctrl2.abort(); }, 6000);
             var amapUrl = 'https://restapi.amap.com/v3/assistant/inputtips?keywords=' + encodeURIComponent(query) + '&key=' + AMAP_KEY;
             return fetch(amapUrl, { signal: ctrl2.signal })
-              .then(function(r) { clearTimeout(t2); return r.json(); })
-              .then(function(aData) { return parseAmap(aData); })
-              .catch(function() { return []; });
+              .then(function(r) { clearTimeout(t2); console.log('[Search] Amap status:', r.status); return r.json(); })
+              .then(function(aData) { console.log('[Search] Amap tips:', aData&&aData.tips?aData.tips.length:0); return parseAmap(aData); })
+              .catch(function(e) { console.log('[Search] Amap failed:', e.name||e.message||e); return []; });
           })
           .then(function(items) {
           // Deduplicate by proximity (~100m)

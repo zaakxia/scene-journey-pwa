@@ -203,7 +203,7 @@ window.App = { showToast: null };
 
         var ctrl = new AbortController();
         var timer = setTimeout(function() { ctrl.abort(); }, 8000);
-        var hereUrl = 'https://geocode.search.hereapi.com/v1/geocode?q=' + encodeURIComponent(query) + '&apiKey=' + HERE_KEY + '&limit=5';
+        var hereUrl = 'https://autosuggest.search.hereapi.com/v1/autosuggest?q=' + encodeURIComponent(query) + '&apiKey=' + HERE_KEY + '&limit=5';
 
         function parseAmap(data) {
           var items = [];

@@ -16,6 +16,8 @@ window.App = { showToast: null };
 
     function init() {
       log('init() called');
+      // Preload local landmark DB for offline search fallback
+      fetch('../data/landmarks.json').then(function(r){return r.json();}).then(function(d){window._landmarks = d;}).catch(function(){window._landmarks = [];});
       try {
         // Tab clicks
         document.querySelectorAll('.bottom-bar .tab').forEach(function(tab) {
@@ -201,10 +203,19 @@ window.App = { showToast: null };
         results.style.display = 'block';
         results.innerHTML = '<div style="padding:16px;text-align:center;color:#999;">搜索中...</div>';
 
+        // Search pipeline: CF Worker (Nominatim) → local DB → Amap
         var ctrl = new AbortController();
         var timer = setTimeout(function() { ctrl.abort(); }, 8000);
-        var nomUrl = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(query) + '&format=json&limit=5&accept-language=zh';
+        var workerUrl = '/api/search?q=' + encodeURIComponent(query);
 
+        function searchLocal(query) {
+          var q = query.toLowerCase();
+          return (window._landmarks || []).filter(function(l) {
+            return l.n.indexOf(query) >= 0 || l.en.toLowerCase().indexOf(q) >= 0;
+          }).slice(0, 5).map(function(l) {
+            return { lat: l.lat, lng: l.lng, title: l.n, addr: l.c };
+          });
+        }
         function parseAmap(data) {
           var items = [];
           if (data && data.tips && data.status === '1') {
@@ -212,17 +223,6 @@ window.App = { showToast: null };
               if (tip.location) {
                 var parts = tip.location.split(',');
                 items.push({ lat: parseFloat(parts[1]), lng: parseFloat(parts[0]), title: tip.name, addr: tip.address || tip.district || '' });
-              }
-            });
-          }
-          return items;
-        }
-        function parseHere(data) {
-          var items = [];
-          if (data && data.items) {
-            data.items.forEach(function(item) {
-              if (item.position) {
-                items.push({ lat: item.position.lat, lng: item.position.lng, title: item.title, addr: item.address ? item.address.label : '' });
               }
             });
           }
@@ -242,12 +242,16 @@ window.App = { showToast: null };
           return items;
         }
 
-        fetch(nomUrl, { signal: ctrl.signal })
+        fetch(workerUrl, { signal: ctrl.signal })
           .then(function(r) { clearTimeout(timer); return r.json(); })
           .then(function(data) { return parseNominatim(data); })
           .catch(function() { return []; })
           .then(function(items) {
             if (items.length > 0) return items;
+            // Worker failed — try local landmark DB
+            var localItems = searchLocal(query);
+            if (localItems.length > 0) return localItems;
+            // Local DB miss — try Amap
             var ctrl2 = new AbortController();
             var t2 = setTimeout(function() { ctrl2.abort(); }, 6000);
             var amapUrl = 'https://restapi.amap.com/v3/assistant/inputtips?keywords=' + encodeURIComponent(query) + '&key=' + AMAP_KEY;

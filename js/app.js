@@ -203,7 +203,7 @@ window.App = { showToast: null };
 
         var ctrl = new AbortController();
         var timer = setTimeout(function() { ctrl.abort(); }, 8000);
-        var nomUrl = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(query) + '&format=json&limit=5&accept-language=zh';
+        var hereUrl = 'https://geocode.search.hereapi.com/v1/geocode?q=' + encodeURIComponent(query) + '&apiKey=' + HERE_KEY + '&limit=5';
 
         function parseAmap(data) {
           var items = [];
@@ -217,30 +217,31 @@ window.App = { showToast: null };
           }
           return items;
         }
-        function parseNominatim(data) {
+        function parseHere(data) {
           var items = [];
-          if (Array.isArray(data)) {
-            data.forEach(function(item) {
-              if (item.lat && item.lon) {
-                var parts = (item.display_name || '').split(',');
-                var addr = parts.slice(0, 3).join(',').trim();
-                items.push({ lat: parseFloat(item.lat), lng: parseFloat(item.lon), title: item.name || parts[0] || '', addr: addr });
+          if (data && data.items) {
+            data.items.forEach(function(item) {
+              if (item.position) {
+                items.push({ lat: item.position.lat, lng: item.position.lng, title: item.title, addr: item.address ? item.address.label : '' });
               }
             });
           }
           return items;
         }
 
-        fetch(nomUrl, { signal: ctrl.signal })
+        fetch(hereUrl, { signal: ctrl.signal })
           .then(function(r) { clearTimeout(timer); return r.json(); })
-          .then(function(data) {
-            var items = parseNominatim(data);
+          .then(function(data) { return parseHere(data); })
+          .catch(function() { return []; })
+          .then(function(items) {
             if (items.length > 0) return items;
+            var ctrl2 = new AbortController();
+            var t2 = setTimeout(function() { ctrl2.abort(); }, 6000);
             var amapUrl = 'https://restapi.amap.com/v3/assistant/inputtips?keywords=' + encodeURIComponent(query) + '&key=' + AMAP_KEY;
-            var t2 = setTimeout(function() { ctrl.abort(); }, 6000);
-            return fetch(amapUrl, { signal: ctrl.signal })
+            return fetch(amapUrl, { signal: ctrl2.signal })
               .then(function(r) { clearTimeout(t2); return r.json(); })
-              .then(function(aData) { return parseAmap(aData); });
+              .then(function(aData) { return parseAmap(aData); })
+              .catch(function() { return []; });
           })
           .then(function(items) {
           // Deduplicate by proximity (~100m)

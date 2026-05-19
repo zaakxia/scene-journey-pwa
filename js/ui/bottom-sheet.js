@@ -4,7 +4,6 @@ const BottomSheet = (() => {
   let overlayEl = null;
   let isOpen = false;
   let _onClose = null;
-  let _startY = 0;
   let _closeBtn = null;
 
   function create() {
@@ -12,7 +11,6 @@ const BottomSheet = (() => {
 
     overlayEl = document.createElement('div');
     overlayEl.className = 'bottom-sheet-overlay hidden';
-    overlayEl.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); close(); });
     overlayEl.addEventListener('touchstart', function(e) { e.preventDefault(); e.stopPropagation(); });
     overlayEl.addEventListener('touchmove', function(e) { e.preventDefault(); e.stopPropagation(); });
 
@@ -42,26 +40,6 @@ const BottomSheet = (() => {
     sheetEl.appendChild(closeBar);
     sheetEl.appendChild(contentEl);
 
-    // Swipe down to close
-    sheetEl.addEventListener('touchstart', function(e) {
-      _startY = e.touches[0].clientY;
-    }, { passive: true });
-
-    sheetEl.addEventListener('touchmove', function(e) {
-      var dy = e.touches[0].clientY - _startY;
-      if (dy > 0 && sheetEl.scrollTop <= 0) {
-        sheetEl.style.transform = 'translateY(' + dy + 'px)';
-        sheetEl.style.transition = 'none';
-      }
-    }, { passive: true });
-
-    sheetEl.addEventListener('touchend', function(e) {
-      var dy = e.changedTouches[0].clientY - _startY;
-      sheetEl.style.transform = '';
-      sheetEl.style.transition = '';
-      if (dy > 80) close();
-    });
-
     document.body.appendChild(overlayEl);
     document.body.appendChild(sheetEl);
   }
@@ -79,7 +57,6 @@ const BottomSheet = (() => {
     sheetEl.style.transform = '';
     document.body.style.overflow = 'hidden';
     isOpen = true;
-    _startY = 0;
   }
 
   function close() {

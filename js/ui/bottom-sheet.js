@@ -11,6 +11,7 @@ const BottomSheet = (() => {
 
     overlayEl = document.createElement('div');
     overlayEl.className = 'bottom-sheet-overlay hidden';
+    overlayEl.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); close(); });
     overlayEl.addEventListener('touchstart', function(e) { e.preventDefault(); e.stopPropagation(); });
     overlayEl.addEventListener('touchmove', function(e) { e.preventDefault(); e.stopPropagation(); });
 
